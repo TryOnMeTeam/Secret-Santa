@@ -3,6 +3,9 @@ import "./HomePage.css";
 
 const HomePage = () => {
     const [showForm, setShowForm] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const handlePlayClick = () => {
         setShowForm(true);
