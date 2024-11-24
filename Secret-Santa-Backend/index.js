@@ -6,11 +6,10 @@ const secretSantaRouter = require("./routes/secretSanta.route");
 const gameRouter = require("./routes/game.route.js");
 const authRoutes = require('./routes/authRoutes');
 const dotenv = require('dotenv');
-
-
+dotenv.config();
 const messageRoutes = require("./routes/messageRoutes");
 const { initializeSocketServer } = require("./services/socketService");
-dotenv.config();
+const userRouter = require("./routes/user.route.js");
 
 const app = express();
 const PORT = 5001;
@@ -21,6 +20,8 @@ app.use(bodyParser.json());
 app.use("/api", secretSantaRouter);
 app.use(gameRouter);
 app.use(authRoutes);
+app.use(userRouter);
+
 
 app.use(bodyParser.json());
 app.use(express.json());
@@ -33,4 +34,3 @@ initializeSocketServer(server);
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
-
