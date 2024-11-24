@@ -1,18 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { registerHandler } from '../../../services/authService';
+import { registerHandler } from '../../../services/authService.js';
+import { useAlert } from './../../../services/context/AlertContext.js';
+import { useAuth } from './../../../services/context/AuthContext';
+import "./RegisterPage.css";
 
 const Register = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const { showAlert } = useAlert();
+
+    useEffect(() => {
+        if (user) {
+          navigate('/secret-santa');
+        }
+      }, [user, navigate]);
 
     const formik = useFormik({
         initialValues: {
             name: '',
             email: '',
             password: '',
-            confirmPassword: '',
+            confirmPassword: ''
         },
         validationSchema: Yup.object({
             name: Yup.string().required("Required"),
@@ -20,13 +31,17 @@ const Register = () => {
             password: Yup.string().min(6, 'Password must be at least 6 characters').required('Required'),
             confirmPassword: Yup.string()
                 .oneOf([Yup.ref('password'), null], 'Passwords must match')
-                .required('Required'),
+                .required('Required')
         }),
         onSubmit: async (values) => {
-            await registerHandler(values.name, values.email, values.password);
-            console.log(values);
-            navigate('/login');
-        },
+            try {
+                await registerHandler(values.name, values.email, values.password);
+                showAlert('Login successful!', 'success');
+                navigate('/login');
+            } catch (error) {
+                showAlert(error.message, 'error');
+            }
+        }
     });
 
     const handleLogInClick = () => {

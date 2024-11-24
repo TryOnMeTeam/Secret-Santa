@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import LogoutButton from "../../components/LogoutButton/LogoutButton";
 import "./SecretSanta.css";
 
 const SecretSanta = () => {
@@ -42,6 +43,8 @@ const SecretSanta = () => {
                     Shuffle Participants
                 </button>
             )}
+
+            <LogoutButton />  
         </div>
     );
 };

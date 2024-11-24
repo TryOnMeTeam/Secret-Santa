@@ -1,0 +1,104 @@
+/* Main container */
+.container {
+    background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20220207/pngtree-composite-image-of-santa-keeping-a-secret-man-brick-festive-photo-image_29145552.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Form wrapper */
+form {
+    background-color: rgba(155, 145, 145, 0.2);
+    padding: 3rem;
+    border-radius: 10px;
+    color: #888181;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0 24px #5C5696;
+}
+
+/* Input container */
+.input-container {
+    width: 100%;
+    /* margin-bottom: 20px; */
+}
+
+input {
+    width: -webkit-fill-available;
+    padding: 14px;
+    border: 2px solid #D1D1D4;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+input:focus {
+    border-color: #6A679E;
+    outline: none;
+}
+
+/* Error message */
+div {
+    color: red;
+    font-size: 0.8rem;
+}
+
+/* Submit button */
+.submit-btn {
+    background: #fff;
+    font-size: 14px;
+    padding: 16px 20px;
+    border-radius: 26px;
+    border: 1px solid #D4D3E8;
+    color: #4C489D;
+    cursor: pointer;
+    transition: 0.2s;
+    text-transform: uppercase;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.signup{
+    background-color: #4C489D;
+    color: white;
+}
+
+.submit-btn:hover {
+    border-color: #6A679E;
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 767px) {
+    .container {
+        padding: 2rem;
+    }
+
+    form {
+        padding: 2rem;
+    }
+
+    input {
+        padding: 12px;
+    }
+
+    .submit-btn {
+        padding: 12px 16px;
+    }
+}
+
+@media (max-width: 1024px) {
+    form {
+        padding: 3rem;
+    }
+}
