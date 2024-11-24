@@ -7,7 +7,7 @@ import { FaPaperPlane } from "react-icons/fa";
 import axios from "axios";
 
 const SecretSantaChat = () => {
-    const [userId] = useState(1);
+    const [userId] = localStorage.getItem('userId');
     const [gameId] = useState(1);
 
     const [messagesSanta, setMessagesSanta] = useState();
@@ -37,6 +37,7 @@ const SecretSantaChat = () => {
             console.error("Error fetching chat messages:", error);
         }
     };
+
 
     useEffect(() => {
         fetchChatMessages();
@@ -129,7 +130,7 @@ const SecretSantaChat = () => {
                         ✖
                     </button>
                     <div className="chat-messages">
-                        {messagesSanta.map((msg, idx) => (
+                        {messagesSanta?.map((msg, idx) => (
                             <Message key={idx} message={msg} />
                         ))}
                         <div ref={santaMessagesEndRef} />
@@ -157,7 +158,7 @@ const SecretSantaChat = () => {
                         ✖
                     </button>
                     <div className="chat-messages">
-                        {messagesNinja.map((msg, idx) => (
+                        {messagesNinja?.map((msg, idx) => (
                             <Message key={idx} message={msg} />
                         ))}
                         <div ref={ninjaMessagesEndRef} />

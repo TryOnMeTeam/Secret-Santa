@@ -6,7 +6,7 @@ const WebSocket = require("ws");
  *
  * @param {number} userId - ID of the user requesting messages.
  * @param {number} gameId - ID of the game.
- * @returns {Promise<{ secretSantaMessages: Array, giftNinjaMessages: Array }>} - A promise resolving to an object containing secretSantaMessages and giftNinjaMessages.
+ * @returns { secretSantaMessages: Array, giftNinjaMessages: Array } - A object containing secretSantaMessages and giftNinjaMessages.
  */
 const getMessagesForUserInGame = async (userId, gameId) => {
     try {
@@ -33,7 +33,7 @@ const getMessagesForUserInGame = async (userId, gameId) => {
  * @param {number} gameId - ID of the game where the message will be saved.
  * @param {string} chatBoxType - Type of the chat box (e.g., 'secretSanta' or 'giftNinja').
  * @param {string} content - The message content.
- * @returns {Promise<void>} - A promise indicating the message was saved successfully.
+ * @returns {void} - A message was saved successfully.
  */
 const saveSenderMessage = async (userId, gameId, chatBoxType, content) => {
     try {

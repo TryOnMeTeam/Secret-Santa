@@ -4,8 +4,8 @@ const router = express.Router();
 const gameController = require('../controller/game.controller.js');
 
 
-router.post('/createGame', gameController.createGame);
-router.put('/startGame/:gameCode', gameController.createGame);
-router.put('/endGame/:gameCode', gameController.createGame); //only host should end & start game
+router.post('/api/game/createGame', gameController.createGame);
+router.put('/api/game/startGame/:gameCode', gameController.createGame);
+router.put('/api/game/endGame/:gameCode', gameController.createGame); //only host should end & start game
 
 module.exports = router;

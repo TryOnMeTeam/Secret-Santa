@@ -14,24 +14,20 @@ const Register = () => {
 
     useEffect(() => {
         if (user) {
-          navigate('/secret-santa');
+            navigate('/secret-santa');
         }
-      }, [user, navigate]);
+    }, [user, navigate]);
 
     const formik = useFormik({
         initialValues: {
             name: '',
             email: '',
-            password: '',
-            confirmPassword: ''
+            password: ''
         },
         validationSchema: Yup.object({
             name: Yup.string().required("Required"),
             email: Yup.string().email('Invalid email address').required('Required'),
-            password: Yup.string().min(6, 'Password must be at least 6 characters').required('Required'),
-            confirmPassword: Yup.string()
-                .oneOf([Yup.ref('password'), null], 'Passwords must match')
-                .required('Required')
+            password: Yup.string().min(6, 'Password must be at least 6 characters').required('Required')
         }),
         onSubmit: async (values) => {
             try {
@@ -46,55 +42,54 @@ const Register = () => {
 
     const handleLogInClick = () => {
         navigate('/login');
-      };
+    };
 
     return (
         <div className="container">
             <form onSubmit={formik.handleSubmit}>
-            <div className="input-container">
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.name}
-                    placeholder="Name"
-                />
-                {formik.touched.name && formik.errors.name && <div>{formik.errors.name}</div>}
+                <div className="input-container">
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.name}
+                        placeholder="Name"
+                    />
+                    {formik.touched.name && formik.errors.name && <div>{formik.errors.name}</div>}
                 </div>
 
                 <div className="input-container">
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.email}
-                    placeholder="Email"
-                />
-                {formik.touched.email && formik.errors.email && <div>{formik.errors.email}</div>}
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.email}
+                        placeholder="Email"
+                    />
+                    {formik.touched.email && formik.errors.email && <div>{formik.errors.email}</div>}
                 </div>
 
                 <div className="input-container">
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.password}
-                    placeholder="Password"
-                />
-                {formik.touched.password && formik.errors.password && <div>{formik.errors.password}</div>}
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.password}
+                        placeholder="Password"
+                    />
+                    {formik.touched.password && formik.errors.password && <div>{formik.errors.password}</div>}
                 </div>
-
                 <button type="submit" className="submit-btn">
-                Sign Up
+                    Sign Up
                 </button>
                 <button type="button" onClick={handleLogInClick} className="submit-btn signup">
-                Log In
+                    Log In
                 </button>
             </form>
         </div>

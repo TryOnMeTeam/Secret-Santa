@@ -1,5 +1,3 @@
-
-// App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './services/context/AuthContext';
@@ -18,12 +16,12 @@ const App = () => {
         <AuthProvider>  {/* Wrap AuthProvider inside Router */}
           <AlertComponent />
           <Routes>
-            <Route path="/" element={<SecretSantaChat />} />
-            <Route path="/login" element={<SecretSantaChat />} />
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route
               path="/secret-santa"
-              element={<ProtectedRoute element={<SecretSantaPage />} />}
+              element={<ProtectedRoute element={<SecretSantaChat />} />}
             />
           </Routes>
         </AuthProvider>

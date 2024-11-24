@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const  sendResponse = require('../utils/response.js');
+const sendResponse = require('../utils/response.js');
 
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
-    
+
   try {
     const existingUser = await User.findUserByEmail(email);
     if (existingUser) {
@@ -17,7 +17,7 @@ const registerUser = async (req, res) => {
       expiresIn: '1h',
     });
 
-    return sendResponse(res, 200, 'User Registered Successfully', {token, userId});
+    return sendResponse(res, 200, 'User Registered Successfully', { token, userId });
   } catch (err) {
     console.error(err);
     return sendResponse(res, 500, 'Server error');
@@ -46,7 +46,7 @@ const loginUser = async (req, res) => {
       userId: user.id
     }
 
-    return sendResponse(res, 200, 'Login Successfull', data);
+    return sendResponse(res, 200, 'Login Successfully', data);
   } catch (err) {
     console.error(err);
     return sendResponse(res, 500, 'Server error');

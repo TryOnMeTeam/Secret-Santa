@@ -4,10 +4,10 @@ import axiosInstance from '../services/axionsInstance';
 const TOKEN_KEY = 'token';
 const USER_KEY = 'userId';
 
-export const registerHandler = async (username, email, password) => {
+export const registerHandler = async (name, email, password) => {
   try {
     const response = await axiosInstance.post('api/auth/register', {
-      username,
+      name,
       email,
       password,
     });
