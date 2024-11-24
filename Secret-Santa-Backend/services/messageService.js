@@ -58,9 +58,9 @@ const saveSenderMessage = async (userId, gameId, chatBoxType, content) => {
  * @param {string} parsedMessage - The message object to send
  */
 const sendMessageToUser = (receiverId, parsedMessage, connections) => {
-    const ws = connections.get(receiverId.toString());
-    if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify(parsedMessage));
+    const webSocket = connections.get(receiverId?.toString());
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+        webSocket.send(JSON.stringify(parsedMessage));
     } else {
         console.error(`Cannot send message. User ${receiverId} is not connected.`);
     }

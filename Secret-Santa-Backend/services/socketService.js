@@ -9,16 +9,16 @@ const connections = new Map();
  * @param {Object} server - HTTP server to attach WebSocket server to
  */
 const initializeSocketServer = (server) => {
-    const wss = new WebSocket.Server({ server });
+    const webSocketServer = new WebSocket.Server({ server });
 
-    wss.on("connection", (ws, req) => {
+    webSocketServer.on("connection", (webSocket, req) => {
         const parsedUrl = url.parse(req.url, true);
         const userId = parsedUrl.query.userId;
 
         if (userId) {
-            connections.set(userId, ws);
+            connections.set(userId, webSocket);
 
-            ws.on("message", async (message) => {
+            webSocket.on("message", async (message) => {
                 console.log(`Message received from ${userId}:`, message);
                 const parsedMessage = JSON.parse(message);
                 if (parsedMessage.type == 'message') {
@@ -30,13 +30,13 @@ const initializeSocketServer = (server) => {
             });
 
 
-            ws.on("close", () => {
+            webSocket.on("close", () => {
                 console.log(`User disconnected: ${userId}`);
                 connections.delete(userId);
             });
         } else {
             console.error("Connection attempted without userId");
-            ws.close();
+            webSocket.close();
         }
     });
 
