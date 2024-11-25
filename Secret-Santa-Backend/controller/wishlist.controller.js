@@ -1,4 +1,7 @@
-const { getUserWishlist, createUserWishlist } = require("../services/wishlist.service.js");
+const {
+  getUserWishlist,
+  createUserWishlist,
+} = require("../services/wishlist.service.js");
 
 // Get wishlist by userId
 const getWishlist = async (req, res) => {
@@ -14,9 +17,14 @@ const getWishlist = async (req, res) => {
 // Create or update wishlist
 const createWishlist = async (req, res) => {
   const { userId } = req.params;
-  const wishes = req.body;
+  const wish = req.body;
+
+  if (!wish) {
+    return res.status(404).json({ message: "Add a Wish." });
+  }
+
   try {
-    const result = await createUserWishlist(userId, wishes);
+    const result = await createUserWishlist(Number(userId), wish);
     res.status(201).json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });

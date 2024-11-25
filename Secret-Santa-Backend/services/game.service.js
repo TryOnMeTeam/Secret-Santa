@@ -10,7 +10,7 @@ async function getGameInfo(gameCode) {
       WHERE g.gameCode = ?`;
 
       try {
-        const results = await db.query(query, [gameCode]);
+        const [results] = await db.query(query, [gameCode]);
         return results;
       } catch (err) {
         throw new Error(err.message);

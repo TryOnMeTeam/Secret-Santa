@@ -17,12 +17,12 @@ async function getUserWishlist(userId) {
 }
 
 // Create or update wishlist
-async function createUserWishlist(userId, wishes) {
-  const query = "INSERT INTO Wishlist (name, userId) VALUES ?";
-  const values = wishes.map((wish) => [wish.name, userId]);
+async function createUserWishlist(userId, wish) {
+  const query = "INSERT INTO Wishlist (name, userId) VALUES (?, ?)";
+  const values = [wish.name, userId];
 
   try {
-    await db.query(query, [values]);
+    await db.query(query, values);
     return { message: "Wishlist created successfully." };
   } catch (err) {
     throw new Error(err.message);

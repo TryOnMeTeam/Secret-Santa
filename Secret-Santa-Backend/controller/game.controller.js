@@ -28,9 +28,8 @@ require("dotenv").config();
  * @apiExample {json} Response Example:
  * {
  *   "message": "Game created successfully.",
- *   "gameID": "M3U7EIND",
  *   "game": {
- *     "gameID": "M3U7EIND",
+ *     "gameCode": "M3U7EIND",
  *     "gameName": "Santa",
  *     "startDate": "2024-11-24T00:00:00Z",
  *     "endDate": "2024-11-30T00:00:00Z",
@@ -41,7 +40,8 @@ require("dotenv").config();
  */
 
 exports.createGame = async (req, res) => {
-  const { gameName, startDate, endDate, userId, maxPlayers } = req.body;
+  const { userId , payload} = req.body;
+  const { gameName, startDate, endDate, maxPlayers } = payload;
 
   try {
     if (!gameName || !startDate || !endDate || !userId || !maxPlayers) {
@@ -75,8 +75,7 @@ exports.createGame = async (req, res) => {
       .status(201)
       .json({
         message: "Game created successfully.",
-        gameID: gameCode,
-        game: newGame,
+        game: newGame
       });
   } catch (error) {
     console.error(error.message);
