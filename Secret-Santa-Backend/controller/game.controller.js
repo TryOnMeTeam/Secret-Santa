@@ -1,6 +1,7 @@
 const { assignSecretSanta } = require("../services/distribution.service.js");
 const { getGameInfo, joinUserToGame } = require("../services/game.service.js");
 const emailService = require("../services/emailService.js");
+const userService = require("../services/userService.js");
 require("dotenv").config();
 
 /**
@@ -48,9 +49,8 @@ exports.createGame = async (req, res) => {
     }
 
     // Find the user by userId
-    const user = { name: "Gopika", email: "gopika16aug@gmail.com" };
-    //await db.findOne({ where: { id: userId } });
-    if (!user) {
+    const user = await userService.getUserDetailsById(userId);
+    if (!user?.length) {
       return res.status(404).json({ message: "User not found." });
     }
 
@@ -66,9 +66,9 @@ exports.createGame = async (req, res) => {
 
     const emailSubject = "🎅🎄 Your Secret Santa Game Code is Here! 🎁✨";
     await emailService.sendEmail(
-      user.email,
+      user[0].email,
       emailSubject,
-      getEmailMessage(user.name, gameCode)
+      getEmailMessage(user[0].name, gameCode)
     );
 
     res
