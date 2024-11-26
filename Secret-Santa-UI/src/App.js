@@ -2,12 +2,13 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './services/context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import SecretSantaPage from './pages/SecretSantaPage';
 import LoginPage from './pages/auth/login/LoginPage';
 import RegisterPage from './pages/auth/register/RegisterPage';
 import AlertComponent from './components/Alert/AlertComponent';
 import { AlertProvider } from './services/context/AlertContext';
 import SecretSantaChat from './features/SecretSantaChat';
+import Dashboard from "./pages/dashboard/Dashboard";
+import "./App.css";
 
 const App = () => {
   return (
@@ -21,8 +22,9 @@ const App = () => {
             <Route path="/register" element={<RegisterPage />} />
             <Route
               path="/secret-santa"
-              element={<ProtectedRoute element={<SecretSantaChat />} />}
+              element={<ProtectedRoute element={<Dashboard />} />}
             />
+            <Route path="/dashboard" element = {<Dashboard />}/>
           </Routes>
         </AuthProvider>
       </Router>

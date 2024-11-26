@@ -4,12 +4,12 @@ const bcrypt = require('bcryptjs');
 const registerUser = async (name, email, password) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const [rows] = await promisePool.query('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [name, email, hashedPassword]);
+  const [rows] = await promisePool.query('INSERT INTO User (name, email, password) VALUES (?, ?, ?)', [name, email, hashedPassword]);
   return rows.insertId;
 };
 
 const findUserByEmail = async (email) => {
-  const [rows] = await promisePool.query('SELECT * FROM users WHERE email = ?', [email]);
+  const [rows] = await promisePool.query('SELECT * FROM User WHERE email = ?', [email]);
   return rows[0];
 };
 

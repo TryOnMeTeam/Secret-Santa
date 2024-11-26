@@ -1,0 +1,43 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 70px;
+    background-color: #b62e2e;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 60px;
+    z-index: 100;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-center {
+    flex: 1;
+    text-align: center;
+}
+
+.navbar-heading {
+    font-size: 2.5rem;
+    font-weight: normal;
+    margin: 0;
+    color: #fcfeff;
+}
+
+.navbar-right {
+    cursor: pointer;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.profile-icon:hover {
+    transform: scale(1.1);
+}

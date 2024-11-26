@@ -3,15 +3,15 @@ const User = require('../models/User');
 const sendResponse = require('../utils/response.js');
 
 const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
-
+  const { username, email, password } = req.body;
+    
   try {
     const existingUser = await User.findUserByEmail(email);
     if (existingUser) {
       return sendResponse(res, 400, 'Email already in use');
     }
 
-    const userId = await User.registerUser(name, email, password);
+    const userId = await User.registerUser(username, email, password);
 
     const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
       expiresIn: '1h',
