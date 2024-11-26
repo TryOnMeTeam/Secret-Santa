@@ -39,6 +39,21 @@ input {
     margin-bottom: 10px;
 }
 
+.input-error {
+    border-color: red;
+    color: red;
+}
+
+.input-error::placeholder {
+    color: red;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
 input:focus {
     border-color: #6A679E;
     outline: none;

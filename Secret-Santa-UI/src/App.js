@@ -4,6 +4,7 @@ import { AuthProvider } from './services/context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/auth/login/LoginPage';
 import RegisterPage from './pages/auth/register/RegisterPage';
+import HomePage from './pages/HomePage';
 import AlertComponent from './components/Alert/AlertComponent';
 import { AlertProvider } from './services/context/AlertContext';
 import SecretSantaChat from './features/SecretSantaChat';
@@ -17,7 +18,7 @@ const App = () => {
         <AuthProvider>  {/* Wrap AuthProvider inside Router */}
           <AlertComponent />
           <Routes>
-            <Route path="/" element={<LoginPage />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route

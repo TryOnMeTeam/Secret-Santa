@@ -22,6 +22,7 @@ form {
     width: 100%;
     max-width: 400px;
     box-shadow: 0 0 24px #5C5696;
+    margin-left: 200px;
 }
 
 /* Input container */
@@ -38,6 +39,21 @@ input {
     font-size: 1rem;
     margin-bottom: 10px;
 }
+
+.input-error {
+    border-color: red;
+    color: red;
+  }
+
+  .input-error::placeholder {
+    color: red;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+  }
 
 input:focus {
     border-color: #6A679E;
@@ -100,5 +116,6 @@ div {
 @media (max-width: 1024px) {
     form {
         padding: 3rem;
+        margin-left: 0px;
     }
 }

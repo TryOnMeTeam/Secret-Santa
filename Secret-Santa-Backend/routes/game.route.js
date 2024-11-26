@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const gameController = require('../controller/game.controller.js');
+const { protect } = require('../middleware/authMiddleware.js');
 
 
-router.post('/api/game/createGame', gameController.createGame);
+router.post('/api/game/createGame',protect, gameController.createGame);
 router.get('/api/game/startGame/:gameCode', gameController.startGame);
 router.get("/api/game/gameinfo/:gameCode", gameController.getGameInfo);
 

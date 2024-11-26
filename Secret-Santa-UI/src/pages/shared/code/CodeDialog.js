@@ -33,7 +33,12 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle }) {
             }
             onClose();
         }}
-            maxWidth='sm'>
+            maxWidth='sm'
+            fullWidth 
+            sx={{
+                overflowX: 'hidden', 
+            }}
+        >
             <DialogTitle className="dialog-title">
                 <Typography variant='h6' align='center' className='dialog-title-text'>
                     {dialogTitle}

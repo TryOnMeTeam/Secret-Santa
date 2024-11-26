@@ -9,7 +9,7 @@ import "./RegisterPage.css";
 
 const Register = () => {
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, login } = useAuth();
     const { showAlert } = useAlert();
 
     useEffect(() => {
@@ -31,9 +31,11 @@ const Register = () => {
         }),
         onSubmit: async (values) => {
             try {
-                await registerHandler(values.name, values.email, values.password);
-                showAlert('Login successful!', 'success');
-                navigate('/login');
+                const response = await registerHandler(values.name, values.email, values.password);
+                showAlert('User Registered successfully', 'success');
+
+                login(response);
+                navigate('/secret-santa');
             } catch (error) {
                 showAlert(error.message, 'error');
             }
@@ -56,8 +58,8 @@ const Register = () => {
                         onBlur={formik.handleBlur}
                         value={formik.values.name}
                         placeholder="Name"
+                        className={formik.touched.name && formik.errors.name ? 'input-error' : ''}
                     />
-                    {formik.touched.name && formik.errors.name && <div>{formik.errors.name}</div>}
                 </div>
 
                 <div className="input-container">
@@ -69,8 +71,8 @@ const Register = () => {
                         onBlur={formik.handleBlur}
                         value={formik.values.email}
                         placeholder="Email"
+                        className={formik.touched.email && formik.errors.email ? 'input-error' : ''}
                     />
-                    {formik.touched.email && formik.errors.email && <div>{formik.errors.email}</div>}
                 </div>
 
                 <div className="input-container">
@@ -82,8 +84,8 @@ const Register = () => {
                         onBlur={formik.handleBlur}
                         value={formik.values.password}
                         placeholder="Password"
+                        className={formik.touched.password && formik.errors.password ? 'input-error' : ''}
                     />
-                    {formik.touched.password && formik.errors.password && <div>{formik.errors.password}</div>}
                 </div>
                 <button type="submit" className="submit-btn">
                     Sign Up
