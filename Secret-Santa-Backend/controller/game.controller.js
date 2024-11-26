@@ -2,6 +2,7 @@ const { assignSecretSanta } = require("../services/distribution.service.js");
 const { getGameInfo, joinUserToGame } = require("../services/game.service.js");
 const emailService = require("../services/emailService.js");
 const userService = require("../services/userService.js");
+const gameService = require("../services/game.service.js");
 require("dotenv").config();
 
 /**
@@ -40,7 +41,7 @@ require("dotenv").config();
  */
 
 exports.createGame = async (req, res) => {
-  const { userId , payload} = req.body;
+  const { userId, payload } = req.body;
   const { gameName, startDate, endDate, maxPlayers } = payload;
 
   try {
@@ -49,12 +50,12 @@ exports.createGame = async (req, res) => {
     }
 
     // Find the user by userId
-    const user = await userService.getUserDetailsById(userId);
-    if (!user?.length) {
+    const [user] = await userService.getUserDetailsById(userId);
+    if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    const gameCode = generateUniqueGameID(userId);
+    const gameCode = generateUniqueGameCode(user.name);
     const newGame = {
       gameCode,
       gameName,
@@ -66,17 +67,17 @@ exports.createGame = async (req, res) => {
 
     const emailSubject = "🎅🎄 Your Secret Santa Game Code is Here! 🎁✨";
     await emailService.sendEmail(
-      user[0].email,
+      user.email,
       emailSubject,
-      getEmailMessage(user[0].name, gameCode)
+      getEmailMessage(user.name, gameCode)
     );
 
-    res
-      .status(201)
-      .json({
-        message: "Game created successfully.",
-        game: newGame
-      });
+    await gameService.addNewGame(newGame);
+
+    res.status(201).json({
+      message: "Game created successfully.",
+      game: newGame,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error." });
@@ -129,9 +130,9 @@ exports.startGame = async (req, res) => {
 };
 
 // Generate a unique game ID
-function generateUniqueGameID(userId) {
+function generateUniqueGameCode(hostName) {
   const timestamp = Date.now().toString(36);
-  const userPart = userId.toString(36).slice(-2);
+  const userPart = hostName.slice(0, 2);
   return (userPart + timestamp).slice(0, 8).toUpperCase();
 }
 
@@ -157,7 +158,6 @@ exports.joinUserToGame = async (req, res) => {
   }
 };
 
-
 function getEmailMessage(name, gameCode) {
   return `
   <!DOCTYPE html>
@@ -175,7 +175,6 @@ function getEmailMessage(name, gameCode) {
       max-width: 600px;
       margin: 20px auto;
       padding: 20px;
-      background: repeating-linear-gradient(45deg, rgba(255, 237, 237, 0.3), rgba(255, 237, 237, 0.3) 10px, rgba(239, 35, 60, 0.3) 10px, rgba(239, 35, 60, 0.3) 20px);
       border-radius: 15px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
@@ -266,7 +265,7 @@ function getEmailMessage(name, gameCode) {
 
     <!-- Greeting -->
     <div class="greeting">
-      Ho Ho Ho, <strong>${name}!</strong> 🎅<br><br>
+    Ho Ho Ho, <strong>${name}!</strong> 🎅<br><br>
       The 🎄 Christmas magic is here, and ✨✨<strong>SECRET SANTA</strong>✨✨ is about to begin! 🎄🎁<br><br>
       Your Exclusive Game Code: 
     <div class="assigned"><strong>${gameCode}</strong><br></div>
@@ -293,4 +292,3 @@ function getEmailMessage(name, gameCode) {
 
   `;
 }
-

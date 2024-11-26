@@ -2,19 +2,19 @@ const db = require("../config/db.js");
 
 // Get game info by gameCode
 async function getGameInfo(gameCode) {
-    const query = `
+  const query = `
       SELECT g.name AS gameName, u.name AS userName, u.email
       FROM Game g
       LEFT JOIN User_Game ug ON g.id = ug.gameId
       LEFT JOIN User u ON ug.userId = u.id
       WHERE g.gameCode = ?`;
 
-      try {
-        const [results] = await db.query(query, [gameCode]);
-        return results;
-      } catch (err) {
-        throw new Error(err.message);
-      }
+  try {
+    const [results] = await db.query(query, [gameCode]);
+    return results;
+  } catch (err) {
+    throw new Error(err.message);
+  }
 }
 
 // Add user to a game
@@ -44,4 +44,18 @@ async function joinUserToGame(userId, gameCode) {
   }
 }
 
-module.exports = { getGameInfo, joinUserToGame };
+async function addNewGame(gameInfo) {
+  const { gameName, startDate, endDate, maxPlayers, userId, gameCode } = gameInfo;
+  const query =
+    "INSERT INTO Game (name, startDate, endDate, maxPlayer, hostId, isActive, gameCode) VALUES (?, ?, ?, ?, ?, ?, ?)";
+  const values = [gameName, startDate, endDate, maxPlayers, userId, 1, gameCode];
+
+  try {
+    await db.query(query, values);
+    return { message: "game created successfully." };
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
+module.exports = { getGameInfo, joinUserToGame, addNewGame };
