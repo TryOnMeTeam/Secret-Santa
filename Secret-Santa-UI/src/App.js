@@ -9,6 +9,7 @@ import AlertComponent from './components/Alert/AlertComponent';
 import { AlertProvider } from './services/context/AlertContext';
 import SecretSantaChat from './features/SecretSantaChat';
 import Dashboard from "./pages/dashboard/Dashboard";
+import JoinGame from './pages/dashboard/join-game/JoinGame';
 import "./App.css";
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
               element={<ProtectedRoute element={<Dashboard />} />}
             />
             <Route path="/dashboard" element = {<Dashboard />}/>
+            <Route path="/wishlist" element = {<JoinGame />} />
           </Routes>
         </AuthProvider>
       </Router>

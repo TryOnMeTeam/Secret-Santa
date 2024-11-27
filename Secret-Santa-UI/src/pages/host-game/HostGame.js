@@ -47,19 +47,24 @@ function HostGame({ open, onClose, resetForm }) {
     const handleCreate = async (event) => {
         event.preventDefault();
         setSubmitted(true);
+        const userId = localStorage.getItem('userId');
+
+        if(!userId) {
+            showAlert('User is not logged In. Please log in to Host a Game.');
+            return;
+        }
 
         if (gameData.gameName && gameData.startDate && gameData.endDate && gameData.maxPlayers) {
             if(!gameData.isValidStartDate()) {
-                alert('Start date must be tomorrow or later');
+                showAlert('Start date must be tomorrow or later');
                 return;
             }
-
             if(!gameData.isValidEndDate()) {
-                alert('End Date must be after the start date');
+                showAlert('End Date must be after the start date');
                 return;
             }
             if(!gameData.maxPlayers >= 2) {
-                alert('Maximum members cannot be less than 2');
+                showAlert('Maximum members cannot be less than 2');
                 return;
             }
 
@@ -68,30 +73,23 @@ function HostGame({ open, onClose, resetForm }) {
                 startDate: gameData.startDate.toISOString().split('T')[0],
                 endDate: gameData.endDate.toISOString().split('T')[0]
             };
-            console.log(formattedGameData);
-            const userId = localStorage.getItem('userId');
-
-            if(!userId) {
-                alert('User is not logged In. Please log in to Host a Game.');
-                return;
-            }
 
             const payload = {
                 userId,
                 formattedGameData
             }
-
             await hostGame(payload);
             onClose();
 
         } else {
-            alert("Please fill in all required fields");
+            showAlert("Please fill in all required fields");
         }
     };
 
     const hostGame = async (payload) => {
         try {
             const response = await hostGameHandler(payload.userId, payload.formattedGameData);
+            showAlert('Game Hosted!', 'success');
             return response;
         } catch (error) {
             showAlert(error.message, 'error');
@@ -112,7 +110,7 @@ function HostGame({ open, onClose, resetForm }) {
                 </Typography>
             </DialogTitle>
             <DialogContent className="dialog-content">
-                <form onSubmit={handleCreate} className="form">
+                <form onSubmit={handleCreate} className="host-game-form">
                     <TextField
                         label="Game Name"
                         fullWidth

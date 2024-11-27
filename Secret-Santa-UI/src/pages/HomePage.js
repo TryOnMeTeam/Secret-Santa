@@ -1,12 +1,15 @@
 import React from "react";
 import "./HomePage.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
     const navigate = useNavigate();
-
     const handlePlayClick = () => {
         navigate('/login');
+    };
+
+    const login = () => {
+        navigate("/dashboard");
     };
 
     return (

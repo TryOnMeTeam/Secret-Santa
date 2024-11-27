@@ -9,20 +9,25 @@ import {
     Typography,
 } from "@mui/material";
 import "./CodeDialog.css";
+import { useNavigate } from "react-router-dom";
 
 function CodeDialog({ open, onClose, buttonText, dialogTitle }) {
+
+    const navigate = useNavigate();
     const [gameCode, setGameCode] = useState('');
     const [submitted, setSubmitted] = useState(false);
+
+    const GAME_CODE_REGEX = '^[a-zA-Z0-9]+$';
 
     const handleJoin = (event) => {
         event.preventDefault();
         setSubmitted(true);
 
-        if(gameCode) {
-            alert('Joined');
+        if(gameCode && gameCode.length === 8 && gameCode.match(GAME_CODE_REGEX)) {
+            navigate('/wishlist');
             onClose();
         } else {
-            alert('Please correct the errors');
+            alert('Enter valid Game Code');
         }
     };
 
@@ -56,6 +61,7 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle }) {
                         error={submitted && gameCode}
                         helperText={submitted && !gameCode ? 'Game Code cannot be empty' : ''}
                         className='input-field'
+                        inputProps={{ maxLength: 8 }}
                     ></TextField>
                     <DialogActions className='dialog-actions'>
                         <Button onClick={onClose} className='cancel-button'>CANCEL</Button>
