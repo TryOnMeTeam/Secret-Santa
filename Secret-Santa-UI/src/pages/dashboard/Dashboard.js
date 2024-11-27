@@ -3,8 +3,11 @@ import Navbar from '../navbar/Navbar'
 import "./Dashboard.css"
 import HostGame from '../host-game/HostGame';
 import CodeDialog from '../shared/code/CodeDialog';
+import { useNavigate } from "react-router-dom";
+import { GAME_CODE_KEY } from '../../constants/secretSantaConstants';
 
 function Dashboard() {
+  const navigate = useNavigate();
 
   const [openCreateGame, setOpenCreateGame] = useState(false);
   const [resetForm, setResetForm] = useState(false);
@@ -22,17 +25,26 @@ function Dashboard() {
   };
 
   const onClickJoinGame = () => {
-    setResetForm(true);
-    setButtonText('JOIN');
-    setDialogTitle('Join Game');
-    setOpenJoinGame(true);
+    if (localStorage.getItem(GAME_CODE_KEY)) {
+      navigate('/wishlist');
+    } else {
+      setResetForm(true);
+      setButtonText('JOIN');
+      setDialogTitle('Join Game');
+      setOpenJoinGame(true);
+    }
+    
   };
 
   const onClickGameStatus = () => {
-    setResetForm(true);
-    setDialogTitle('Game Status');
-    setButtonText('GET');
-    setOpenJoinGame(true);
+    if (localStorage.getItem(GAME_CODE_KEY)) {
+      navigate('/wishlist'); // TO do will update the right navigation path later
+    } else {
+      setResetForm(true);
+      setDialogTitle('Game Status');
+      setButtonText('GET');
+      setOpenJoinGame(true);
+    }
   };
 
   const handleCloseJoinGame = () => {

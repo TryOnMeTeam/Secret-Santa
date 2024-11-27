@@ -7,3 +7,5 @@ export const CHAT_BOX_TYPE = {
 export const NOTIFICATION_TYPE = {
     MESSAGE: 'message'
 }
+
+export const GAME_CODE_KEY = 'gameCode';

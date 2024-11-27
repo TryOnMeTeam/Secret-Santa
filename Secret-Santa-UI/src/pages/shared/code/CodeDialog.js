@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import "./CodeDialog.css";
 import { useNavigate } from "react-router-dom";
+import { GAME_CODE_KEY } from '../../../constants/secretSantaConstants';
 
 function CodeDialog({ open, onClose, buttonText, dialogTitle }) {
 
@@ -25,6 +26,7 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle }) {
 
         if(gameCode && gameCode.length === 8 && gameCode.match(GAME_CODE_REGEX)) {
             navigate('/wishlist');
+            localStorage.setItem(GAME_CODE_KEY, gameCode);
             onClose();
         } else {
             alert('Enter valid Game Code');
