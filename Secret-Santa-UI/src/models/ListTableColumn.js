@@ -1,5 +1,5 @@
 export class ListTableColumn {
-    constructor(key, label, minWidth, align = 'left', format = null, isLink = false) {
+    constructor(key, label, minWidth, isLink = false, align = 'left', format = null) {
         this.key = key;
         this.label = label;
         this.minWidth = minWidth || 100;

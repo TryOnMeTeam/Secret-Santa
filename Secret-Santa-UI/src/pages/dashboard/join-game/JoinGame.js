@@ -14,7 +14,7 @@ function JoinGame() {
 
   const columns = [
     new ListTableColumn('wishName', 'Product Name', 100),
-    new ListTableColumn('link', 'Product Link', 200)
+    new ListTableColumn('link', 'Product Link', 200, true)
   ];
 
   const handleOnClickAddNewWishlist = () => {

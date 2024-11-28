@@ -13,12 +13,6 @@ import {
 
 const ListTable = ({ columns = [], rows = [], actionButtons }) => {
 
-  const handleLinkClick = (isLink, value) => {
-    if(isLink) {
-      window.open(value, '_blank');
-    }
-  };
-
   return (
     <Paper sx={{ width: '95%', overflow: 'hidden', margin: '40px auto', padding: '20px' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={2}>
@@ -59,12 +53,26 @@ const ListTable = ({ columns = [], rows = [], actionButtons }) => {
                 <TableRow hover role="checkbox" tabIndex={-1} key={rowIndex}>
                   {columns.map((column) => {
                     const value = row[column.key];
+                    if (column.isLink) {
+                      return (
+                        <TableCell
+                          key={`${rowIndex} - ${column.key}`}
+                          align={column.align || 'left'}
+                          style={{cursor: 'pointer', color: 'blue', textDecoration: 'underline'}}
+                        >
+                          <a
+                            href={value}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            style={{color: 'inherit', textDecoration: 'inherit'}}
+                          > {value} </a>
+                        </TableCell>
+                      );
+                    }
                     return (
                       <TableCell 
                         key={`${rowIndex}-${column.key}`} 
-                        align={column.align}
-                        onClick={() => column.isLink && handleLinkClick(column.isLink, value)}
-                        style={column.isLink ? {cursor: 'pointer', color: 'blue'} : {}}>
+                        align={column.align || 'left'}>
                         {column.format && typeof value === 'number'? column.format(value): value}
                       </TableCell>
                     );
