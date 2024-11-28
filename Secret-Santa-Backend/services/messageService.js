@@ -1,16 +1,17 @@
 const messageDao = require("../dao/messageDao");
+const emailService = require("../services/emailService.js");
 const WebSocket = require("ws");
 
 /**
- * Fetches messages for a specific user and game.
+ * Retrieves messages for a specific user in a given game.
  *
- * @param {number} userId - ID of the user requesting messages.
- * @param {number} gameId - ID of the game.
- * @returns { secretSantaMessages: Array, giftNinjaMessages: Array } - A object containing secretSantaMessages and giftNinjaMessages.
+ * @param {number} userId - The ID of the user requesting the messages.
+ * @param {number} gameId - The ID of the game for which messages are retrieved.
+ * @returns {object} - An object containing secretSantaMessages and giftNinjaMessages arrays.
  */
-const getMessagesForUserInGame = async (userId, gameId) => {
+const fetchMessagesForUserInGame = async (userId, gameId) => {
     try {
-        const [secretSantaResults, giftNinjaResults] = await messageDao.getMessagesByUserAndGame(userId, gameId);
+        const [secretSantaMessages, giftNinjaMessages] = await messageDao.getMessagesByUserAndGame(userId, gameId);
 
         const formatMessages = (messages) => messages.map((msg) => ({
             from: msg.from,
@@ -18,8 +19,8 @@ const getMessagesForUserInGame = async (userId, gameId) => {
         }));
 
         return {
-            secretSantaMessages: formatMessages(secretSantaResults),
-            giftNinjaMessages: formatMessages(giftNinjaResults),
+            secretSantaMessages: formatMessages(secretSantaMessages),
+            giftNinjaMessages: formatMessages(giftNinjaMessages),
         };
     } catch (error) {
         throw new Error(`Failed to fetch messages: ${error.message}`);
@@ -27,15 +28,15 @@ const getMessagesForUserInGame = async (userId, gameId) => {
 };
 
 /**
- * Saves a new message to the database.
+ * Saves a new message sent by a user for a specific game and chat box type.
  *
- * @param {number} userId - ID of the user sending the message.
- * @param {number} gameId - ID of the game where the message will be saved.
- * @param {string} chatBoxType - Type of the chat box (e.g., 'secretSanta' or 'giftNinja').
- * @param {string} content - The message content.
- * @returns {void} - A message was saved successfully.
+ * @param {number} userId - The ID of the user sending the message.
+ * @param {number} gameId - The ID of the game where the message will be saved.
+ * @param {string} chatBoxType - Type of chat box ('secretSanta' or 'giftNinja').
+ * @param {string} messageContent - The content of the message.
+ * @returns {void}
  */
-const saveSenderMessage = async (userId, gameId, chatBoxType, content) => {
+const storeSentMessage = async (userId, gameId, chatBoxType, messageContent) => {
     try {
         const user = parseInt(userId, 10);
         const game = parseInt(gameId, 10);
@@ -44,7 +45,7 @@ const saveSenderMessage = async (userId, gameId, chatBoxType, content) => {
             throw new Error("Invalid userId or gameId.");
         }
 
-        await messageDao.saveSenderMessage(content, user, game, chatBoxType);
+        await messageDao.saveSenderMessage(messageContent, user, game, chatBoxType);
         console.log("Message saved successfully!");
     } catch (error) {
         console.error("Error saving message to DB:", error);
@@ -52,32 +53,130 @@ const saveSenderMessage = async (userId, gameId, chatBoxType, content) => {
     }
 };
 
-/**s
- * Sends a message to a specific user
- * @param {String} receiverId - The ID of the target user
- * @param {string} parsedMessage - The message object to send
+/**
+ * Sends a message to a specific user through WebSocket or email if the user is not connected.
+ *
+ * @param {string} receiverId - The ID of the user receiving the message.
+ * @param {object} messageData - The message object to send.
+ * @param {Map} connections - A map of WebSocket connections indexed by user IDs.
+ * @returns {void}
  */
-const sendMessageToUser = (receiverId, parsedMessage, connections) => {
+const dispatchMessageToUser = async (receiverId, messageData, connections) => {
     const webSocket = connections.get(receiverId?.toString());
     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-        webSocket.send(JSON.stringify(parsedMessage));
+        webSocket.send(JSON.stringify(messageData));
     } else {
+        sendEmailNotificationToUser(receiverId, messageData);
         console.error(`Cannot send message. User ${receiverId} is not connected.`);
     }
 };
 
 /**
- * Handles incoming WebSocket messages
- * @param {String} userId - ID of the user who sent the message
- * @param {String} parsedMessage - Message object from the user
+ * Handles an incoming message from a user, saving it to the database.
+ *
+ * @param {string} senderId - ID of the user sending the message.
+ * @param {object} messageData - The message object from the user.
+ * @returns {void}
  */
-const handleIncomingMessage = async (userId, parsedMessage) => {
+const processIncomingMessage = async (senderId, messageData) => {
     try {
-        await saveSenderMessage(parsedMessage.userId, parsedMessage.gameId, parsedMessage.chatBoxType, parsedMessage.content);
-        console.log(`Processing message from user ${userId}:`, parsedMessage);
+        storeSentMessage(messageData.userId, messageData.gameId, messageData.chatBoxType, messageData.content);
+        console.log(`Message processed from user ${senderId}:`, messageData);
     } catch (error) {
-        console.error("Error parsing incoming message:", error);
+        console.error("Error processing incoming message:", error);
     }
 };
 
-module.exports = { getMessagesForUserInGame, saveSenderMessage, handleIncomingMessage, sendMessageToUser };
+/**
+ * Retrieves pending messages for a user in a given game.
+ *
+ * @param {number} userId - The ID of the user requesting the pending messages.
+ * @param {number} gameId - The ID of the game for which pending messages are retrieved.
+ * @returns {object} - An object indicating if there are pending messages for 'secretSanta' and 'giftNinja' chat boxes.
+ */
+const getPendingMessagesForUserInGame = async (userId, gameId) => {
+    try {
+        const result = await messageDao.getPendingMessagesForUserInGame(userId, gameId);
+
+        return {
+            secretSantaPendingMessages: Boolean(result?.secretSantaPendingMessages),
+            giftNinjaPendingMessages: Boolean(result?.giftNinjaPendingMessages),
+        };
+    } catch (error) {
+        throw new Error(`Failed to fetch pending messages: ${error.message}`);
+    }
+};
+
+/**
+ * Sends an email notification to a user if a message cannot be delivered via WebSocket.
+ *
+ * @param {string} receiverId - The ID of the user receiving the email.
+ * @param {object} messageData - The message object to send in the email.
+ * @returns {void}
+ */
+const sendEmailNotificationToUser = async (receiverId, messageData) => {
+    const emailAlreadySent = await hasEmailAlreadyBeenSent(receiverId, messageData);
+    if (!emailAlreadySent) {
+        // await emailService.sendEmail(
+        //     "sharmaShivam1909@gmail.com",
+        //     "ok",
+        //     generateEmailTemplate()
+        // );
+        messageDao.upsertUserEmailStatusForGame(receiverId, messageData.gameId, messageData.chatBoxType);
+    }
+};
+
+/**
+ * Checks if an email notification has already been sent to a user.
+ *
+ * @param {string} receiverId - The ID of the user receiving the email.
+ * @param {object} messageData - The message object associated with the email.
+ * @returns {boolean} - Returns true if an email has been sent, false otherwise.
+ */
+const hasEmailAlreadyBeenSent = async (receiverId, messageData) => {
+    const result = await messageDao.isEmailAlreadySent(receiverId, messageData.gameId, messageData.chatBoxType);
+    return result.isEmailAlreadySent === true;
+};
+
+/**
+ * Marks an email as not sent for a specific user, game, and chat box type.
+ *
+ * @param {string} userId - The ID of the user.
+ * @param {number} gameId - The ID of the game.
+ * @param {string} chatBoxType - The type of chat box ('secretSanta' or 'giftNinja').
+ * @returns {void}
+ */
+const markEmailAsNotSent = async (userId, gameId, chatBoxType) => {
+    await messageDao.markEmailAsNotSent(userId, gameId, chatBoxType);
+};
+
+/**
+ * Generates the HTML content for the email notification.
+ *
+ * @returns {string} - The HTML string representing the email template.
+ */
+const generateEmailTemplate = () => {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+    </head>
+    <body>
+        <div class="rules">
+            <h3>message aaya h check krle time ho to</h3>
+        </div>
+    </body>
+    </html>
+    `;
+};
+
+module.exports = {
+    fetchMessagesForUserInGame,
+    storeSentMessage,
+    dispatchMessageToUser,
+    processIncomingMessage,
+    getPendingMessagesForUserInGame,
+    sendEmailNotificationToUser,
+    hasEmailAlreadyBeenSent,
+    markEmailAsNotSent,
+};

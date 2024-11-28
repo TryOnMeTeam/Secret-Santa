@@ -4,7 +4,7 @@ const db = require("../config/db.js");
 async function getUserWishlist(userId) {
   const query = `
     SELECT w.name AS wishName, w.link
-    FROM User u
+    FROM users u
     LEFT JOIN wishList w ON u.id = w.userId
     WHERE u.id = ?`;
 

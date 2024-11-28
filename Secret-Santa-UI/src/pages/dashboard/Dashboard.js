@@ -52,8 +52,17 @@ function Dashboard() {
     setOpenJoinGame(false);
   };
 
+  const backgroundStyle = {
+    backgroundImage: 'url("https://png.pngtree.com/thumb_back/fh260/background/20231124/pngtree-happy-santa-claus-preparing-christmas-presents-merry-christmas-concept-background-image_15282600.jpg")',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    height: '100vh',
+    width: '100%'
+  };
+
   return (
-    <div className='dashboard'>
+    <div style={backgroundStyle} className='dashboard'>
         <div><Navbar/></div>
         <div className="dashboard-container">
           <button className="game-actions" onClick={onClickCreateGame}>Host Game</button>

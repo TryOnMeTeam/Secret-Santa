@@ -2,7 +2,7 @@ const db = require("../config/db.js");
 
 async function getUserDetailsById(userId) {
   const query = `SELECT email, name 
-      FROM User
+      FROM users
       WHERE id = ?`;
   try {
     const [results] = await db.query(query, [userId]);

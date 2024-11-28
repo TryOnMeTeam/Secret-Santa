@@ -24,8 +24,8 @@ const initializeSocketServer = (server) => {
                 if (parsedMessage.type == 'message') {
                     const receiverId = await messageDao.getReceiverIdForSenderAndGame(
                         parsedMessage.userId, parsedMessage.gameId, parsedMessage.chatBoxType)
-                    messageService.sendMessageToUser(receiverId, parsedMessage, connections);
-                    await messageService.handleIncomingMessage(userId, parsedMessage);
+                    messageService.dispatchMessageToUser(receiverId, parsedMessage, connections);
+                    await messageService.processIncomingMessage(userId, parsedMessage);
                 }
             });
 

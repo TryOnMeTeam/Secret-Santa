@@ -12,7 +12,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10rem;
+    gap: 5rem;
     width: 100%;
     flex-direction: row;
     height: calc(100vh - 60px);
@@ -20,7 +20,7 @@
 }
 
 .game-actions {
-    background-color: #ff9800;
+    background-color: rgb(76, 72, 157);
     color: white;
     border: none;
     padding: 20px 30px;
@@ -33,7 +33,7 @@
 }
 
 .game-actions:hover {
-    background-color: #ffb74d;
+    background-color: #252091 !important;
     transform: translateY(-5px);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
 }

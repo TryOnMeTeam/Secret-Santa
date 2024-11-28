@@ -28,6 +28,7 @@ const App = () => {
             />
             <Route path="/dashboard" element = {<Dashboard />}/>
             <Route path="/wishlist" element = {<JoinGame />} />
+            <Route path="/chat" element = {<SecretSantaChat />} />
           </Routes>
         </AuthProvider>
       </Router>
