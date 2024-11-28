@@ -12,6 +12,13 @@ import {
 } from "@mui/material";
 
 const ListTable = ({ columns = [], rows = [], actionButtons }) => {
+
+  const handleLinkClick = (isLink, value) => {
+    if(isLink) {
+      window.open(value, '_blank');
+    }
+  };
+
   return (
     <Paper sx={{ width: '95%', overflow: 'hidden', margin: '40px auto', padding: '20px' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={2}>
@@ -53,10 +60,12 @@ const ListTable = ({ columns = [], rows = [], actionButtons }) => {
                   {columns.map((column) => {
                     const value = row[column.key];
                     return (
-                      <TableCell key={`${rowIndex}-${column.key}`} align={column.align}>
-                        {column.format && typeof value === 'number'
-                          ? column.format(value)
-                          : value}
+                      <TableCell 
+                        key={`${rowIndex}-${column.key}`} 
+                        align={column.align}
+                        onClick={() => column.isLink && handleLinkClick(column.isLink, value)}
+                        style={column.isLink ? {cursor: 'pointer', color: 'blue'} : {}}>
+                        {column.format && typeof value === 'number'? column.format(value): value}
                       </TableCell>
                     );
                   })}

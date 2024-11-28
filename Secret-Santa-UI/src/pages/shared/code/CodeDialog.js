@@ -25,8 +25,8 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle }) {
         setSubmitted(true);
 
         if(gameCode && gameCode.length === 8 && gameCode.match(GAME_CODE_REGEX)) {
-            navigate('/wishlist');
             localStorage.setItem(GAME_CODE_KEY, gameCode);
+            navigate('/wishlist');
             onClose();
         } else {
             alert('Enter valid Game Code');

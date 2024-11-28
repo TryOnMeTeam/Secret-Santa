@@ -15,6 +15,6 @@ router.get("/api/user/wishlist/:userId", wishlistController.getWishlist);
 //     "link": "link link"
 // }
 
-router.post("/api/user/createwishlist/:userId", wishlistController.createWishlist);
+router.post("/api/user/createwishlist", wishlistController.createWishlist);
 
 module.exports = router;

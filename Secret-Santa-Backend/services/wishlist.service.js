@@ -3,9 +3,9 @@ const db = require("../config/db.js");
 // Get user wishlist
 async function getUserWishlist(userId) {
   const query = `
-    SELECT u.name, w.name AS wishName
+    SELECT w.name AS wishName, w.link
     FROM User u
-    LEFT JOIN Wishlist w ON u.id = w.userId
+    LEFT JOIN wishList w ON u.id = w.userId
     WHERE u.id = ?`;
 
   try {
@@ -17,9 +17,9 @@ async function getUserWishlist(userId) {
 }
 
 // Create or update wishlist
-async function createUserWishlist(userId, wish) {
-  const query = "INSERT INTO Wishlist (name, userId) VALUES (?, ?)";
-  const values = [wish.name, userId];
+async function createUserWishlist(userId, wish, gameId) {
+  const query = "INSERT INTO wishList (name, link, userId, gameId) VALUES (?, ?, ?, ?)";
+  const values = [wish.productName, wish.productLink, userId, gameId];
 
   try {
     await db.query(query, values);

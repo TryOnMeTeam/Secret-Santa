@@ -1,49 +1,67 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ListTableColumn } from '../../../models/ListTableColumn';
 import ListTable from '../../list-table/ListTable';
+import { wishlistHandler } from '../../../services/wishlistService.js';
+import { useAlert } from '../../../services/context/AlertContext.js';
+import AddWishlist from '../add-wishlist/AddWishlist.js';
 
 function JoinGame() {
 
+  const [rows, setRows] = useState([]);
+  const [openAddWishlist, setOpenAddWishlist] = useState(false);
+  const [resetAddWishlistForm, setResetAddWishlistForm] = useState(false);
+  const { showAlert } = useAlert();
+
   const columns = [
-    new ListTableColumn('name', 'Product Name', 100),
-    new ListTableColumn('productLink', 'Product Link', 200)
+    new ListTableColumn('wishName', 'Product Name', 100),
+    new ListTableColumn('link', 'Product Link', 200)
   ];
+
+  const handleOnClickAddNewWishlist = () => {
+    setOpenAddWishlist(true);
+    setResetAddWishlistForm(true);
+  };
+
+  const handleCloseAddWishlist = () => {
+    setResetAddWishlistForm(false);
+    setOpenAddWishlist(false);
+  }
 
   const actions = [
     {
       label: 'Add New Products',
-      onClick: () => alert('Add New clicked'),
+      onClick: handleOnClickAddNewWishlist,
       disabled: false,
     }
   ];
 
-  const rows = [
-    {
-      name: 'Product 1',
-      productLink: 'https://example.com/product1',
-    },
-    {
-      name: 'Product 2',
-      productLink: 'https://example.com/product2',
-    },
-    {
-      name: 'Product 3',
-      productLink: 'https://example.com/product3',
-    },
-    {
-      name: 'Product 4',
-      productLink: 'https://example.com/product4',
-    },
-    {
-      name: 'Product 5',
-      productLink: 'https://example.com/product5',
+  const userId = localStorage.getItem('userId');
+
+  const getWishlist = async (userId) => {
+    try {
+      const response = await wishlistHandler(userId);
+      setRows(response);
+      return response;
+    } catch (error) {
+      showAlert(error.message, 'error');
     }
-  ];
-  
+  };
+
+  useEffect(() => {
+    if(userId) {
+      getWishlist(userId)
+    }
+  }, [userId]);
 
   return (
-    <div>
+    <div style={{'padding-top': '4rem'}}>
       <ListTable columns={columns} rows={rows} actionButtons={actions} />
+
+      <AddWishlist
+        open={openAddWishlist}
+        onClose={handleCloseAddWishlist}
+        resetForm={resetAddWishlistForm}  
+      />
     </div>
   )
 }

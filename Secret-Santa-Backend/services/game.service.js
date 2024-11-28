@@ -3,11 +3,11 @@ const db = require("../config/db.js");
 // Get game info by gameCode
 async function getGameInfo(gameCode) {
   const query = `
-      SELECT g.name AS gameName, u.name AS userName, u.email
-      FROM Game g
-      LEFT JOIN User_Game ug ON g.id = ug.gameId
-      LEFT JOIN User u ON ug.userId = u.id
-      WHERE g.gameCode = ?`;
+      SELECT g.name AS gameName, u.name AS userName, u.email, g.id
+      FROM games g
+      LEFT JOIN userGame ug ON g.id = ug.gameId
+      LEFT JOIN users u ON ug.userId = u.id
+      WHERE g.code = ?`;
 
   try {
     const [results] = await db.query(query, [gameCode]);
@@ -47,8 +47,8 @@ async function joinUserToGame(userId, gameCode) {
 async function addNewGame(gameInfo) {
   const { gameName, startDate, endDate, maxPlayers, userId, gameCode } = gameInfo;
   const query =
-    "INSERT INTO Game (name, startDate, endDate, maxPlayer, hostId, isActive, gameCode) VALUES (?, ?, ?, ?, ?, ?, ?)";
-  const values = [gameName, startDate, endDate, maxPlayers, userId, 1, gameCode];
+    "INSERT INTO games (name, code, startDate, endDate, maxPlayer, hostId, isActive) VALUES (?, ?, ?, ?, ?, ?, ?)";
+  const values = [gameName, gameCode, startDate, endDate, maxPlayers, userId, 1];
 
   try {
     await db.query(query, values);

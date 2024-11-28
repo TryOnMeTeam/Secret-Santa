@@ -50,7 +50,7 @@ function HostGame({ open, onClose, resetForm }) {
         const userId = localStorage.getItem('userId');
 
         if(!userId) {
-            showAlert('User is not logged In. Please log in to Host a Game.');
+            showAlert('User is not logged In. Please log in to Host a Game.', 'error');
             return;
         }
 
