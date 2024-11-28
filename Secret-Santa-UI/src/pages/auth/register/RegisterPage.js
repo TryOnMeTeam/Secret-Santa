@@ -58,8 +58,8 @@ const Register = () => {
                         onBlur={formik.handleBlur}
                         value={formik.values.name}
                         placeholder="Name"
-                        className={formik.touched.name && formik.errors.name ? 'input-error' : ''}
                     />
+                    {formik.touched.name && formik.errors.name && <div>{formik.errors.name}</div>}
                 </div>
 
                 <div className="input-container">
@@ -71,8 +71,8 @@ const Register = () => {
                         onBlur={formik.handleBlur}
                         value={formik.values.email}
                         placeholder="Email"
-                        className={formik.touched.email && formik.errors.email ? 'input-error' : ''}
                     />
+                    {formik.touched.email && formik.errors.email && <div>{formik.errors.email}</div>}
                 </div>
 
                 <div className="input-container">
@@ -84,14 +84,14 @@ const Register = () => {
                         onBlur={formik.handleBlur}
                         value={formik.values.password}
                         placeholder="Password"
-                        className={formik.touched.password && formik.errors.password ? 'input-error' : ''}
                     />
+                    {formik.touched.password && formik.errors.password && <div>{formik.errors.password}</div>}
                 </div>
                 <button type="submit" className="submit-btn">
                     Sign Up
                 </button>
                 <button type="button" onClick={handleLogInClick} className="submit-btn signup">
-                    Log In
+                   Already have an account? Log In
                 </button>
             </form>
         </div>

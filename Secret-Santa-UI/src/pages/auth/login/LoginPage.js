@@ -57,8 +57,8 @@ const Login = () => {
             onBlur={formik.handleBlur}
             value={formik.values.email}
             placeholder="Email"
-            className={formik.touched.email && formik.errors.email ? 'input-error' : ''}
           />
+          {formik.touched.email && formik.errors.email && <div>{formik.errors.email}</div>}
         </div>
 
         <div className="input-container">
@@ -70,15 +70,15 @@ const Login = () => {
             onBlur={formik.handleBlur}
             value={formik.values.password}
             placeholder="Password"
-            className={formik.touched.password && formik.errors.password ? 'input-error' : ''}
           />
+          {formik.touched.password && formik.errors.password && <div>{formik.errors.password}</div>}
         </div>
 
         <button type="submit" className="submit-btn">
           Log In
         </button>
         <button type='button' className="submit-btn signup" onClick={handleSignUpClick}>
-          Sign Up
+          Don't have an account? Sign Up
         </button>
       </form>
     </div>
