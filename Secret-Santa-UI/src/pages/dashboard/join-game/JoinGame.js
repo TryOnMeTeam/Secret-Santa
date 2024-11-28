@@ -47,6 +47,11 @@ function JoinGame() {
     }
   };
 
+  const refreshWishlist = async () => {
+    if (!userId) return;
+    await getWishlist(userId); // This fetches the latest wishlist data and updates `rows`.
+  };
+
   useEffect(() => {
     if(userId) {
       getWishlist(userId)
@@ -60,7 +65,8 @@ function JoinGame() {
       <AddWishlist
         open={openAddWishlist}
         onClose={handleCloseAddWishlist}
-        resetForm={resetAddWishlistForm}  
+        resetForm={resetAddWishlistForm}
+        refreshWishlist={refreshWishlist}
       />
     </div>
   )

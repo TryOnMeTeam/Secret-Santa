@@ -14,7 +14,7 @@ import { useAlert } from '../../../services/context/AlertContext.js';
 import { addProductToWishlistHandler } from '../../../services/wishlistService.js';
 import { GAME_CODE_KEY } from "../../../constants/secretSantaConstants.js"
 
-function AddWishlist({ open, onClose, resetForm }) {
+function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
 
     const [wishlistData, setWishlistData] = useState(new Wishlist());
     const [submitted, setSubmitted] = useState(true);
@@ -39,6 +39,7 @@ function AddWishlist({ open, onClose, resetForm }) {
         if(wishlistData.productName && wishlistData.productLink) {
             await addProductToWishlist(userId, gameCode, wishlistData);
             onClose();
+            refreshWishlist();
         } else {
             showAlert('Please fill in all required fields');
         }
