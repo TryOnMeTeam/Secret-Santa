@@ -1,4 +1,5 @@
-const messageService = require('../services/messageService');
+const messageService = require('../service/messageService');
+const response = require('../utils/response.js');
 
 /**
  * Retrieve all messages for a specific user and game.
@@ -25,17 +26,8 @@ const messageService = require('../services/messageService');
  */
 const getMessagesForUserInGame = async (req, res) => {
     const { userId, gameId } = req.body;
-
-    if (!userId || !gameId) {
-        return res.status(400).json({ error: 'User ID and Game ID are required.' });
-    }
-
-    try {
-        const messages = await messageService.fetchMessagesForUserInGame(userId, gameId);
-        return res.status(200).json(messages);
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to retrieve messages.' });
-    }
+    const result = await messageService.fetchMessagesForUserInGame(userId, gameId);
+    response(res, result.status, result.response);
 };
 
 /**
@@ -63,17 +55,8 @@ const getMessagesForUserInGame = async (req, res) => {
  */
 const getPendingMessagesForUserInGame = async (req, res) => {
     const { userId, gameId } = req.body;
-
-    if (!userId || !gameId) {
-        return res.status(400).json({ error: 'User ID and Game ID are required.' });
-    }
-
-    try {
-        const pendingMessages = await messageService.getPendingMessagesForUserInGame(userId, gameId);
-        return res.status(200).json(pendingMessages);
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to retrieve pending messages.' });
-    }
+    const result = await messageService.getPendingMessagesForUserInGame(userId, gameId);
+    response(res, result.status, result.response);
 };
 
 /**
@@ -96,17 +79,8 @@ const getPendingMessagesForUserInGame = async (req, res) => {
  */
 const markEmailAsNotSent = async (req, res) => {
     const { userId, gameId, chatBoxType } = req.body;
-
-    if (!userId || !gameId || !chatBoxType) {
-        return res.status(400).json({ error: 'User ID, Game ID, and Chat Box Type are required.' });
-    }
-
-    try {
-        const result = await messageService.markEmailAsNotSent(userId, gameId, chatBoxType);
-        return res.status(200).json(result);
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to update email status.' });
-    }
+    const result = await messageService.markEmailAsNotSent(userId, gameId, chatBoxType);
+    return response(res, result.status, result.response);
 };
 
 module.exports = {

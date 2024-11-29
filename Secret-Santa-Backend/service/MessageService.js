@@ -1,6 +1,9 @@
-const messageDao = require("../dao/messageDao");
-const emailService = require("../services/emailService.js");
-const WebSocket = require("ws");
+const messageDao = require('../dao/MessageDao');
+const emailService = require('./emailService.js');
+const commonService = require('../service/CommonService.js')
+const httpResponse = require('../HttpResponse.js');
+const message = require('../constant/SecretSantaMessages.js');
+const WebSocket = require('ws');
 
 /**
  * Retrieves messages for a specific user in a given game.
@@ -10,6 +13,10 @@ const WebSocket = require("ws");
  * @returns {object} - An object containing secretSantaMessages and giftNinjaMessages arrays.
  */
 const fetchMessagesForUserInGame = async (userId, gameId) => {
+    if (!userId || !gameId) {
+        return commonService.createResponse(httpResponse.BAD_REQUEST, message.INVALID_CREDENTIALS);
+    }
+
     try {
         const [secretSantaMessages, giftNinjaMessages] = await messageDao.getMessagesByUserAndGame(userId, gameId);
 
@@ -18,12 +25,15 @@ const fetchMessagesForUserInGame = async (userId, gameId) => {
             content: msg.content,
         }));
 
-        return {
+        const result = {
             secretSantaMessages: formatMessages(secretSantaMessages),
             giftNinjaMessages: formatMessages(giftNinjaMessages),
         };
+
+        commonService.createResponse(httpResponse.SUCCESS, result);
+
     } catch (error) {
-        throw new Error(`Failed to fetch messages: ${error.message}`);
+        commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
     }
 };
 
@@ -46,10 +56,8 @@ const storeSentMessage = async (userId, gameId, chatBoxType, messageContent) => 
         }
 
         await messageDao.saveSenderMessage(messageContent, user, game, chatBoxType);
-        console.log("Message saved successfully!");
     } catch (error) {
-        console.error("Error saving message to DB:", error);
-        throw error;
+        return null;
     }
 };
 
@@ -95,15 +103,20 @@ const processIncomingMessage = async (senderId, messageData) => {
  * @returns {object} - An object indicating if there are pending messages for 'secretSanta' and 'giftNinja' chat boxes.
  */
 const getPendingMessagesForUserInGame = async (userId, gameId) => {
-    try {
-        const result = await messageDao.getPendingMessagesForUserInGame(userId, gameId);
+    if (!userId || !gameId) {
+        return commonService.createResponse(httpResponse.BAD_REQUEST, message.INVALID_CREDENTIALS);
+    }
 
-        return {
-            secretSantaPendingMessages: Boolean(result?.secretSantaPendingMessages),
-            giftNinjaPendingMessages: Boolean(result?.giftNinjaPendingMessages),
+    try {
+        const pendingMessages = await messageDao.getPendingMessagesForUserInGame(userId, gameId);
+
+        const result = {
+            secretSantaPendingMessages: Boolean(pendingMessages?.secretSantaPendingMessages),
+            giftNinjaPendingMessages: Boolean(pendingMessages?.giftNinjaPendingMessages),
         };
+        return commonService(httpResponse.SUCCESS, result);
     } catch (error) {
-        throw new Error(`Failed to fetch pending messages: ${error.message}`);
+        return commonService(httpResponse.INTERNAL_SERVER_ERROR, error.message);
     }
 };
 
@@ -147,36 +160,19 @@ const hasEmailAlreadyBeenSent = async (receiverId, messageData) => {
  * @returns {void}
  */
 const markEmailAsNotSent = async (userId, gameId, chatBoxType) => {
+    if (!userId || !gameId || !chatBoxType) {
+        return commonService.createResponse(httpResponse.BAD_REQUEST, message.INVALID_CREDENTIALS);
+    }
+
     await messageDao.markEmailAsNotSent(userId, gameId, chatBoxType);
+    return commonService.createResponse(httpResponse.SUCCESS, message.EMAIL_MARKED_NOT_SENT);
 };
 
-/**
- * Generates the HTML content for the email notification.
- *
- * @returns {string} - The HTML string representing the email template.
- */
-const generateEmailTemplate = () => {
-    return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-    </head>
-    <body>
-        <div class="rules">
-            <h3>message aaya h check krle time ho to</h3>
-        </div>
-    </body>
-    </html>
-    `;
-};
 
 module.exports = {
     fetchMessagesForUserInGame,
-    storeSentMessage,
     dispatchMessageToUser,
     processIncomingMessage,
     getPendingMessagesForUserInGame,
-    sendEmailNotificationToUser,
-    hasEmailAlreadyBeenSent,
-    markEmailAsNotSent,
+    markEmailAsNotSent
 };

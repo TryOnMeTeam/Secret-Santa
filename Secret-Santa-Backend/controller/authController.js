@@ -1,56 +1,62 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User.js');
-const sendResponse = require('../utils/response.js');
+const authService = require('../service/AuthService');
+const response = require('../utils/response.js');
 
-const registerUser = async (req, res) => {
+/**
+ * Register a new user.
+ *
+ * @route POST /api/auth/register
+ * @example
+ * Request Body:
+ * {
+ *   "name": "John Doe",
+ *   "email": "john.doe@example.com",
+ *   "password": "securePassword123"
+ * }
+ *
+ * Response:
+ * {
+ *   "status": 200,
+ *   "message": "User Registered Successfully",
+ *   "data": {
+ *     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+ *     "userId": 123
+ *   }
+ * }
+ */
+const registerUserForSecretSanta = async (req, res) => {
   const { name, email, password } = req.body;
-
-  try {
-    const existingUser = await User.findUserByEmail(email);
-    if (existingUser) {
-      return sendResponse(res, 400, 'Email already in use');
-    }
-
-    const userId = await User.registerUser(name, email, password);
-
-    const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
-
-    return sendResponse(res, 200, 'User Registered Successfully', { token, userId });
-  } catch (err) {
-    console.error(err);
-    return sendResponse(res, 500, 'Server error');
-  }
+  const result = await authService.registerUser(name, email, password);
+  return response(res, result.status, result.response);
 };
 
-const loginUser = async (req, res) => {
+/**
+ * Log in an existing user.
+ *
+ * @route POST /api/auth/login
+ * @example
+ * Request Body:
+ * {
+ *   "email": "john.doe@example.com",
+ *   "password": "securePassword123"
+ * }
+ *
+ * Response:
+ * {
+ *   "status": 200,
+ *   "message": "Login Successfully",
+ *   "data": {
+ *     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+ *     "userId": 123
+ *   }
+ * }
+ */
+const loginUserForSecretSanta = async (req, res) => {
   const { email, password } = req.body;
-
-  try {
-    const user = await User.findUserByEmail(email);
-    if (!user) {
-      return sendResponse(res, 400, 'Invalid credentials');
-    }
-
-    const isMatch = await User.verifyPassword(password, user.password);
-    if (!isMatch) {
-      return sendResponse(res, 400, 'Invalid credentials');
-    }
-
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
-    const data = {
-      token: token,
-      userId: user.id
-    }
-
-    return sendResponse(res, 200, 'Login Successfully', data);
-  } catch (err) {
-    console.error(err);
-    return sendResponse(res, 500, 'Server error');
-  }
+  const { token, userId } = await authService.loginUser(email, password);
+  return response(res, result.status, result.response);
 };
 
-module.exports = { registerUser, loginUser };
+module.exports = {
+  registerUserForSecretSanta,
+  loginUserForSecretSanta
+};
