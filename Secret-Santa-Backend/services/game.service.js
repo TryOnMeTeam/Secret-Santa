@@ -20,19 +20,19 @@ async function getGameInfo(gameCode) {
 // Add user to a game
 async function joinUserToGame(userId, gameCode) {
   const findQuery = `
-    SELECT * FROM User_Game ug
-    LEFT JOIN Game g ON ug.gameId = g.id
-    WHERE ug.userId = ? AND g.gameCode = ?`;
+    SELECT * FROM userGame ug
+    INNER JOIN games g ON ug.gameId = g.id
+    WHERE ug.userId = ? AND g.code = ?`;
 
   const insertQuery = `
-    INSERT INTO User_Game (userId, gameId)
-    SELECT ?, g.id FROM Game g WHERE g.gameCode = ?`;
+    INSERT INTO userGame (userId, gameId, secretSantaId, giftNinjaId)
+    SELECT ?, g.id, NULL, NULL FROM games g WHERE g.code = ?`;
 
   try {
     // Check if the user is already part of the game
     const existingUser = await db.query(findQuery, [userId, gameCode]);
 
-    if (existingUser.length > 0) {
+    if (existingUser[0].length > 0) {
       throw new Error("User has already joined this game.");
     }
 
@@ -58,4 +58,17 @@ async function addNewGame(gameInfo) {
   }
 }
 
-module.exports = { getGameInfo, joinUserToGame, addNewGame };
+async function isGameActive(gameCode) {
+  const query = "SELECT isActive FROM games g WHERE g.code = ?";
+  
+  try {
+    const [result] = await db.query(query, [gameCode]);
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+
+
+}
+
+module.exports = { getGameInfo, joinUserToGame, addNewGame, isGameActive };

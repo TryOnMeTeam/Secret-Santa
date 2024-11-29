@@ -17,4 +17,6 @@ router.get("/api/user/wishlist/:userId", wishlistController.getWishlist);
 
 router.post("/api/user/createwishlist", wishlistController.createWishlist);
 
+router.get('/api/user/wishlist', wishlistController.getWishlistByUserAndGameCode);
+
 module.exports = router;

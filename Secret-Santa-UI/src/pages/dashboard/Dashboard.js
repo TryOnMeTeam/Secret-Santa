@@ -5,6 +5,8 @@ import HostGame from '../host-game/HostGame';
 import CodeDialog from '../shared/code/CodeDialog';
 import { useNavigate } from "react-router-dom";
 import { GAME_CODE_KEY } from '../../constants/secretSantaConstants';
+import { joinGameHandler } from '../../services/gameService.js';
+import { useAlert } from '../../services/context/AlertContext.js';
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -14,6 +16,9 @@ function Dashboard() {
   const [openJoinGame, setOpenJoinGame] = useState(false);
   const [buttonText, setButtonText] = useState('');
   const [dialogTitle, setDialogTitle] = useState('');
+  const [onSubmitHandler, setOnSubmitHandler] = useState(() => {});
+  const { showAlert } = useAlert();
+  const userId = localStorage.getItem('userId');
 
   const onClickCreateGame = () => {
     setResetForm(true);
@@ -25,10 +30,11 @@ function Dashboard() {
   };
 
   const onClickJoinGame = () => {
+    setResetForm(true);
     if (localStorage.getItem(GAME_CODE_KEY)) {
       navigate('/wishlist');
     } else {
-      setResetForm(true);
+      setOnSubmitHandler(() => handleJoinGameSubmit);
       setButtonText('JOIN');
       setDialogTitle('Join Game');
       setOpenJoinGame(true);
@@ -37,13 +43,33 @@ function Dashboard() {
   };
 
   const onClickGameStatus = () => {
+    setResetForm(true);
     if (localStorage.getItem(GAME_CODE_KEY)) {
-      navigate('/wishlist'); // TO do will update the right navigation path later
+      navigate('/gameStatus');
     } else {
-      setResetForm(true);
+      setOnSubmitHandler(() => handleGameStatusSubmit);
       setDialogTitle('Game Status');
       setButtonText('GET');
       setOpenJoinGame(true);
+    }
+  };
+
+  const handleJoinGameSubmit = async (gameCode) => {
+    try {
+      const response = await joinGameHandler(userId, gameCode);
+      showAlert('Joined Game Successfully!', 'success');
+      return response;
+    } catch (error) {
+        throw error;
+    }
+  };
+
+  const handleGameStatusSubmit = (gameCode) => {
+    if (gameCode && gameCode.length === 8) {
+      console.log('Fetching game status for code:', gameCode);
+      alert('Game status fetched successfully!');
+    } else {
+      alert('Enter a valid Game Code');
     }
   };
 
@@ -75,6 +101,8 @@ function Dashboard() {
           onClose={handleCloseJoinGame}
           buttonText={buttonText}
           dialogTitle={dialogTitle}
+          onSubmit={onSubmitHandler}
+          resetForm={resetForm}
         ></CodeDialog>
     </div>
   )

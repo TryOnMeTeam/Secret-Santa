@@ -1,5 +1,5 @@
 const { assignSecretSanta } = require("../services/distribution.service.js");
-const { getGameInfo, joinUserToGame } = require("../services/game.service.js");
+const { getGameInfo, joinUserToGame, isGameActive } = require("../services/game.service.js");
 const emailService = require("../services/emailService.js");
 const userService = require("../services/userService.js");
 const gameService = require("../services/game.service.js");
@@ -153,6 +153,16 @@ exports.joinUserToGame = async (req, res) => {
   try {
     const result = await joinUserToGame(userId, gameCode);
     res.status(201).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.isGameActive = async (req, res) => {
+  const { gameCode } = req.params;
+  try {
+    const result = await isGameActive(gameCode);
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

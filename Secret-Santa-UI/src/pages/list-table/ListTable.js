@@ -9,7 +9,9 @@ import {
   TableBody,
   Button,
   Box,
+  IconButton
 } from "@mui/material";
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 const ListTable = ({ columns = [], rows = [], actionButtons }) => {
 
@@ -60,12 +62,18 @@ const ListTable = ({ columns = [], rows = [], actionButtons }) => {
                           align={column.align || 'left'}
                           style={{cursor: 'pointer', color: 'blue', textDecoration: 'underline'}}
                         >
-                          <a
+                          {/* <a
                             href={value}
                             target='_blank'
                             rel='noopener noreferrer'
                             style={{color: 'inherit', textDecoration: 'inherit'}}
-                          > {value} </a>
+                          >  </a> */}
+                          <IconButton
+                            href={value}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            style={{ color: 'inherit' }}
+                          > <OpenInNewIcon /> </IconButton>
                         </TableCell>
                       );
                     }

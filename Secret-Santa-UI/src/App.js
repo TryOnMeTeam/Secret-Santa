@@ -11,6 +11,7 @@ import SecretSantaChat from './features/SecretSantaChat';
 import Dashboard from "./pages/dashboard/Dashboard";
 import JoinGame from './pages/dashboard/join-game/JoinGame';
 import "./App.css";
+import GameStatus from './pages/dashboard/game-status/GameStatus';
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
             <Route path="/dashboard" element = {<Dashboard />}/>
             <Route path="/wishlist" element = {<JoinGame />} />
             <Route path="/chat" element = {<SecretSantaChat />} />
+            <Route path="/gameStatus" element = {<GameStatus />} />
           </Routes>
         </AuthProvider>
       </Router>

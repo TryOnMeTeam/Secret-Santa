@@ -1,6 +1,7 @@
 const {
   getUserWishlist,
   createUserWishlist,
+  getWishlistByUserIdAndGameCode,
 } = require("../services/wishlist.service.js");
 
 const {
@@ -37,4 +38,19 @@ const createWishlist = async (req, res) => {
   }
 };
 
-module.exports = { getWishlist, createWishlist };
+const getWishlistByUserAndGameCode = async (req, res) => {
+  const { userId, gameCode } = req.query;
+
+  if( !userId || !gameCode ) {
+    return res.status(401).json({ message : 'Invalid User or Game' });
+  }
+
+  try {
+    const result = await getWishlistByUserIdAndGameCode(Number(userId), gameCode);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getWishlist, createWishlist, getWishlistByUserAndGameCode };

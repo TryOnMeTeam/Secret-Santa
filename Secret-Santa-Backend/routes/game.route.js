@@ -7,6 +7,7 @@ const { protect } = require('../middleware/authMiddleware.js');
 router.post('/api/game/createGame',protect, gameController.createGame);
 router.get('/api/game/startGame/:gameCode', gameController.startGame);
 router.get("/api/game/gameinfo/:gameCode", gameController.getGameInfo);
+router.get('/api/game/isActive/:gameCode', gameController.isGameActive)
 
 router.post("/api/game/joinuser", gameController.joinUserToGame);
 

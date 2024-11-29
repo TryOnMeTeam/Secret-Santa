@@ -29,4 +29,20 @@ async function createUserWishlist(userId, wish, gameId) {
   }
 }
 
-module.exports = { getUserWishlist, createUserWishlist };
+async function getWishlistByUserIdAndGameCode(userId, gameCode) {
+  const giftNinjaId = `
+  SELECT ug.giftNinjaId FROM userGame ug
+  WHERE userId = ?
+  AND gameId = (SELECT g.id FROM games g WHERE g.code = ? );
+  `;
+
+  try {
+    const [result] = await db.query(giftNinjaId, [userId, gameCode]);
+    const [results] = await getUserWishlist(result[0].giftNinjaId);
+    return results;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+module.exports = { getUserWishlist, createUserWishlist, getWishlistByUserIdAndGameCode };
