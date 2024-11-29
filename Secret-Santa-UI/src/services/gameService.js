@@ -7,9 +7,9 @@ export const hostGameHandler = async (userId, payload) => {
             payload
         });
 
-        return response.data;
+        return response.data?.data;
     } catch (error) {
-        throw error.response ? error.response.data : 'Failed to Host Game';
+        throw error.response ? error.response.data?.data : 'Failed to Host Game';
     }
 };
 
@@ -20,26 +20,26 @@ export const joinGameHandler = async (userId, gameCode) => {
             gameCode
         });
 
-        return response.data;
+        return response.data?.data;
     } catch (error) {
-        throw error.response ? error.response.data : 'Failed to Join the game';
+        throw error.response ? error.response.data?.data : 'Failed to Join the game';
     }
 };
 
-export const isGameActiveHandler = async (gameCode) => {
+export const isGameActiveHandler = async (gameId) => {
     try {
-        const response = await axiosInstance.get(`/api/game/isActive/${gameCode}`);
-        return response.data;
+        const response = await axiosInstance.get(`/api/game/isActive/${gameId}`);
+        return response.data?.data;
     } catch (error) {
-        throw error.response ? error.response.data : 'Failed to fetch if game is Active';
+        throw error.response ? error.response.data?.data : 'Failed to fetch if game is Active';
     }
 };
 
 export const getGameUsers = async (gameCode) => {
     try {
         const response = await axiosInstance.get(`/api/game/gameinfo/${gameCode}`);
-        return response.data;
+        return response.data?.data;
     } catch (error) {
-        throw error.response ? error.response.data : 'Failed to fetch Game Info';
+        throw error.response ? error.response.data?.data : 'Failed to fetch Game Info';
     }
 };

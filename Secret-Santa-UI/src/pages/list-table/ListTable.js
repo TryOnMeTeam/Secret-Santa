@@ -50,7 +50,7 @@ const ListTable = ({ columns = [], rows = [], actionButtons }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, rowIndex) => {
+            {rows?.map((row, rowIndex) => {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={rowIndex}>
                   {columns.map((column) => {

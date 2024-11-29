@@ -1,6 +1,7 @@
 const promisePool = require('../config/db');
 const bcrypt = require('bcryptjs');
 const messages = require('../constant/SecretSantaMessages');
+const db = require('../config/db');
 
 /**
  * Registers a new user in the database.
@@ -16,7 +17,7 @@ const registerUser = async (name, email, password) => {
     const [result] = await promisePool.query(query, [name, email, hashedPassword]);
     return result.insertId;
   } catch (error) {
-    throw new Error(messages.REGISTRATION_FAILED);
+    throw new Error(error.messages);
   }
 };
 
@@ -47,7 +48,7 @@ const verifyPassword = (enteredPassword, storedPassword) => {
 
 const getUserDetailsById = async (userId) => {
   try {
-    const query = `SELECT email, name FROM usersWHERE id = ?`;
+    const query = `SELECT * FROM users WHERE id = ?`;
     const [results] = await db.query(query, [userId]);
     return results[0] || null;
   } catch (err) {

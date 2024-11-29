@@ -8,5 +8,6 @@ router.post('/api/game/createGame', protect, gameController.createNewSecretSanta
 router.get('/api/game/startGame/:gameCode', protect, gameController.startSecretSantaGame);
 router.get("/api/game/gameinfo/:gameCode", protect, gameController.getSecretSantaGameInfo);
 router.post("/api/game/joinuser", protect, gameController.joinUserToSecretSantaGame);
+router.get('/api/game/isActive/:gameId', protect, gameController.getGameActiveStatus);
 
 module.exports = router;

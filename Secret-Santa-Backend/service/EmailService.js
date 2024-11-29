@@ -60,10 +60,9 @@ async function sendEmail(email, emailSubject, emailHTML) {
  * @returns {string} - The HTML content of the template with the placeholders replaced by actual data.
  */
 async function loadTemplate(templateName, data) {
-  const filePath = path.join(__dirname, "templates", templateName);
-  let template = fs.readFileSync(filePath, "utf-8");
+  const filePath = path.join(__dirname, 'templates', templateName);
+  let template = fs.readFileSync(filePath, 'utf-8');
 
-  // Replace all placeholders in the template with actual data
   for (const key in data) {
     const placeholder = `{{${key}}}`;
     template = template.replace(new RegExp(placeholder, 'g'), data[key]);

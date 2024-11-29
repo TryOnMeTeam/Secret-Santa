@@ -1,5 +1,6 @@
 const gameService = require('../service/GameService.js');
 const response = require('../utils/response.js');
+const message = require('../constant/SecretSantaMessages.js');
 require("dotenv").config();
 
 /**
@@ -39,8 +40,8 @@ require("dotenv").config();
 
 const createNewSecretSantaGame = async (req, res) => {
   const { userId, payload: gameInfo } = req.body;
-  const result = await gameService.createNewGame(userId, gameInfo);
-  return response(res, result.status, result.response);
+  const result = await gameService.createSecretSantaNewGame(userId, gameInfo);
+  return response(res, result.status, message.SUCCESS, result.response);
 };
 
 /**
@@ -73,7 +74,7 @@ const createNewSecretSantaGame = async (req, res) => {
 const startSecretSantaGame = async (req, res) => {
   const { gameId } = req.body;
   const result = await gameService.startSecretSantaGame(gameId);
-  return response(res, result.status, result.response);
+  return response(res, result.status, message.SUCCESS, result.response);
 };
 
 /**
@@ -111,7 +112,7 @@ const startSecretSantaGame = async (req, res) => {
 const getSecretSantaGameInfo = async (req, res) => {
   const { gameCode } = req.params;
   const result = await gameService.getSecretSantaGameInfo(gameCode);
-  response(res, result.status, result.response);
+  response(res, result.status, message.SUCCESS, result.response);
 };
 
 /**
@@ -146,12 +147,20 @@ const getSecretSantaGameInfo = async (req, res) => {
 const joinUserToSecretSantaGame = async (req, res) => {
   const { userId, gameCode } = req.body;
   const result = await gameService.joinUserToSecretSantaGame(userId, gameCode);
-  return response(res, result.status, result.response);
+  return response(res, result.status, message.SUCCESS, result.response);
 };
+
+const getGameActiveStatus = async (req, res) => {
+  const { gameId } = req.params;
+  const result = await gameService.getGameActiveStatus(10);
+  return response(res, result.status, message.SUCCESS, result.response);
+};
+
 
 module.exports = {
   createNewSecretSantaGame,
   startSecretSantaGame,
   getSecretSantaGameInfo,
   joinUserToSecretSantaGame,
+  getGameActiveStatus
 };

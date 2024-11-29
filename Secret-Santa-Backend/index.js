@@ -2,8 +2,9 @@ const express = require("express");
 const http = require("http");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const gameRouter = require("./routes/game.route.js");
+const gameRoutes = require("./routes/game.route.js");
 const authRoutes = require('./routes/authRoutes');
+const wishlistRoutes = require('./routes/WishlistRoute');
 const dotenv = require('dotenv');
 const messageRoutes = require("./routes/messageRoutes");
 const { initializeSocketServer } = require("./service/socketService");
@@ -19,9 +20,11 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 // Routes
-app.use(gameRouter);
+app.use(gameRoutes);
 app.use(authRoutes);
 app.use(messageRoutes);
+app.use(messageRoutes);
+app.use(wishlistRoutes);
 
 initializeSocketServer(server);
 

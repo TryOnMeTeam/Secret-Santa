@@ -41,7 +41,7 @@ function JoinGame() {
   const handleToggleView = () => {
     if (isGiftNinjaView) {
       setIsGiftNinjaView(false);
-      getWishlist(userId);
+      getWishlist(userId, gameId);
     } else {
       setIsGiftNinjaView(true);
       handleOnClickGiftNinjaWishlist();
@@ -50,8 +50,8 @@ function JoinGame() {
 
   const isActive = async () => {
     try {
-      const response = await isGameActiveHandler(gameCode);
-      setIsGameActive(response[0].isActive === 1 ? true : false);
+      const response = await isGameActiveHandler(gameId);
+      setIsGameActive(response?.isActive === 1 ? true : false);
       return response;
     } catch (error) {
       showAlert(error.message, 'error');
@@ -72,12 +72,13 @@ function JoinGame() {
   ];
 
   const userId = localStorage.getItem('userId');
+  const gameId = localStorage.getItem('gameId');
   const gameCode = localStorage.getItem(GAME_CODE_KEY);
 
-  const getWishlist = async (userId) => {
+  const getWishlist = async (userId, gameId) => {
     try {
-      const response = await wishlistHandler(userId);
-      setRows(response !== '' ? response : []);
+      const response = await wishlistHandler(userId, gameId);
+      setRows(!response[0]?.length ? response : []);
       return response;
     } catch (error) {
       showAlert(error.message, 'error');
@@ -87,7 +88,7 @@ function JoinGame() {
   const getGiftNinjaWishlist = async () => {
     try {
       const response = await getWishlistByUserAndGame(userId, gameCode);
-      setRows(response !== '' ? response : []);
+      setRows(!response[0].length ? response : []);
       return response;
     } catch (error) {
       showAlert(error.message, 'error');
@@ -97,7 +98,7 @@ function JoinGame() {
   const refreshWishlist = async () => {
     if (userId && isGiftNinjaView) {
       setIsGiftNinjaView(false);
-      await getWishlist(userId);
+      await getWishlist(userId, gameId);
     }
   };
 
@@ -111,7 +112,7 @@ function JoinGame() {
 
   useEffect(() => {
     if(userId) {
-      getWishlist(userId);
+      getWishlist(userId, gameId);
       isActive();
     }
   }, [userId]);

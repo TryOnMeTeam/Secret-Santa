@@ -17,7 +17,7 @@ function GameStatus() {
   const isActive = async () => {
     try {
       const response = await isGameActiveHandler(gameCode);
-      setIsGameActive(response[0].isActive === 1 ? true : false);
+      setIsGameActive(response.isActive === 1 ? true : false);
       return response;
     } catch (error) {
       showAlert(error.message, 'error');

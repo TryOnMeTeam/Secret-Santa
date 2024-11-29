@@ -22,7 +22,7 @@ const createSecretSantaNewGame = async (userId, gameInfo) => {
       return commonService.createResponse(httpResponse.BAD_REQUEST, validationError);
     }
 
-    const user = await userDao.getUserDetailsById(userId);
+    const user = await userDao.getUserDetailsById(Number(userId));
     const newGame = generateNewGame(user, gameInfo);
 
     await gameDao.saveNewSecretSantaGame(newGame);
@@ -72,6 +72,7 @@ const generateNewGame = (user, gameInfo) => {
     startDate: gameInfo.startDate,
     endDate: gameInfo.endDate,
     maxPlayers: gameInfo.maxPlayers,
+    hostId: user.id,
     isActive: 0
   };
 }
@@ -181,6 +182,16 @@ const getSecretSantaGameInfo = async (gameCode) => {
   }
 }
 
+const getGameActiveStatus = async (gameId) => {
+  try {
+    const result = await gameDao.getGameActiveStatus(gameId);
+    return commonService.createResponse(httpResponse.SUCCESS, result);
+  } catch (error) {
+    commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, err.message);
+  }
+};
+
+
 /**
  * Adds a user to a Secret Santa game.
  *
@@ -196,7 +207,7 @@ const joinUserToSecretSantaGame = async (userId, gameCode) => {
   }
 
   try {
-    await gameDao.joinUserToSecretSantaGame(userId, gameCode);
+    await gameDao.joinUserToSecretSantaGame(Number(userId), gameCode);
     return commonService.createResponse(httpResponse.SUCCESS, messages.USER_SUCCESSFULLY_JOINED);
   } catch (error) {
     return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
@@ -207,5 +218,6 @@ module.exports = {
   createSecretSantaNewGame,
   startSecretSantaGame,
   getSecretSantaGameInfo,
-  joinUserToSecretSantaGame
+  joinUserToSecretSantaGame,
+  getGameActiveStatus
 };

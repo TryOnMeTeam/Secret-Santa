@@ -36,4 +36,4 @@ BEGIN
     OR (senderId = userId AND recieverId = @giftNinjaId))
     AND gameId = gameId
     ORDER BY `time`;
-END
+END;

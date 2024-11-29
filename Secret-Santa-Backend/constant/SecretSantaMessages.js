@@ -17,5 +17,6 @@ module.exports = {
     USER_SUCCESSFULLY_JOINED: 'User successfully joined the game.',
     WISH_ADDED_SUCCESSFULLY: 'Wishlist added successfully.',
     SENT_MESSAGE_STORED_SUCCESSFULLY: 'Sent message stored successfully',
-    EMAIL_MARKED_NOT_SENT: 'Email marked as not sent'
+    EMAIL_MARKED_NOT_SENT: 'Email marked as not sent',
+    SUCCESS: 'Success',
 };

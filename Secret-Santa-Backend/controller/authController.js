@@ -1,5 +1,6 @@
 const authService = require('../service/AuthService');
 const response = require('../utils/response.js');
+const message = require('../constant/SecretSantaMessages.js');
 
 /**
  * Register a new user.
@@ -26,7 +27,7 @@ const response = require('../utils/response.js');
 const registerUserForSecretSanta = async (req, res) => {
   const { name, email, password } = req.body;
   const result = await authService.registerUser(name, email, password);
-  return response(res, result.status, result.response);
+  return response(res, result.status, message.SUCCESS, result.response);
 };
 
 /**
@@ -52,8 +53,8 @@ const registerUserForSecretSanta = async (req, res) => {
  */
 const loginUserForSecretSanta = async (req, res) => {
   const { email, password } = req.body;
-  const { token, userId } = await authService.loginUser(email, password);
-  return response(res, result.status, result.response);
+  const result = await authService.loginUser(email, password);
+  return response(res, result.status, message.SUCCESS, result.response);
 };
 
 module.exports = {

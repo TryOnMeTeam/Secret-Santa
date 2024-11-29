@@ -12,14 +12,14 @@ const db = require("../config/db.js");
 const getUserSecretSantaWishlist = async (userId, gameId) => {
   try {
     const query = `
-      SELECT wl.name AS wishName, w.link
+      SELECT wl.name AS wishName, wl.link
       FROM wishList wl
       LEFT JOIN users ON users.id = wl.userId
       LEFT JOIN games ON games.id = wl.gameId
       WHERE users.id = ? AND games.id = ?`;
 
     const [results] = await db.query(query, [userId, gameId]);
-    return results[0] ?? null;
+    return results[0] ?? [];
   } catch (err) {
     throw new Error(err.message);
   }
@@ -66,7 +66,7 @@ const getWishlistByUserIdAndGameCode = async (userId, gameId) => {
 
     const [result] = await db.query(giftNinjaId, [userId, gameId]);
     const [results] = await getUserWishlist(result[0].giftNinjaId, gameId);
-    return results[0] ?? null;
+    return results[0] ?? [];
   } catch (error) {
     throw new Error(error.message);
   }

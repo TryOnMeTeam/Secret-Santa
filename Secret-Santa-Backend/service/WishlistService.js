@@ -18,8 +18,8 @@ async function getUserSecretSantaWishlist(userId, gameId) {
   }
 
   try {
-    const result = await wishListDao.getUserSecretSantaWishlist(userId, gameId);
-    return commonService.createResponse(httpResponse.SUCCESS, result);
+    const result = await wishListDao.getUserSecretSantaWishlist(Number(userId), Number(gameId));
+    return commonService.createResponse(httpResponse.SUCCESS, [result]);
   } catch (error) {
     return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }

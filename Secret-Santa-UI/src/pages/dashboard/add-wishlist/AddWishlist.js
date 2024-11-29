@@ -24,6 +24,7 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
         event.preventDefault();
         setSubmitted(true);
         const userId = localStorage.getItem('userId');
+        const gameId = localStorage.getItem('gameId');
         const gameCode = localStorage.getItem(GAME_CODE_KEY);
 
         if(!userId) {
@@ -37,7 +38,7 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
         }
         
         if(wishlistData.productName && wishlistData.productLink) {
-            await addProductToWishlist(userId, gameCode, wishlistData);
+            await addProductToWishlist(userId, gameId, wishlistData);
             onClose();
             refreshWishlist();
         } else {
@@ -45,9 +46,9 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
         }
     };
 
-    const addProductToWishlist = async (userId, gameCode, wishlistData) => {
+    const addProductToWishlist = async (userId, gameId, wishlistData) => {
         try {
-            const response = await addProductToWishlistHandler(userId, gameCode, wishlistData);
+            const response = await addProductToWishlistHandler(userId, gameId, wishlistData);
             showAlert('Product Added to Wishlist!', 'success');
             return response.data;
         } catch (error) {

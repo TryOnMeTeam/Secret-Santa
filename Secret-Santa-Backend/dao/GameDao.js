@@ -21,7 +21,7 @@ const saveNewSecretSantaGame = async (newGame) => {
   `;
 
   try {
-    await db.query(query, [newGame.gameName, newGame.gameCode, newGame.startDate, newGame.endDate, newGame.maxPlayers, newGame.userId, newGame.isActive]);
+    await db.query(query, [newGame.gameName, newGame.gameCode, newGame.startDate, newGame.endDate, newGame.maxPlayers, newGame.hostId, newGame.isActive]);
   } catch (err) {
     throw new Error(err.message);
   }
@@ -72,7 +72,7 @@ const getAllUsersForByGameId = async (gameId) => {
 
   try {
     const [result] = await db.query(query, [gameId]);
-    return result;
+    return result[0] ?? [];
   } catch (error) {
     throw new Error(error.message);
   }
@@ -108,10 +108,10 @@ const updateSecretSantaGameOnGameStart = async (gameId, inputData) => {
  */
 const joinUserToSecretSantaGame = async (userId, gameCode) => {
   const query = `
-    INSERT INTO User_Game (userId, gameId)
+    INSERT INTO userGame (userId, gameId)
     SELECT ?, g.id
-    FROM Game g
-    WHERE g.gameCode = ?
+    FROM games g
+    WHERE g.code = ?
     ON DUPLICATE KEY UPDATE gameId = VALUES(gameId);
   `;
 
@@ -140,11 +140,21 @@ const getSecretSantaGameInfoByGameCode = async (gameCode) => {
       WHERE g.code = ?`;
 
     const results = await db.query(query, [gameCode]);
-    return results ?? null;
+    return results ?? [];
   } catch (err) {
     throw new Error(err.message);
   }
 };
+
+const getGameActiveStatus = async (gameId) => {
+  try {
+  const query = "SELECT isActive FROM games g WHERE g.id = ?";
+    const [result] = await db.query(query, [gameId]);
+    return result[0] ?? 0;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
 
 module.exports = {
   saveNewSecretSantaGame,
@@ -153,5 +163,6 @@ module.exports = {
   updateSecretSantaGameOnGameStart,
   getSecretSantaGameInfoByGameCode,
   joinUserToSecretSantaGame,
-  saveNewSecretSantaGame
+  saveNewSecretSantaGame,
+  getGameActiveStatus
 };
