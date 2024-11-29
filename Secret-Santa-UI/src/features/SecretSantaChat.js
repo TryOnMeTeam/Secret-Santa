@@ -10,9 +10,9 @@ import Button from "@mui/material/Button";
 
 
 const SecretSantaChat = () => {
+
     const [userId] = localStorage.getItem('userId');
     const [gameId] = useState(1);
-    const [hover, setHover] = useState(false);
 
     const [messagesSanta, setMessagesSanta] = useState([]); // Default to an empty array
     const [messagesNinja, setMessagesNinja] = useState([]); // Default to an empty array
@@ -175,8 +175,9 @@ const SecretSantaChat = () => {
 
     return (
         <div style={backgroundStyle} className="chat-container">
+            {/* <Navbar/> */}
             <div className="chat-mode-buttons">
-                <div className="chat-button-container"style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                <div className="chat-button-container"style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <Badge
                         badgeContent="🎁"
                         sx={{
@@ -224,6 +225,8 @@ const SecretSantaChat = () => {
                     </Badge>
                 </div>
             </div>
+
+            
 
             {chatMode === CHAT_BOX_TYPE.SECRET_SANTA && (
                 <div className="chat-window">

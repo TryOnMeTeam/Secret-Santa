@@ -9,7 +9,8 @@ import AlertComponent from './components/Alert/AlertComponent';
 import { AlertProvider } from './services/context/AlertContext';
 import SecretSantaChat from './features/SecretSantaChat';
 import Dashboard from "./pages/dashboard/Dashboard";
-import JoinGame from './pages/dashboard/join-game/JoinGame';
+import WishlistPage from './pages/dashboard/join-game/WishlistPage';
+import GamePlay from '../src/pages/join-game/GamePlay';
 import "./App.css";
 import GameStatus from './pages/dashboard/game-status/GameStatus';
 
@@ -28,7 +29,8 @@ const App = () => {
               element={<ProtectedRoute element={<Dashboard />} />}
             />
             <Route path="/dashboard" element = {<Dashboard />}/>
-            <Route path="/wishlist" element = {<JoinGame />} />
+            <Route path="/game" element = {<GamePlay />}/>
+            <Route path="/wishlist" element = {<WishlistPage />} />
             <Route path="/chat" element = {<SecretSantaChat />} />
             <Route path="/gameStatus" element = {<GameStatus />} />
           </Routes>

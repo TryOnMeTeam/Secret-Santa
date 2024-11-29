@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Navbar from '../navbar/Navbar'
+import Navbar from '../../components/navbar/Navbar'
 import "./Dashboard.css"
 import HostGame from '../host-game/HostGame';
 import CodeDialog from '../shared/code/CodeDialog';
@@ -32,7 +32,7 @@ function Dashboard() {
   const onClickJoinGame = () => {
     setResetForm(true);
     if (localStorage.getItem(GAME_CODE_KEY)) {
-      navigate('/wishlist');
+      navigate('/game');
     } else {
       setOnSubmitHandler(() => handleJoinGameSubmit);
       setButtonText('JOIN');
@@ -76,6 +76,7 @@ function Dashboard() {
   const handleCloseJoinGame = () => {
     setResetForm(false);
     setOpenJoinGame(false);
+    navigate('/game');
   };
 
   const backgroundStyle = {
