@@ -177,8 +177,8 @@ const getSecretSantaGameInfo = async (gameCode) => {
   try {
     const [result] = await gameDao.getSecretSantaGameInfoByGameCode(gameCode);
     return commonService.createResponse(httpResponse.SUCCESS, result);
-  } catch (err) {
-    return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, err.message);
+  } catch (error) {
+    return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }
 }
 
@@ -187,7 +187,7 @@ const getGameActiveStatus = async (gameId) => {
     const result = await gameDao.getGameActiveStatus(gameId);
     return commonService.createResponse(httpResponse.SUCCESS, result);
   } catch (error) {
-    commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, err.message);
+    commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }
 };
 

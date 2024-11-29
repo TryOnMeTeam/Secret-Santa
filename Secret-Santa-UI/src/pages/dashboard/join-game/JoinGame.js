@@ -78,8 +78,8 @@ function JoinGame() {
   const getWishlist = async (userId, gameId) => {
     try {
       const response = await wishlistHandler(userId, gameId);
-      setRows(!response[0]?.length ? response : []);
-      return response;
+      setRows(!response[0]?.length ? response[0] : []);
+      return response[0];
     } catch (error) {
       showAlert(error.message, 'error');
     }
@@ -88,8 +88,8 @@ function JoinGame() {
   const getGiftNinjaWishlist = async () => {
     try {
       const response = await getWishlistByUserAndGame(userId, gameCode);
-      setRows(!response[0].length ? response : []);
-      return response;
+      setRows(!response[0].length ? response[0] : []);
+      return response[0];
     } catch (error) {
       showAlert(error.message, 'error');
     }

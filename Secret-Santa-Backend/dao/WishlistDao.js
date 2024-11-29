@@ -19,7 +19,7 @@ const getUserSecretSantaWishlist = async (userId, gameId) => {
       WHERE users.id = ? AND games.id = ?`;
 
     const [results] = await db.query(query, [userId, gameId]);
-    return results[0] ?? [];
+    return results ?? [];
   } catch (err) {
     throw new Error(err.message);
   }
@@ -66,7 +66,7 @@ const getWishlistByUserIdAndGameCode = async (userId, gameId) => {
 
     const [result] = await db.query(giftNinjaId, [userId, gameId]);
     const [results] = await getUserWishlist(result[0].giftNinjaId, gameId);
-    return results[0] ?? [];
+    return results ?? [];
   } catch (error) {
     throw new Error(error.message);
   }
