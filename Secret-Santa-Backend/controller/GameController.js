@@ -152,7 +152,40 @@ const joinUserToSecretSantaGame = async (req, res) => {
 
 const getGameActiveStatus = async (req, res) => {
   const { gameId } = req.params;
-  const result = await gameService.getGameActiveStatus(10);
+  const result = await gameService.getGameActiveStatus(gameId);
+  return response(res, result.status, message.SUCCESS, result.response);
+};
+
+/**
+ * @api {DELETE} /api/game/endGame/:gameId End Game
+ * @apiName EndGame
+ * @apiGroup Game
+ * @apiVersion 1.0.0
+ *
+ * @apiDescription This endpoint is used to end a game and delete its associated data from the database. The `gameId` parameter is used to identify the specific game instance that needs to be ended. Upon successful execution, the server will return a success message confirming that the game has been ended and its data deleted.
+ *
+ * @apiParam {String} gameId The unique identifier of the game to be ended. (e.g., "12345")
+ *
+ * @apiSuccess {String} message Success message indicating that the game has been ended and data deleted successfully. (e.g., "Game ended and data deleted successfully!")
+ *
+ * @apiError (404) NotFound The game with the specified `gameId` does not exist.
+ * @apiError (400) BadRequest The request is invalid or the game cannot be ended.
+ * @apiError (500) InternalServerError An unexpected error occurred on the server.
+ *
+ * @apiExample {json} Request Example:
+ * {
+ *   "gameId": "12345"
+ * }
+ *
+ * @apiExample {json} Response Example:
+ * {
+ *   "message": "Game ended and data deleted successfully!"
+ * }
+ */
+
+const endGame = async (req, res) => {
+  const { gameId, userId } = req.body;
+  const result = await gameService.endGameAndDeleteData(gameId, userId);
   return response(res, result.status, message.SUCCESS, result.response);
 };
 
@@ -162,5 +195,6 @@ module.exports = {
   startSecretSantaGame,
   getSecretSantaGameInfo,
   joinUserToSecretSantaGame,
-  getGameActiveStatus
+  getGameActiveStatus,
+  endGame
 };

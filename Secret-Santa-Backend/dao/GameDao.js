@@ -156,6 +156,23 @@ const getGameActiveStatus = async (gameId) => {
   }
 }
 
+/**
+ * Ends a game and deletes its associated data from the database.
+ *
+ * @param {string} gameId - The unique identifier of the game to be deleted.
+ * @returns {void} This function does not return a value.
+ *
+ * @throws {Error} Throws an error if the deletion process fails.
+ */
+const deleteAllGameRelatedData = async (gameId, userId) => {
+  const query = `CALL DeleteGameByGameId(?, ?)`;
+  try {
+    await db.query(query, [gameId, userId]);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 module.exports = {
   saveNewSecretSantaGame,
   addNewSecretSantaGame,
@@ -164,5 +181,6 @@ module.exports = {
   getSecretSantaGameInfoByGameCode,
   joinUserToSecretSantaGame,
   saveNewSecretSantaGame,
-  getGameActiveStatus
+  getGameActiveStatus,
+  deleteAllGameRelatedData
 };

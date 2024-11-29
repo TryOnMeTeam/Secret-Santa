@@ -214,10 +214,29 @@ const joinUserToSecretSantaGame = async (userId, gameCode) => {
   }
 }
 
+/**
+ * Ends a game and deletes all associated data from the database.
+ *
+ * @param {string} gameId - The unique identifier of the game to be deleted.
+ * @returns {Object} The response object containing the status and result of the operation.
+ *
+ * @throws {Error} Throws an error if the deletion process fails.
+ */
+const endGameAndDeleteData = async (gameId, userId) => {
+  try {
+    const result = await gameDao.deleteAllGameRelatedData(gameId, userId);
+    return commonService.createResponse(httpResponse.SUCCESS, result);
+  } catch (error) {
+    commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+
 module.exports = {
   createSecretSantaNewGame,
   startSecretSantaGame,
   getSecretSantaGameInfo,
   joinUserToSecretSantaGame,
-  getGameActiveStatus
+  getGameActiveStatus,
+  endGameAndDeleteData
 };
