@@ -8,7 +8,7 @@ const messages = require('../constant/SecretSantaMessages');
  */
 const generateToken = (userId) => {
     try {
-        return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '6h' });
+        return jwt.sign({ id: userId }, process.env.JWT_SECRET);
     } catch (error) {
         throw new Error(messages.TOKEN_GENERATION_FAILED);
     }

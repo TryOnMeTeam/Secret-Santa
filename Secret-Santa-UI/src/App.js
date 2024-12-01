@@ -28,6 +28,22 @@ const App = () => {
               path="/secret-santa"
               element={<ProtectedRoute element={<Dashboard />} />}
             />
+            <Route
+              path="/game"
+              element={<ProtectedRoute element={<GamePlay />} />}
+            />
+            <Route
+              path="/wishlist"
+              element={<ProtectedRoute element={<WishlistPage />} />}
+            />
+            <Route
+              path="/chat"
+              element={<ProtectedRoute element={<SecretSantaChat />} />}
+            />
+            <Route
+              path="/gameStatus"
+              element={<ProtectedRoute element={<GameStatus />} />}
+            />
             <Route path="/dashboard" element = {<Dashboard />}/>
             <Route path="/game" element = {<GamePlay />}/>
             <Route path="/wishlist" element = {<WishlistPage />} />

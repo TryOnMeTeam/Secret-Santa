@@ -12,7 +12,6 @@ import Wishlist from '../../../models/Wishlist';
 import "./AddWishlist.css";
 import { useAlert } from '../../../services/context/AlertContext.js';
 import { addProductToWishlistHandler } from '../../../services/wishlistService.js';
-import { GAME_CODE_KEY } from "../../../constants/secretSantaConstants.js"
 
 function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
 
@@ -25,14 +24,13 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
         setSubmitted(true);
         const userId = localStorage.getItem('userId');
         const gameId = localStorage.getItem('gameId');
-        const gameCode = localStorage.getItem(GAME_CODE_KEY);
 
         if(!userId) {
             showAlert('User is not logged In. Please log in to Host a Game.', 'error');
             return;
         }
 
-        if(!gameCode) {
+        if(!gameId) {
             showAlert('Game is not created.', 'error');
             return;
         }
@@ -52,7 +50,7 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
             showAlert('Product Added to Wishlist!', 'success');
             return response.data;
         } catch (error) {
-            showAlert(error.message, 'error');
+            showAlert(error, 'error');
         }
     }
 

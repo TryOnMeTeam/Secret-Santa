@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { isGameActiveHandler } from '../../../services/gameService.js';
+import { startGame, endGame, isGameActiveHandler } from '../../../services/gameService.js';
 import { useAlert } from '../../../services/context/AlertContext.js';
-import { GAME_CODE_KEY } from '../../../constants/secretSantaConstants.js';
 import { getGameUsers } from "../../../services/gameService.js";
 import { ListTableColumn } from '../../../models/ListTableColumn.js';
 import ListTable from '../../list-table/ListTable.js';
@@ -12,15 +11,15 @@ function GameStatus() {
   const { showAlert } = useAlert();
 
   const userId = localStorage.getItem('userId');
-  const gameCode = localStorage.getItem(GAME_CODE_KEY);
+  const gameId = localStorage.getItem('gameId');
 
   const isActive = async () => {
     try {
-      const response = await isGameActiveHandler(gameCode);
+      const response = await isGameActiveHandler(gameId);
       setIsGameActive(response.isActive === 1 ? true : false);
       return response;
     } catch (error) {
-      showAlert(error.message, 'error');
+      showAlert(error, 'error');
     }
   };
 
@@ -30,22 +29,38 @@ function GameStatus() {
     new ListTableColumn('email', 'User Email', 100)
   ];
 
+  const startSecretSantaGame = async () => {
+    try {
+      await startGame(gameId);
+    } catch (error) {
+      showAlert(error, 'error');
+    }
+  };
+
+  const endSecretSantaGame = async () => {
+    try {
+      await endGame(gameId);
+    } catch (error) {
+      showAlert(error, 'error');
+    }
+  };
+
   const actions = [
     {
       label: 'START',
-      onClick: () => {},
+      onClick: startSecretSantaGame,
       disabled: isGameActive,
     },
     {
       label: 'END',
-      onClick: () => {},
-      disabled: !isGameActive,
+      onClick: endSecretSantaGame,
+      disabled: isGameActive,
     },
   ];
 
-  const getGameInfo = async (gameCode) => {
+  const getGameInfo = async (gameId) => {
     try {
-      const response = await getGameUsers(gameCode);
+      const response = await getGameUsers(gameId);
       if( response !== '' ) {
         const filteredResponse = response.map(({ gameName, userName, email }) => ({
           gameName,
@@ -58,13 +73,13 @@ function GameStatus() {
       }
       return response;
     } catch (error) {
-      showAlert(error.message, 'error');
+      showAlert(error, 'error');
     }
   };
 
   useEffect(() => {
     if(userId) {
-      getGameInfo(gameCode);
+      getGameInfo(gameId);
       isActive();
     }
   }, [userId]);

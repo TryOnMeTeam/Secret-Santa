@@ -57,17 +57,17 @@ async function addWishToUserWishlist(userId, gameId, wish) {
  *
  * @throws {Error} If an error occurs while fetching the wishlist.
  */
-async function getWishlistByUserIdAndGameCode(userId, gameId) {
+async function getGiftNinjaWishlist(userId, gameId) {
   if (!userId || !gameId) {
     return commonService.createResponse(httpResponse.BAD_REQUEST, message.INVALID_CREDENTIALS);
   }
 
   try {
-    const result = await wishListDao.getWishlistByUserIdAndGameCode(userId, gameId);
-    return commonService.createResponse(httpResponse.SUCCESS, result);
+    const result = await wishListDao.getGiftNinjaWishlist(userId, gameId);
+    return commonService.createResponse(httpResponse.SUCCESS, [result]);
   } catch (error) {
     return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }
 }
 
-module.exports = { getUserSecretSantaWishlist, addWishToUserWishlist, getWishlistByUserIdAndGameCode };
+module.exports = { getUserSecretSantaWishlist, addWishToUserWishlist, getGiftNinjaWishlist };

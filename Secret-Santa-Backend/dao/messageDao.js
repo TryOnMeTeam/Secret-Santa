@@ -29,11 +29,9 @@ const getMessagesByUserAndGame = async (userId, gameId) => {
  */
 const saveSenderMessage = async (content, userId, gameId, chatBoxType) => {
     try {
-        const results = await db.query('CALL InsertMessage(?, ?, ?, ?)', [content, userId, gameId, chatBoxType]);
-        return results[0] ? true : false;
+        await db.query('CALL InsertMessage(?, ?, ?, ?)', [content, userId, gameId, chatBoxType]);
     } catch (error) {
         console.error('Error saving message:', error);
-        return false;
     }
 };
 
@@ -51,9 +49,9 @@ const getReceiverIdForSenderAndGame = async (senderId, gameId, chatBoxType) => {
         let query = '';
 
         if (chatBoxType === 'secretSanta') {
-            query = 'SELECT secretSantaId AS receiverId FROM User_Game WHERE userId = ? AND gameId = ? LIMIT 1';
+            query = 'SELECT secretSantaId AS receiverId FROM userGame WHERE userId = ? AND gameId = ? LIMIT 1';
         } else if (chatBoxType === 'giftNinja') {
-            query = 'SELECT giftNinjaId AS receiverId FROM User_Game WHERE userId = ? AND gameId = ? LIMIT 1';
+            query = 'SELECT giftNinjaId AS receiverId FROM userGame WHERE userId = ? AND gameId = ? LIMIT 1';
         } else {
             throw new Error('Invalid chatBoxType.');
         }
@@ -79,13 +77,13 @@ const getPendingMessagesForUserInGame = async (userId, gameId) => {
             ELSE FALSE
         END) AS giftNinjaPendingMessages
       FROM userEmailStatus
-      WHERE userId = ? AND gameId = ?;
+      WHERE userId = ? AND gameId = ?
     `;
     try {
         const [rows] = await db.query(query, [userId, gameId]);
         return rows[0];
     } catch (err) {
-        console.error('Error executing query:', err);
+        console.log('Error executing query:', err);
         throw err;
     }
 };
@@ -140,6 +138,22 @@ const markEmailAsNotSent = async (userId, gameId, chatBoxType) => {
     }
 };
 
+const getUserById = async (userId) => {
+    const query = `
+      SELECT id, name, email
+      FROM users
+      WHERE id = ?
+    `;
+
+    try {
+        const [result] = await db.query(query, [userId]);
+        return result[0] ?? {};
+    } catch (err) {
+        console.error('Error executing update query:', err);
+        throw err;
+    }
+};
+
 
 module.exports = {
     getMessagesByUserAndGame,
@@ -148,5 +162,6 @@ module.exports = {
     getPendingMessagesForUserInGame,
     isEmailAlreadySent,
     upsertUserEmailStatusForGame,
-    markEmailAsNotSent
+    markEmailAsNotSent,
+    getUserById
 };

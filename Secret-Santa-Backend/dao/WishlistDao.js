@@ -14,9 +14,7 @@ const getUserSecretSantaWishlist = async (userId, gameId) => {
     const query = `
       SELECT wl.name AS wishName, wl.link
       FROM wishList wl
-      LEFT JOIN users ON users.id = wl.userId
-      LEFT JOIN games ON games.id = wl.gameId
-      WHERE users.id = ? AND games.id = ?`;
+      WHERE wl.userId = ? AND wl.gameId = ?`;
 
     const [results] = await db.query(query, [userId, gameId]);
     return results ?? [];
@@ -57,15 +55,15 @@ const addWishToUserWishlist = async (userId, gameId, wish) => {
  *
  * @throws {Error} If an error occurs during the database query.
  */
-const getWishlistByUserIdAndGameCode = async (userId, gameId) => {
+const getGiftNinjaWishlist = async (userId, gameId) => {
   try {
     const giftNinjaId = `
       SELECT ug.giftNinjaId FROM userGame ug
       WHERE userId = ?
-      AND gameId = (SELECT games.id FROM games WHERE id = ? );`;
+      AND gameId = gameId`;
 
     const [result] = await db.query(giftNinjaId, [userId, gameId]);
-    const [results] = await getUserWishlist(result[0].giftNinjaId, gameId);
+    const results = await getUserSecretSantaWishlist(result[0].giftNinjaId, gameId);
     return results ?? [];
   } catch (error) {
     throw new Error(error.message);
@@ -75,5 +73,5 @@ const getWishlistByUserIdAndGameCode = async (userId, gameId) => {
 module.exports = {
   getUserSecretSantaWishlist,
   addWishToUserWishlist,
-  getWishlistByUserIdAndGameCode
+  getGiftNinjaWishlist
 };

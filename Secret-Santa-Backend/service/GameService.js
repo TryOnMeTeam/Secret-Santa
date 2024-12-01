@@ -1,4 +1,4 @@
-const db = require("../config/db.js");
+const db = require('../config/db.js');
 const userDao = require('../dao/UserDao.js');
 const gameDao = require('../dao/GameDao.js');
 const messages = require('../constant/SecretSantaMessages.js');
@@ -75,7 +75,7 @@ const generateNewGame = (user, gameInfo) => {
     hostId: user.id,
     isActive: 0
   };
-}
+};
 
 /**
  * Generates a unique game code based on the host's name and the current timestamp.
@@ -87,7 +87,7 @@ const generateUniqueGameCode = (hostName) => {
   const timestamp = Date.now().toString(36);
   const userPart = hostName.slice(0, 2);
   return (userPart + timestamp).slice(0, 8).toUpperCase();
-}
+};
 
 /**
  * Starts the Secret Santa game and assigns Secret Santa to each participant.
@@ -99,7 +99,7 @@ const generateUniqueGameCode = (hostName) => {
  */
 const startSecretSantaGame = async (gameId) => {
   try {
-    const [users] = await gameDao.getAllUsersForByGameId(gameId);
+    const users = await gameDao.getAllUsersForByGameId(gameId);
 
     if (!gameId || users.length < 2) {
       return commonService.createResponse(httpResponse.UNPROCESSABLE, messages.NOT_ENOUGH_PARTICIPANTS);
@@ -115,7 +115,7 @@ const startSecretSantaGame = async (gameId) => {
   } catch (error) {
     return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }
-}
+};
 
 /**
  * Shuffles the list of users and assigns a Secret Santa to each user.
@@ -168,19 +168,19 @@ const getDataForUpdateUserGame = (assignedUsers) => {
 /**
  * Retrieves information about a Secret Santa game based on its game code.
  *
- * @param {string} gameCode - The unique code of the game.
+ * @param {string} gameId - The unique code of the game.
  * @returns {Object} The information about the game, including the game name, user names, and email addresses.
  *
  * @throws {Error} Throws an error if the game information retrieval fails.
  */
-const getSecretSantaGameInfo = async (gameCode) => {
+const getSecretSantaGameInfo = async (gameId) => {
   try {
-    const [result] = await gameDao.getSecretSantaGameInfoByGameCode(gameCode);
+    const [result] = await gameDao.getSecretSantaGameInfoByGameCode(Number(gameId));
     return commonService.createResponse(httpResponse.SUCCESS, result);
   } catch (error) {
     return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }
-}
+};
 
 const getGameActiveStatus = async (gameId) => {
   try {
@@ -207,12 +207,12 @@ const joinUserToSecretSantaGame = async (userId, gameCode) => {
   }
 
   try {
-    await gameDao.joinUserToSecretSantaGame(Number(userId), gameCode);
-    return commonService.createResponse(httpResponse.SUCCESS, messages.USER_SUCCESSFULLY_JOINED);
+    const result = await gameDao.joinUserToSecretSantaGame(Number(userId), gameCode);
+    return commonService.createResponse(httpResponse.SUCCESS, result);
   } catch (error) {
     return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }
-}
+};
 
 /**
  * Ends a game and deletes all associated data from the database.
@@ -222,15 +222,32 @@ const joinUserToSecretSantaGame = async (userId, gameCode) => {
  *
  * @throws {Error} Throws an error if the deletion process fails.
  */
-const endGameAndDeleteData = async (gameId, userId) => {
+const endGameAndDeleteData = async (gameId) => {
   try {
-    const result = await gameDao.deleteAllGameRelatedData(gameId, userId);
+    const result = await gameDao.deleteAllGameRelatedData(gameId);
     return commonService.createResponse(httpResponse.SUCCESS, result);
   } catch (error) {
     commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }
 };
 
+const exitSecretSantaGame = async (userId, gameId) => {
+  try {
+    await gameDao.exitSecretSantaGame(Number(userId), Number(gameId));
+    return commonService.createResponse(httpResponse.SUCCESS, messages.EXIT_GAME_SUCCESSFULLY);
+  } catch (error) {
+    return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+const validateIfGameExist = async (gameId) => {
+  try {
+    const result = await gameDao.validateIfGameExist(Number(gameId));
+    return commonService.createResponse(httpResponse.SUCCESS, result);
+  } catch (error) {
+    commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
 
 module.exports = {
   createSecretSantaNewGame,
@@ -238,5 +255,7 @@ module.exports = {
   getSecretSantaGameInfo,
   joinUserToSecretSantaGame,
   getGameActiveStatus,
-  endGameAndDeleteData
+  exitSecretSantaGame,
+  endGameAndDeleteData,
+  validateIfGameExist
 };

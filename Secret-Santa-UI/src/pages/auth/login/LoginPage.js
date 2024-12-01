@@ -36,7 +36,7 @@ const Login = () => {
 
         navigate('/secret-santa');
       } catch (error) {
-        showAlert(error.message, 'error');
+        showAlert(error, 'error');
       }
     }
   });

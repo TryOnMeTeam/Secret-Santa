@@ -73,7 +73,7 @@ const createNewSecretSantaGame = async (req, res) => {
 
 const startSecretSantaGame = async (req, res) => {
   const { gameId } = req.body;
-  const result = await gameService.startSecretSantaGame(gameId);
+  const result = await gameService.startSecretSantaGame(Number(gameId));
   return response(res, result.status, message.SUCCESS, result.response);
 };
 
@@ -110,8 +110,8 @@ const startSecretSantaGame = async (req, res) => {
  */
 
 const getSecretSantaGameInfo = async (req, res) => {
-  const { gameCode } = req.params;
-  const result = await gameService.getSecretSantaGameInfo(gameCode);
+  const { gameId } = req.params;
+  const result = await gameService.getSecretSantaGameInfo(gameId);
   response(res, result.status, message.SUCCESS, result.response);
 };
 
@@ -184,11 +184,22 @@ const getGameActiveStatus = async (req, res) => {
  */
 
 const endGame = async (req, res) => {
-  const { gameId, userId } = req.body;
-  const result = await gameService.endGameAndDeleteData(gameId, userId);
+  const { gameId } = req.params;
+  const result = await gameService.endGameAndDeleteData(gameId);
   return response(res, result.status, message.SUCCESS, result.response);
 };
 
+const exitSecretSantaGame = async (req, res) => {
+  const { gameId, userId } = req.body;
+  const result = await gameService.exitSecretSantaGame(userId, gameId);
+  return response(res, result.status, message.SUCCESS, result.response);
+};
+
+const validateIfGameExist = async (req, res) => {
+  const { gameId } = req.body;
+  const result = await gameService.validateIfGameExist(gameId);
+  return response(res, result.status, message.SUCCESS, result.response);
+};
 
 module.exports = {
   createNewSecretSantaGame,
@@ -196,5 +207,7 @@ module.exports = {
   getSecretSantaGameInfo,
   joinUserToSecretSantaGame,
   getGameActiveStatus,
-  endGame
+  exitSecretSantaGame,
+  endGame,
+  validateIfGameExist
 };

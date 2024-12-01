@@ -28,12 +28,16 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle, onSubmit, resetFor
 
         if(gameCode && gameCode.length === 8 && gameCode.match(GAME_CODE_REGEX)) {
             try {
-                await onSubmit(gameCode);
-                localStorage.setItem(GAME_CODE_KEY, gameCode);
-                navigate('/wishlist');
-                onClose();
+                const response = await onSubmit(gameCode);
+                if(response) {
+                    navigate('/game');
+                    showAlert('Joined Game Successfully!', 'success');
+                }
+                else {
+                    alert('Enter valid Game Code');
+                }
             } catch (error) {
-                showAlert(error.message, 'error');
+                showAlert(error, 'error');
             }
         } else {
             alert('Enter valid Game Code');

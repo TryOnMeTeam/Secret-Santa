@@ -19,6 +19,9 @@ export const joinGameHandler = async (userId, gameCode) => {
             userId,
             gameCode
         });
+        if(response.data?.data) {
+            localStorage.setItem('gameId', response.data?.data);
+        }
 
         return response.data?.data;
     } catch (error) {
@@ -35,11 +38,54 @@ export const isGameActiveHandler = async (gameId) => {
     }
 };
 
-export const getGameUsers = async (gameCode) => {
+export const getGameUsers = async (gameId) => {
     try {
-        const response = await axiosInstance.get(`/api/game/gameinfo/${gameCode}`);
+        const response = await axiosInstance.get(`/api/game/gameinfo/${gameId}`);
         return response.data?.data;
     } catch (error) {
         throw error.response ? error.response.data?.data : 'Failed to fetch Game Info';
+    }
+};
+
+export const startGame = async (gameId) => {
+    try {
+        const response = await axiosInstance.post(`/api/game/startGame`, {
+            gameId
+        });
+        return response.data?.data;
+    } catch (error) {
+        throw error.response ? error.response.data?.data : 'Failed to start Game';
+    }
+};
+
+export const exitGame = async (userId, gameId) => {
+    try {
+        const response = await axiosInstance.post(`/api/game/exit`, {
+            userId,
+            gameId
+        });
+        return response.data?.data;
+    } catch (error) {
+        throw error.response ? error.response.data?.data : 'Failed to exit Game';
+    }
+};
+
+export const endGame = async (gameId) => {
+    try {
+        const response = await axiosInstance.delete(`/api/game/endGame/${gameId}`);
+        return response.data?.data;
+    } catch (error) {
+        throw error.response ? error.response.data?.data : 'Failed to end Game';
+    }
+};
+
+export const validateGameId = async (gameId) => {
+    try {
+        const response = await axiosInstance.post(`/api/game/validateGame`, {
+            gameId
+        });
+        return response.data?.data;
+    } catch (error) {
+        throw error.response ? error.response.data?.data : 'Failed to validate Game';
     }
 };

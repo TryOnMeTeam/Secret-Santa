@@ -1,6 +1,6 @@
 const messageDao = require('../dao/MessageDao');
 const emailService = require('./emailService.js');
-const commonService = require('../service/CommonService.js')
+const commonService = require('../service/commonService.js')
 const httpResponse = require('../HttpResponse.js');
 const message = require('../constant/SecretSantaMessages.js');
 const WebSocket = require('ws');
@@ -18,7 +18,7 @@ const fetchMessagesForUserInGame = async (userId, gameId) => {
     }
 
     try {
-        const [secretSantaMessages, giftNinjaMessages] = await messageDao.getMessagesByUserAndGame(userId, gameId);
+        const [secretSantaMessages, giftNinjaMessages] = await messageDao.getMessagesByUserAndGame(Number(userId), Number(gameId));
 
         const formatMessages = (messages) => messages.map((msg) => ({
             from: msg.from,
@@ -30,10 +30,10 @@ const fetchMessagesForUserInGame = async (userId, gameId) => {
             giftNinjaMessages: formatMessages(giftNinjaMessages),
         };
 
-        commonService.createResponse(httpResponse.SUCCESS, result);
+        return commonService.createResponse(httpResponse.SUCCESS, result);
 
     } catch (error) {
-        commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
+        return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
     }
 };
 
@@ -108,15 +108,15 @@ const getPendingMessagesForUserInGame = async (userId, gameId) => {
     }
 
     try {
-        const pendingMessages = await messageDao.getPendingMessagesForUserInGame(userId, gameId);
+        const pendingMessages = await messageDao.getPendingMessagesForUserInGame(Number(userId), Number(gameId));
 
         const result = {
             secretSantaPendingMessages: Boolean(pendingMessages?.secretSantaPendingMessages),
             giftNinjaPendingMessages: Boolean(pendingMessages?.giftNinjaPendingMessages),
         };
-        return commonService(httpResponse.SUCCESS, result);
+        return commonService.createResponse(httpResponse.SUCCESS, result);
     } catch (error) {
-        return commonService(httpResponse.INTERNAL_SERVER_ERROR, error.message);
+        return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
     }
 };
 
@@ -130,12 +130,10 @@ const getPendingMessagesForUserInGame = async (userId, gameId) => {
 const sendEmailNotificationToUser = async (receiverId, messageData) => {
     const emailAlreadySent = await hasEmailAlreadyBeenSent(receiverId, messageData);
     if (!emailAlreadySent) {
-        // await emailService.sendEmail(
-        //     "sharmaShivam1909@gmail.com",
-        //     "ok",
-        //     generateEmailTemplate()
-        // );
-        messageDao.upsertUserEmailStatusForGame(receiverId, messageData.gameId, messageData.chatBoxType);
+        const targetUser = await messageDao.getUserById(receiverId);
+        const reverserChatBoxType = messageData.chatBoxType === 'secretSanta' ? 'giftNinja' : 'secretSanta';
+        await emailService.sendSecretSantaSentMessageEmail(targetUser, messageData, reverserChatBoxType);
+        messageDao.upsertUserEmailStatusForGame(receiverId, messageData.gameId, reverserChatBoxType);
     }
 };
 
@@ -148,7 +146,7 @@ const sendEmailNotificationToUser = async (receiverId, messageData) => {
  */
 const hasEmailAlreadyBeenSent = async (receiverId, messageData) => {
     const result = await messageDao.isEmailAlreadySent(receiverId, messageData.gameId, messageData.chatBoxType);
-    return result.isEmailAlreadySent === true;
+    return result.isEmailAlreadySent === 1 ? true : false;
 };
 
 /**

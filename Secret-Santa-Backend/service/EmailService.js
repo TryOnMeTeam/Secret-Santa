@@ -29,11 +29,18 @@ const sendCreatedSecretSantaGameEmail = async (user, gameCode) => {
  */
 const sendAssignedSecretSantaEmail = async (shuffledUsers) => {
   for (const user of shuffledUsers) {
-    const { name, email, giftNinja } = user;
+    const { name, email, secretSanta } = user;
     const emailSubject = `🎅 You are a Secret Santa 🎄`;
-    const emailBody = await loadTemplate("assignedSecretSantaEmail.html", { name, santaFor: giftNinja.name });
-    await sendEmail(email, emailSubject, emailBody);
+    const emailBody = await loadTemplate("assignedSecretSantaEmail.html", { name: secretSanta?.name, santaFor: name });
+    await sendEmail(secretSanta?.email, emailSubject, emailBody);
   }
+}
+
+const sendSecretSantaSentMessageEmail = async (user, target) => {
+    const { name, email } = user;
+    const emailSubject = `🕵️ Your Secret Gift Awaits!`;
+    const emailBody = await loadTemplate("secretSantaMessageEmail.html", { name, target });
+    await sendEmail(email, emailSubject, emailBody);
 }
 
 /**
@@ -71,4 +78,9 @@ async function loadTemplate(templateName, data) {
   return template;
 }
 
-module.exports = { sendCreatedSecretSantaGameEmail, sendAssignedSecretSantaEmail, sendEmail };
+module.exports = {
+  sendCreatedSecretSantaGameEmail,
+  sendAssignedSecretSantaEmail,
+  sendSecretSantaSentMessageEmail,
+  sendEmail
+};

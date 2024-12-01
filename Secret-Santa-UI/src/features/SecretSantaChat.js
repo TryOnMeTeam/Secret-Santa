@@ -4,15 +4,15 @@ import Message from "../features/message";
 import "../pages/SecretSantaChat.css";
 import { CHAT_BOX_TYPE, NOTIFICATION_TYPE } from "../constants/secretSantaConstants";
 import { FaPaperPlane } from "react-icons/fa";
-import axios from "axios";
 import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
-
+import {markEmailAsNotSentApi, fetchChatMessagesApi, fetchPendingMessagesApi}  from '../services/messageService';
+import secretSantaTheme from '../assets/secretSantaTheme.jpg';
 
 const SecretSantaChat = () => {
 
-    const [userId] = localStorage.getItem('userId');
-    const [gameId] = useState(1);
+    const userId = localStorage.getItem('userId');
+    const gameId = localStorage.getItem('gameId');
 
     const [messagesSanta, setMessagesSanta] = useState([]); // Default to an empty array
     const [messagesNinja, setMessagesNinja] = useState([]); // Default to an empty array
@@ -38,12 +38,7 @@ const SecretSantaChat = () => {
 
     const markEmailAsNotSent = async(userId, gameId, chatBoxType) => {
         try {
-            axios.defaults.baseURL = 'http://localhost:5001';
-            await axios.post('/api/chat/markEmailAsNotSent', {
-                userId: userId,
-                gameId: gameId,
-                chatBoxType: chatBoxType
-            })
+            await markEmailAsNotSentApi(userId, gameId, chatBoxType);
         } catch (error) {
             console.error("Error marking email as not sent:", error);
         }
@@ -51,12 +46,8 @@ const SecretSantaChat = () => {
 
     const fetchChatMessages = async () => {
         try {
-            axios.defaults.baseURL = 'http://localhost:5001';
-            const response = await axios.post('/api/chat/getMessages', {
-                userId: userId,
-                gameId: gameId
-            })
-            const { secretSantaMessages, giftNinjaMessages } = response.data;
+            const response = await fetchChatMessagesApi(userId, gameId);
+            const { secretSantaMessages, giftNinjaMessages } = response;
 
             setMessagesSanta(secretSantaMessages || []);
             setMessagesNinja(giftNinjaMessages || []);
@@ -67,12 +58,8 @@ const SecretSantaChat = () => {
 
     const fetchPendingMessages = async () => {
         try {
-            axios.defaults.baseURL = 'http://localhost:5001';
-            const response = await axios.post('/api/chat/getPendingMessages', {
-                userId: userId,
-                gameId: gameId
-            })
-            const { secretSantaPendingMessages, giftNinjaPendingMessages } = response.data;
+            const response = await fetchPendingMessagesApi(userId, gameId);
+            const { secretSantaPendingMessages, giftNinjaPendingMessages } = response;
 
             toggleSecretSantaBadgeVisibility(!secretSantaPendingMessages);
             toggleGiftNinjaBadgeVisibility(!giftNinjaPendingMessages);
@@ -92,13 +79,14 @@ const SecretSantaChat = () => {
         if (userId) {
             const websocket = connectWebSocket(userId, (message) => {
                 if (message.type === NOTIFICATION_TYPE.MESSAGE) {
-                    if (message.chatBoxType === CHAT_BOX_TYPE.SECRET_SANTA) {
+                    const reverserChatBoxType = message.chatBoxType === CHAT_BOX_TYPE.SECRET_SANTA ? CHAT_BOX_TYPE.GIFT_NINJA : CHAT_BOX_TYPE.SECRET_SANTA
+                    if (reverserChatBoxType === CHAT_BOX_TYPE.SECRET_SANTA) {
                         if (!chatModeRef.current || chatModeRef.current === CHAT_BOX_TYPE.GIFT_NINJA) {
                             toggleSecretSantaBadgeVisibility(false);
                         }
                         const newMessage = { from: "secretSanta", content: message.content };
                         setMessagesSanta((prev) => [...prev, newMessage]);
-                    } else if (message.chatBoxType === CHAT_BOX_TYPE.GIFT_NINJA) {
+                    } else if (reverserChatBoxType === CHAT_BOX_TYPE.GIFT_NINJA) {
                         if (!chatModeRef.current || chatModeRef.current === CHAT_BOX_TYPE.SECRET_SANTA) {
                             toggleGiftNinjaBadgeVisibility(false);
                         }
@@ -113,7 +101,6 @@ const SecretSantaChat = () => {
 
     useEffect(() => {
         if (chatMode) {
-            // This effect will run when chatMode changes
             console.log("Chat mode changed:", chatMode);
         }
     }, [chatMode]);
@@ -165,7 +152,7 @@ const SecretSantaChat = () => {
     };
 
     const backgroundStyle = {
-        backgroundImage: 'url("https://png.pngtree.com/thumb_back/fh260/background/20231124/pngtree-happy-santa-claus-preparing-christmas-presents-merry-christmas-concept-background-image_15282600.jpg")',
+        backgroundImage: `url(${secretSantaTheme})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',

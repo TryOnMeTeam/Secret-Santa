@@ -11,6 +11,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Navbar from '../../../components/navbar/Navbar.js';
+import secretSantaTheme from '../../../assets/secretSantaTheme.jpg';
 
 function WishlistPage() {
   const [value, setValue] = React.useState('1');
@@ -55,7 +56,7 @@ function WishlistPage() {
       setRows(response);
       return response;
     } catch (error) {
-      showAlert(error.message, 'error');
+      showAlert(error, 'error');
     }
   };
 
@@ -71,7 +72,7 @@ function WishlistPage() {
   }, [userId]);
 
   const backgroundStyle = {
-    backgroundImage: 'url("https://png.pngtree.com/thumb_back/fh260/background/20231124/pngtree-happy-santa-claus-preparing-christmas-presents-merry-christmas-concept-background-image_15282600.jpg")',
+    backgroundImage: `url(${secretSantaTheme})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',

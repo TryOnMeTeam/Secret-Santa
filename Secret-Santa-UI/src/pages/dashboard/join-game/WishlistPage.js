@@ -6,7 +6,7 @@ import { useAlert } from '../../../services/context/AlertContext.js';
 import AddWishlist from '../add-wishlist/AddWishlist.js';
 import { isGameActiveHandler } from '../../../services/gameService.js';
 import { GAME_CODE_KEY } from '../../../constants/secretSantaConstants.js';
-import { getWishlistByUserAndGame } from "../../../services/wishlistService.js";
+import { getGiftNinjaWishes } from "../../../services/wishlistService.js";
 import { FaExternalLinkAlt } from 'react-icons/fa'; 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -14,6 +14,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Navbar from '../../../components/navbar/Navbar.js';
+import secretSantaTheme from '../../../assets/secretSantaTheme.jpg';
 
 function WishlistPage() {
 
@@ -79,18 +80,17 @@ function WishlistPage() {
     {
       label: isGiftNinjaView ? 'Your Wishlist' : 'Your Gift Ninja Wishlist',
       onClick: handleToggleView,
-      disabled: !isGameActive,
+      disabled: isGameActive,
     },
   ];
 
   const userId = localStorage.getItem('userId');
   const gameId = localStorage.getItem('gameId');
-  const gameCode = localStorage.getItem(GAME_CODE_KEY);
 
   const getWishlist = async (userId, gameId) => {
     try {
       const response = await wishlistHandler(userId, gameId);
-      setRows(!response[0]?.length ? response[0] : []);
+      setRows(response[0]?.length ? response[0] : []);
       return response[0];
     } catch (error) {
       showAlert(error, 'error');
@@ -99,8 +99,8 @@ function WishlistPage() {
 
   const getGiftNinjaWishlist = async () => {
     try {
-      const response = await getWishlistByUserAndGame(userId, gameCode);
-      setRows(!response[0].length ? response[0] : []);
+      const response = await getGiftNinjaWishes(userId, gameId);
+      setRows(response[0].length ? response[0] : []);
       return response[0];
     } catch (error) {
       showAlert(error, 'error');
@@ -130,7 +130,7 @@ function WishlistPage() {
   }, [userId]);
 
   const backgroundStyle = {
-    backgroundImage: 'url("https://png.pngtree.com/thumb_back/fh260/background/20231124/pngtree-happy-santa-claus-preparing-christmas-presents-merry-christmas-concept-background-image_15282600.jpg")',
+    backgroundImage: `url(${secretSantaTheme})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',

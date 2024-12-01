@@ -1,4 +1,5 @@
 const db = require("../config/db.js");
+const { registerUserForSecretSanta } = require("../controller/authController.js");
 
 /**
  * Saves a new game to the database.
@@ -65,14 +66,14 @@ const addNewSecretSantaGame = async (gameInfo) => {
  */
 const getAllUsersForByGameId = async (gameId) => {
   const query = `
-    SELECT users.*
+    SELECT users.id, users.name, users.email
     FROM userGame ug
     INNER JOIN users ON users.id = ug.userId
     WHERE ug.gameId = ?`;
 
   try {
     const [result] = await db.query(query, [gameId]);
-    return result[0] ?? [];
+    return result ?? [];
   } catch (error) {
     throw new Error(error.message);
   }
@@ -105,22 +106,26 @@ const updateSecretSantaGameOnGameStart = async (gameId, inputData) => {
  * @returns {Promise<void>} A promise that resolves when the user is successfully added to the game.
  *
  * @throws {Error} Throws an error if adding the user to the game fails.
- */
+*/
 const joinUserToSecretSantaGame = async (userId, gameCode) => {
-  const query = `
+  try {
+    const query = `
     INSERT INTO userGame (userId, gameId)
     SELECT ?, g.id
     FROM games g
     WHERE g.code = ?
-    ON DUPLICATE KEY UPDATE gameId = VALUES(gameId);
+    ON DUPLICATE KEY UPDATE
+      gameId = VALUES(gameId)
+    RETURNING gameId;
   `;
 
-  try {
-    await db.query(query, [userId, gameCode]);
+    const [result] = await db.query(query, [userId, gameCode]);
+    return result[0]?.gameId ?? null;
   } catch (err) {
     throw new Error(err.message);
   }
 };
+
 
 /**
  * Retrieves the Secret Santa game information based on its game code.
@@ -130,16 +135,16 @@ const joinUserToSecretSantaGame = async (userId, gameCode) => {
  *
  * @throws {Error} Throws an error if retrieving the game information fails.
  */
-const getSecretSantaGameInfoByGameCode = async (gameCode) => {
+const getSecretSantaGameInfoByGameCode = async (gameId) => {
   try {
     const query = `
       SELECT g.name AS gameName, u.name AS userName, u.email, g.id
       FROM games g
       LEFT JOIN userGame ug ON g.id = ug.gameId
       LEFT JOIN users u ON ug.userId = u.id
-      WHERE g.code = ?`;
+      WHERE g.id = ?`;
 
-    const results = await db.query(query, [gameCode]);
+    const results = await db.query(query, [gameId]);
     return results ?? [];
   } catch (err) {
     throw new Error(err.message);
@@ -148,13 +153,13 @@ const getSecretSantaGameInfoByGameCode = async (gameCode) => {
 
 const getGameActiveStatus = async (gameId) => {
   try {
-  const query = "SELECT isActive FROM games g WHERE g.id = ?";
+    const query = "SELECT isActive FROM games g WHERE g.id = ?";
     const [result] = await db.query(query, [gameId]);
     return result[0] ?? 0;
   } catch (error) {
     throw new Error(error.message);
   }
-}
+};
 
 /**
  * Ends a game and deletes its associated data from the database.
@@ -164,10 +169,54 @@ const getGameActiveStatus = async (gameId) => {
  *
  * @throws {Error} Throws an error if the deletion process fails.
  */
-const deleteAllGameRelatedData = async (gameId, userId) => {
-  const query = `CALL DeleteGameByGameId(?, ?)`;
+const deleteAllGameRelatedData = async (gameId) => {
   try {
-    await db.query(query, [gameId, userId]);
+    const query = `CALL DeleteGameByGameId(?)`;
+    await db.query(query, [gameId]);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const getGameIdsForStartByScheduler = async () => {
+  try {
+    const query = `SELECT id FROM games WHERE isActive = 0 AND startDate = CURRENT_DATE()`;
+    const [result] = await db.query(query);
+    return result ?? [];
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const getGameIdsForEndByScheduler = async () => {
+  try {
+    const query = `SELECT id FROM games WHERE isActive = 1 AND endDate = CURRENT_DATE()`;
+    const [result] = await db.query(query);
+    return result ?? [];
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const exitSecretSantaGame = async (userId, gameId) => {
+  try {
+    const query = `
+      DELETE userGame
+      FROM userGame
+      INNER JOIN games ON games.id = userGame.gameId
+      WHERE userGame.userId = ? AND userGame.gameId = ? AND games.isActive = 0
+    `;
+    await db.query(query, [userId, gameId]);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const validateIfGameExist = async (gameId) => {
+  try {
+    const query = `SELECT COUNT(*) as count FROM games WHERE id = ?`;
+    const [result] = await db.query(query, [gameId]);
+    return result[0].count > 0 ? true : false;
   } catch (error) {
     throw new Error(error.message);
   }
@@ -182,5 +231,9 @@ module.exports = {
   joinUserToSecretSantaGame,
   saveNewSecretSantaGame,
   getGameActiveStatus,
-  deleteAllGameRelatedData
+  deleteAllGameRelatedData,
+  getGameIdsForStartByScheduler,
+  exitSecretSantaGame,
+  validateIfGameExist,
+  getGameIdsForEndByScheduler
 };

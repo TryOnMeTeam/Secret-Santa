@@ -92,7 +92,7 @@ function HostGame({ open, onClose, resetForm }) {
             showAlert('Game Hosted!', 'success');
             return response;
         } catch (error) {
-            showAlert(error.message, 'error');
+            showAlert(error, 'error');
         }
     }
 

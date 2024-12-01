@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
 import "./Dashboard.css"
 import HostGame from '../host-game/HostGame';
 import CodeDialog from '../shared/code/CodeDialog';
 import { useNavigate } from "react-router-dom";
-import { GAME_CODE_KEY } from '../../constants/secretSantaConstants';
-import { joinGameHandler } from '../../services/gameService.js';
-import { useAlert } from '../../services/context/AlertContext.js';
+import { joinGameHandler, validateGameId } from '../../services/gameService.js';
+import secretSantaTheme from '../../assets/secretSantaTheme.jpg';
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -16,9 +15,26 @@ function Dashboard() {
   const [openJoinGame, setOpenJoinGame] = useState(false);
   const [buttonText, setButtonText] = useState('');
   const [dialogTitle, setDialogTitle] = useState('');
-  const [onSubmitHandler, setOnSubmitHandler] = useState(() => {});
-  const { showAlert } = useAlert();
+  const [onSubmitHandler, setOnSubmitHandler] = useState(() => { });
   const userId = localStorage.getItem('userId');
+  const gameId = localStorage.getItem('gameId');
+
+  useEffect(() => {
+    checkAndValidateGameId();
+  }, []);
+
+  const checkAndValidateGameId = async () => {
+    if (userId && gameId) {
+      try {
+        const response = await validateGameId(gameId);
+        if (!response) {
+          localStorage.removeItem('gameId');
+        }
+      } catch (error) {
+        throw(error);
+      }
+    }
+  };
 
   const onClickCreateGame = () => {
     setResetForm(true);
@@ -31,7 +47,7 @@ function Dashboard() {
 
   const onClickJoinGame = () => {
     setResetForm(true);
-    if (localStorage.getItem(GAME_CODE_KEY)) {
+    if (localStorage.getItem('gameId')) {
       navigate('/game');
     } else {
       setOnSubmitHandler(() => handleJoinGameSubmit);
@@ -39,12 +55,11 @@ function Dashboard() {
       setDialogTitle('Join Game');
       setOpenJoinGame(true);
     }
-    
   };
 
   const onClickGameStatus = () => {
     setResetForm(true);
-    if (localStorage.getItem(GAME_CODE_KEY)) {
+    if (localStorage.getItem('gameId')) {
       navigate('/gameStatus');
     } else {
       setOnSubmitHandler(() => handleGameStatusSubmit);
@@ -56,31 +71,28 @@ function Dashboard() {
 
   const handleJoinGameSubmit = async (gameCode) => {
     try {
-      const response = await joinGameHandler(userId, gameCode);
-      showAlert('Joined Game Successfully!', 'success');
-      return response;
+      return await joinGameHandler(userId, gameCode);
     } catch (error) {
-        throw error;
+      throw error;
     }
   };
 
-  const handleGameStatusSubmit = (gameCode) => {
-    if (gameCode && gameCode.length === 8) {
-      console.log('Fetching game status for code:', gameCode);
-      alert('Game status fetched successfully!');
-    } else {
-      alert('Enter a valid Game Code');
+  const handleGameStatusSubmit = async (gameCode) => {
+    try {
+      return await joinGameHandler(userId, gameCode);
+    } catch (error) {
+      throw error;
     }
   };
 
   const handleCloseJoinGame = () => {
     setResetForm(false);
     setOpenJoinGame(false);
-    navigate('/game');
+    navigate('/secret-santa');
   };
 
   const backgroundStyle = {
-    backgroundImage: 'url("https://png.pngtree.com/thumb_back/fh260/background/20231124/pngtree-happy-santa-claus-preparing-christmas-presents-merry-christmas-concept-background-image_15282600.jpg")',
+    backgroundImage: `url(${secretSantaTheme})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
@@ -90,21 +102,21 @@ function Dashboard() {
 
   return (
     <div style={backgroundStyle} className='dashboard'>
-        <div><Navbar/></div>
-        <div className="dashboard-container">
-          <button className="game-actions" onClick={onClickCreateGame}>Host Game</button>
-          <button className="game-actions" onClick={onClickJoinGame}>Join Game</button>
-          <button className="game-actions" onClick={onClickGameStatus}>Game Status</button>
-        </div>
-        <HostGame open={openCreateGame} onClose={handleCloseCreateGame} resetForm={resetForm}></HostGame>
-        <CodeDialog 
-          open={openJoinGame}
-          onClose={handleCloseJoinGame}
-          buttonText={buttonText}
-          dialogTitle={dialogTitle}
-          onSubmit={onSubmitHandler}
-          resetForm={resetForm}
-        ></CodeDialog>
+      <div><Navbar /></div>
+      <div className="dashboard-container">
+        <button className="game-actions" onClick={onClickCreateGame}>Host Game</button>
+        <button className="game-actions" onClick={onClickJoinGame}>Join Game</button>
+        <button className="game-actions" onClick={onClickGameStatus}>Game Status</button>
+      </div>
+      <HostGame open={openCreateGame} onClose={handleCloseCreateGame} resetForm={resetForm}></HostGame>
+      <CodeDialog
+        open={openJoinGame}
+        onClose={handleCloseJoinGame}
+        buttonText={buttonText}
+        dialogTitle={dialogTitle}
+        onSubmit={onSubmitHandler}
+        resetForm={resetForm}
+      ></CodeDialog>
     </div>
   )
 }

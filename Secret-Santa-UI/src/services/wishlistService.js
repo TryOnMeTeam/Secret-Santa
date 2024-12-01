@@ -22,9 +22,9 @@ export const addProductToWishlistHandler = async (userId, gameId, payload) => {
     }
 }
 
-export const getWishlistByUserAndGame = async (userId, gameCode) => {
+export const getGiftNinjaWishes = async (userId, gameId) => {
     try {
-        const response = await axiosInstance.get(`/api/user/wishlist?userId=${userId}&gameCode=${gameCode}`);
+        const response = await axiosInstance.get(`/api/user/giftNinjaWishlist?userId=${userId}&gameId=${gameId}`);
         return response.data?.data;
     } catch (error) {
         throw error.response ? error.response.data?.data : 'Failed to fetch Wishlist';

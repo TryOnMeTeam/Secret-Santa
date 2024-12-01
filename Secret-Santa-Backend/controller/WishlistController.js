@@ -33,7 +33,7 @@ const response = require('../utils/response.js');
  */
 const getSecretSantaWishlist = async (req, res) => {
   const { userId, gameId } = req.query;
-  const result = await wishlistService.getUserSecretSantaWishlist(userId, 10);
+  const result = await wishlistService.getUserSecretSantaWishlist(userId, gameId);
   response(res, result.status, message.SUCCESS, result.response);
 };
 
@@ -70,7 +70,7 @@ const getSecretSantaWishlist = async (req, res) => {
 const addWishToUserWishlist = async (req, res) => {
   const { userId, gameId, payload } = req.body;
   const wish = payload;
-  const result = await wishlistService.addWishToUserWishlist(Number(userId), 10, wish);
+  const result = await wishlistService.addWishToUserWishlist(Number(userId), gameId, wish);
   response(res, result.status, message.SUCCESS, result.response);
 };
 
@@ -103,14 +103,14 @@ const addWishToUserWishlist = async (req, res) => {
  *   ]
  * }
  */
-const getWishlistByUserAndGameCode = async (req, res) => {
+const getGiftNinjaWishlist = async (req, res) => {
   const { userId, gameId } = req.query;
-  const result = await wishlistService.getWishlistByUserIdAndGameCode(Number(userId), gameId);
+  const result = await wishlistService.getGiftNinjaWishlist(Number(userId), Number(gameId));
   response(res, result.status, message.SUCCESS, result.response);
 };
 
 module.exports = {
   getSecretSantaWishlist,
   addWishToUserWishlist,
-  getWishlistByUserAndGameCode
+  getGiftNinjaWishlist
 };

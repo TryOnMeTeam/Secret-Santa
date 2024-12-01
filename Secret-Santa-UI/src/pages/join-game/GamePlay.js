@@ -5,19 +5,36 @@ import HostGame from '../host-game/HostGame';
 import CodeDialog from '../shared/code/CodeDialog';
 import { useNavigate } from "react-router-dom";
 import { GAME_CODE_KEY } from '../../constants/secretSantaConstants';
+import secretSantaTheme from '../../assets/secretSantaTheme.jpg';
+import { useAlert } from '../../services/context/AlertContext.js';
+import { exitGame } from '../../services/gameService';
 
 function GamePlay() {
   const navigate = useNavigate();
+  const { showAlert } = useAlert();
+  const userId = localStorage.getItem('userId');
+  const gameId = localStorage.getItem('gameId');
 
   const onClickGoToWishlist = () => {
     navigate('/wishlist');
   };
+
   const onClickChatRoom = () => {
-    navigate('/chat');  
+    navigate('/chat');
+  };
+
+  const onClickExitGame = async () => {
+    try {
+      await exitGame(userId, gameId);
+      navigate('/dashboard');
+      localStorage.removeItem('gameId')
+    } catch (error) {
+      showAlert(error, 'error');
+    }
   };
 
   const backgroundStyle = {
-    backgroundImage: 'url("https://png.pngtree.com/thumb_back/fh260/background/20231124/pngtree-happy-santa-claus-preparing-christmas-presents-merry-christmas-concept-background-image_15282600.jpg")',
+    backgroundImage: `url(${secretSantaTheme})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
@@ -31,6 +48,7 @@ function GamePlay() {
         <div className="dashboard-container">
           <button className="game-actions" style={{width: '252px'}} onClick={onClickGoToWishlist}>Go To Wishlist</button>
           <button className="game-actions" style={{width: '252px'}} onClick={onClickChatRoom}>Go To Chat Room</button>
+          <button className="game-actions" style={{width: '252px'}} onClick={onClickExitGame}>Exit Game</button>
         </div>
     </div>
   )

@@ -6,6 +6,6 @@ const { protect } = require('../middleware/authMiddleware.js');
 
 router.get("/api/user/wishlist", wishlistController.getSecretSantaWishlist);
 router.post("/api/user/createwishlist", wishlistController.addWishToUserWishlist);
-router.get('/api/user/wishlist', wishlistController.getWishlistByUserAndGameCode);
+router.get('/api/user/giftNinjaWishlist', wishlistController.getGiftNinjaWishlist);
 
 module.exports = router;

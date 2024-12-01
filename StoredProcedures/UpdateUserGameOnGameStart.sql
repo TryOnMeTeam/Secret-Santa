@@ -17,12 +17,12 @@ BEGIN
         SET @secretSantaId = JSON_UNQUOTE(JSON_EXTRACT(inputData, CONCAT('$[', currentIndex, '].secretSantaId')));
         SET @giftNinjaId = JSON_UNQUOTE(JSON_EXTRACT(inputData, CONCAT('$[', currentIndex, '].giftNinjaId')));
 
-        UPDATE user_game
+        UPDATE userGame
         SET
             secretSantaId = @secretSantaId,
             giftNinjaId = @giftNinjaId
         WHERE userId = @userId
-        AND gameID = pGameId;
+        AND gameId = pGameId;
 
         SET currentIndex = currentIndex + 1;
     END WHILE;

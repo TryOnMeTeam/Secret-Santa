@@ -1,5 +1,6 @@
 const messageService = require('../service/messageService');
 const response = require('../utils/response.js');
+const message = require('../constant/SecretSantaMessages');
 
 /**
  * Retrieve all messages for a specific user and game.
@@ -27,7 +28,7 @@ const response = require('../utils/response.js');
 const getMessagesForUserInGame = async (req, res) => {
     const { userId, gameId } = req.body;
     const result = await messageService.fetchMessagesForUserInGame(userId, gameId);
-    response(res, result.status, result.response);
+    response(res, result.status, message.SUCCESS, result.response);
 };
 
 /**
@@ -56,7 +57,7 @@ const getMessagesForUserInGame = async (req, res) => {
 const getPendingMessagesForUserInGame = async (req, res) => {
     const { userId, gameId } = req.body;
     const result = await messageService.getPendingMessagesForUserInGame(userId, gameId);
-    response(res, result.status, result.response);
+    response(res, result.status, message.SUCCESS, result.response);
 };
 
 /**
@@ -80,7 +81,7 @@ const getPendingMessagesForUserInGame = async (req, res) => {
 const markEmailAsNotSent = async (req, res) => {
     const { userId, gameId, chatBoxType } = req.body;
     const result = await messageService.markEmailAsNotSent(userId, gameId, chatBoxType);
-    return response(res, result.status, result.response);
+    return response(res, result.status, message.SUCCESS, result.response);
 };
 
 module.exports = {
