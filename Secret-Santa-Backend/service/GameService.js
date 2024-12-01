@@ -227,7 +227,7 @@ const endGameAndDeleteData = async (gameId) => {
     const result = await gameDao.deleteAllGameRelatedData(gameId);
     return commonService.createResponse(httpResponse.SUCCESS, result);
   } catch (error) {
-    commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
+    return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }
 };
 

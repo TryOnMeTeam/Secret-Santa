@@ -131,8 +131,8 @@ const sendEmailNotificationToUser = async (receiverId, messageData) => {
     const emailAlreadySent = await hasEmailAlreadyBeenSent(receiverId, messageData);
     if (!emailAlreadySent) {
         const targetUser = await messageDao.getUserById(receiverId);
-        const reverserChatBoxType = messageData.chatBoxType === 'secretSanta' ? 'giftNinja' : 'secretSanta';
-        await emailService.sendSecretSantaSentMessageEmail(targetUser, messageData, reverserChatBoxType);
+        const reverserChatBoxType = messageData.chatBoxType === 'secretSanta' ? 'Gift Ninja' : 'Secret Santa';
+        await emailService.sendSecretSantaSentMessageEmail(targetUser, reverserChatBoxType);
         messageDao.upsertUserEmailStatusForGame(receiverId, messageData.gameId, reverserChatBoxType);
     }
 };
