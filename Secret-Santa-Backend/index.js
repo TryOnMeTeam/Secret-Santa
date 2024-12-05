@@ -26,8 +26,6 @@ app.use(messageRoutes);
 app.use(messageRoutes);
 app.use(wishlistRoutes);
 
-initializeSocketServer(server);
-
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
