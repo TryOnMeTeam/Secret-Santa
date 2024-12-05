@@ -26,7 +26,7 @@ const ListTable = ({ columns = [], rows = [], actionButtons }) => {
               disabled={action.disabled}
               variant="contained"
               // color={action.color || 'primary'}
-              style={{ marginRight: '10px', backgroundColor: '#4C489D'
+              style={{ marginRight: '10px', backgroundColor: '#5F6D7C'
               }}
             >
               {action.label}

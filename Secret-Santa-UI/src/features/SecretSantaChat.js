@@ -177,7 +177,7 @@ const SecretSantaChat = () => {
                     >
                         <Button className ="custom-button"
                             variant="contained"
-                            style={{ backgroundColor: '#4C489D', color: 'white', width: '250px'}}
+                            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px'}}
                             onClick={() => {
                                 toggleSecretSantaBadgeVisibility(true);
                                 setChatMode(CHAT_BOX_TYPE.SECRET_SANTA);
@@ -200,7 +200,7 @@ const SecretSantaChat = () => {
                         <Button
                             className ="custom-button"
                             variant="contained"
-                            style={{ backgroundColor: '#4C489D', color: 'white', width: '250px'}}
+                            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px'}}
                             onClick={() => {
                                 toggleGiftNinjaBadgeVisibility(true);
                                 setChatMode(CHAT_BOX_TYPE.GIFT_NINJA);

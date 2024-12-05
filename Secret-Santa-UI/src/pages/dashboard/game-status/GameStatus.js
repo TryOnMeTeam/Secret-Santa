@@ -3,7 +3,10 @@ import { startGame, endGame, isGameActiveHandler } from '../../../services/gameS
 import { useAlert } from '../../../services/context/AlertContext.js';
 import { getGameUsers } from "../../../services/gameService.js";
 import { ListTableColumn } from '../../../models/ListTableColumn.js';
-import ListTable from '../../list-table/ListTable.js';
+import secretSantaTheme from '../../../assets/secretSantaTheme.jpg';
+import Navbar  from '../../../components/navbar/Navbar.js';
+import SportsScoreIcon from '@mui/icons-material/SportsScore';
+import "./GameStatus.css"
 
 function GameStatus() {
   const [rows, setRows] = useState([]);
@@ -77,6 +80,57 @@ function GameStatus() {
     }
   };
 
+  const PlayerList = ({ players }) => {
+    return (
+      <div className='status' >
+        <div className='status-body'>
+
+        
+        <div className="game-box">
+              <div className="game-head">
+              <div className="game-heading">
+                  <strong>🎅 {rows[0]?.gameName} 🎁</strong>
+                </div>
+              </div>
+        </div>
+        <div className="player-box">
+              <div className="player-item">
+                <div className='player-shape'>
+                  <div className="game-heading">
+                      <strong>Players</strong>
+                  </div>
+      
+                </div>
+              </div>
+        </div>
+        <div className='fixed'>
+
+          {players.map((player, index) => (
+            <div className="list-item-box">
+                <div className="list-item" key={index}>
+                  <div className="player-number">{index+1}</div>
+                  <div className="player-name">
+                    <strong>{player.userName}</strong>
+                  </div>
+                </div>
+            </div>
+          ))}
+        </div>
+        <div className="player-box" style={{marginTop: '5px'}}>
+              <div className="player-item">
+                <div className='player-shape'>
+                  <div className="game-heading">
+                      <strong>Total: {rows?.length}</strong>
+                  </div>
+
+                </div>
+              </div>
+        </div>
+        </div>
+      </div>
+    );
+  };
+
   useEffect(() => {
     if(userId) {
       getGameInfo(gameId);
@@ -84,13 +138,29 @@ function GameStatus() {
     }
   }, [userId]);
 
+  const backgroundStyle = {
+    backgroundImage: `url(${secretSantaTheme})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    height: '100vh',
+    width: '100%',
+  };
+
   return (
-    <div>
-      <ListTable
-        columns={columns}
-        rows={rows}
-        actionButtons={actions}
-      />
+    <div style={backgroundStyle} >
+      <div>
+      <Navbar/>
+      <PlayerList players={rows} />
+
+      </div>
+
+      {/* <div class="list-item-box">
+        <div class="list-item">
+          <div class="player-number">1</div>
+          <div class="player-name">Lorem <strong>IPSUM</strong></div>
+        </div>
+      </div> */}
     </div>
   )
 }

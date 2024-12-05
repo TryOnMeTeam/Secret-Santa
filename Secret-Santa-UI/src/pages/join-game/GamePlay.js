@@ -1,10 +1,7 @@
 import React, { useState } from 'react'
 import Navbar from '../../components/navbar/Navbar'
 import "../dashboard/Dashboard.css"
-import HostGame from '../host-game/HostGame';
-import CodeDialog from '../shared/code/CodeDialog';
 import { useNavigate } from "react-router-dom";
-import { GAME_CODE_KEY } from '../../constants/secretSantaConstants';
 import secretSantaTheme from '../../assets/secretSantaTheme.jpg';
 import { useAlert } from '../../services/context/AlertContext.js';
 import { exitGame } from '../../services/gameService';
@@ -26,7 +23,7 @@ function GamePlay() {
   const onClickExitGame = async () => {
     try {
       await exitGame(userId, gameId);
-      navigate('/dashboard');
+      navigate('/secret-santa');
       localStorage.removeItem('gameId')
     } catch (error) {
       showAlert(error, 'error');

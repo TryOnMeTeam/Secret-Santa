@@ -1,40 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { ListTableColumn } from '../../../models/ListTableColumn.js';
-import ListTable from '../../list-table/ListTable.js';
-import { wishlistHandler } from '../../../services/wishlistService.js';
-import { useAlert } from '../../../services/context/AlertContext.js';
+import { FaExternalLinkAlt } from 'react-icons/fa'; 
+import QueueIcon from '@mui/icons-material/Queue';
+import { wishlistHandler, getGiftNinjaWishes } from "../../../services/wishlistService.js";
 import AddWishlist from '../add-wishlist/AddWishlist.js';
 import { isGameActiveHandler } from '../../../services/gameService.js';
-import { GAME_CODE_KEY } from '../../../constants/secretSantaConstants.js';
-import { getGiftNinjaWishes } from "../../../services/wishlistService.js";
-import { FaExternalLinkAlt } from 'react-icons/fa'; 
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import Navbar from '../../../components/navbar/Navbar.js';
+import { useAlert } from '../../../services/context/AlertContext.js';
 import secretSantaTheme from '../../../assets/secretSantaTheme.jpg';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import Button from "@mui/material/Button";
+import "./WishlistPage.css"
 
 function WishlistPage() {
-
-  const [value, setValue] = React.useState('1');
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const [rows, setRows] = useState([]);
+  const [myWishlist, setMyWishlist] = useState([]);
+  const [giftNinjaWishlist, setGiftNinjaWishlist] = useState([]);
   const [openAddWishlist, setOpenAddWishlist] = useState(false);
   const [resetAddWishlistForm, setResetAddWishlistForm] = useState(false);
   const [isGameActive, setIsGameActive] = useState(false);
-  const [isGiftNinjaView, setIsGiftNinjaView] = useState(false); 
+  const [isGiftNinjaView, setIsGiftNinjaView] = useState(false); // To toggle between the two wishlists
   const { showAlert } = useAlert();
 
-  const columns = [
-    new ListTableColumn('wishName', 'Product Name', 50),
-    new ListTableColumn('link', 'Product Link', 50, true)
-  ];
+  const userId = localStorage.getItem('userId');
+  const gameId = localStorage.getItem('gameId');
 
   const handleOnClickAddNewWishlist = () => {
     setOpenAddWishlist(true);
@@ -44,20 +30,15 @@ function WishlistPage() {
   const handleCloseAddWishlist = () => {
     setResetAddWishlistForm(false);
     setOpenAddWishlist(false);
-  }
+  };
 
-  const handleOnClickGiftNinjaWishlist = async () => {
-    setIsGiftNinjaView(true); 
-    await getGiftNinjaWishlist();
-  }
-
-  const handleToggleView = () => {
+  const handleToggleView = async () => {
     if (isGiftNinjaView) {
       setIsGiftNinjaView(false);
-      getWishlist(userId, gameId);
+      await getWishlist(userId, gameId);
     } else {
       setIsGiftNinjaView(true);
-      handleOnClickGiftNinjaWishlist();
+      await getGiftNinjaWishlist();
     }
   };
 
@@ -65,33 +46,15 @@ function WishlistPage() {
     try {
       const response = await isGameActiveHandler(gameId);
       setIsGameActive(response?.isActive === 1 ? true : false);
-      return response;
     } catch (error) {
       showAlert(error, 'error');
     }
   };
 
-  const actions = [
-    {
-      label: 'Add New Products',
-      onClick: handleOnClickAddNewWishlist,
-      disabled: isGiftNinjaView,
-    },
-    {
-      label: isGiftNinjaView ? 'Your Wishlist' : 'Your Gift Ninja Wishlist',
-      onClick: handleToggleView,
-      disabled: isGameActive,
-    },
-  ];
-
-  const userId = localStorage.getItem('userId');
-  const gameId = localStorage.getItem('gameId');
-
   const getWishlist = async (userId, gameId) => {
     try {
       const response = await wishlistHandler(userId, gameId);
-      setRows(response[0]?.length ? response[0] : []);
-      return response[0];
+      setMyWishlist(response[0]?.length ? response[0] : []);
     } catch (error) {
       showAlert(error, 'error');
     }
@@ -100,19 +63,19 @@ function WishlistPage() {
   const getGiftNinjaWishlist = async () => {
     try {
       const response = await getGiftNinjaWishes(userId, gameId);
-      setRows(response[0].length ? response[0] : []);
-      return response[0];
+      setGiftNinjaWishlist(response[0]?.length ? response[0] : []);
     } catch (error) {
       showAlert(error, 'error');
     }
   };
 
-  const refreshWishlist = async () => {
-    if (userId && isGiftNinjaView) {
-      setIsGiftNinjaView(false);
-      await getWishlist(userId, gameId);
+  useEffect(() => {
+    if (userId) {
+      getWishlist(userId, gameId);
+      getGiftNinjaWishlist();
+      isActive();
     }
-  };
+  }, [userId]);
 
   const renderLinkColumn = (link) => {
     return link ? (
@@ -122,12 +85,56 @@ function WishlistPage() {
     ) : null;
   };
 
-  useEffect(() => {
-    if(userId) {
-      getWishlist(userId, gameId);
-      isActive();
-    }
-  }, [userId]);
+  const Wishlist = ({ wishList }) => {
+    return (
+      <div className='list-body'>
+        <div className="game-box">
+          <div className="game-head">
+            <div className="game-heading">
+              { !isGiftNinjaView ? (<strong>🎅  Mine  🎁</strong>) : (<strong>🎅  Ninja  🎁</strong>)}
+            </div>
+          </div>
+        </div>
+        <div className="player-box">
+          <div className="player-item">
+            <div className='player-shape'>
+              <div className="game-heading">
+                <strong>WishList</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='fixed'>
+          {wishList.map((item, index) => (
+            <div className="list-item-box" key={index}>
+              <div className="list-item">
+                <div className="player-number">{index + 1}</div>
+                <div className="player-name">
+                  <strong>{item.wishName}</strong>
+                  <a href={item.link} target="_blank" rel="noopener noreferrer">
+                    <OpenInNewIcon />
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+         { wishList.length ? (
+          <div className="player-box" style={{ marginTop: '5px' }}>
+          <div className="player-item">
+            <div className='player-shape'>
+              <div className="game-heading">
+                <strong>Total: {wishList.length}</strong>
+              </div>
+            </div>
+          </div>
+        </div> ) : (<div></div>)
+        } 
+
+        
+      </div>
+    );
+  };
 
   const backgroundStyle = {
     backgroundImage: `url(${secretSantaTheme})`,
@@ -136,37 +143,56 @@ function WishlistPage() {
     backgroundRepeat: 'no-repeat',
     height: '100vh',
     width: '100%',
-    paddingTop: '7rem',
+    paddingTop: '1rem',
   };
 
   return (
-    <div style={ backgroundStyle }>
-      <Navbar/>
-      <Box sx={{ width: '100%', typography: 'body1' }}>
-        <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
-              <Tab label="Your Wishlist" value="1" />
-              <Tab label="Ninja Wishlist" value="2" />
-            </TabList>
-          </Box>
-          <TabPanel value="1">
-            <ListTable columns={columns} rows={rows} actionButtons={actions} />
+    <div style={backgroundStyle}>
+      <div className='action-container'>
+        <Button
+            className ="custom-button"
+            variant="contained"
+            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px'}}
+            onClick={() => {setIsGiftNinjaView(false);}}
+        >
+            My Wishlist
+        </Button>
+        <Button
+            className ="custom-button"
+            variant="contained"
+            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px'}}
+            onClick={() => {setIsGiftNinjaView(true);}}
+            disabled={!isGameActive}
+        >
+             Ninja Wishlist
+        </Button>
+      </div>
 
-            <AddWishlist
-              open={openAddWishlist}
-              onClose={handleCloseAddWishlist}
-              resetForm={resetAddWishlistForm}
-              refreshWishlist={refreshWishlist}
-            />
-          </TabPanel>
-          <TabPanel value="2">
-            <ListTable columns={columns} rows={rows} />
-          </TabPanel>
-        </TabContext>
-      </Box>
+      {/* Conditionally render the wishlist based on the current view */}
+      {isGiftNinjaView ? (
+        <Wishlist wishList={giftNinjaWishlist} />
+      ) : (
+        <div className='list-container'>
+          <Wishlist wishList={myWishlist} />
+          <Button
+            className ="custom-button"
+            variant="outlined"
+            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px', marginTop: '15px'}}
+            onClick={handleOnClickAddNewWishlist}
+          >
+            <QueueIcon style={{marginRight: '10px'}}/> Add New Wish
+          </Button>
+        </div>
+      )}
+
+      <AddWishlist
+        open={openAddWishlist}
+        onClose={handleCloseAddWishlist}
+        resetForm={resetAddWishlistForm}
+        refreshWishlist={() => getWishlist(userId, gameId)} // Refresh Wishlist
+      />
     </div>
-  )
+  );
 }
 
-export default WishlistPage
+export default WishlistPage;

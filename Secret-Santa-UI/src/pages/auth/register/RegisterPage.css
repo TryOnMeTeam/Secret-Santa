@@ -72,7 +72,7 @@ div {
     padding: 16px 20px;
     border-radius: 26px;
     border: 1px solid #D4D3E8;
-    color: #4C489D;
+    color: #5F6D7C;
     cursor: pointer;
     transition: 0.2s;
     text-transform: uppercase;
@@ -85,7 +85,7 @@ div {
 }
 
 .signup{
-    background-color: #4C489D;
+    background-color: #5F6D7C;
     color: white;
 }
 
