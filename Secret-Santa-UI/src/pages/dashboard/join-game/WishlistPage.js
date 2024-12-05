@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaExternalLinkAlt } from 'react-icons/fa'; 
+import { FaExternalLinkAlt } from 'react-icons/fa';
 import QueueIcon from '@mui/icons-material/Queue';
 import { wishlistHandler, getGiftNinjaWishes } from "../../../services/wishlistService.js";
 import AddWishlist from '../add-wishlist/AddWishlist.js';
@@ -7,7 +7,10 @@ import { isGameActiveHandler } from '../../../services/gameService.js';
 import { useAlert } from '../../../services/context/AlertContext.js';
 import secretSantaTheme from '../../../assets/secretSantaTheme.jpg';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { useNavigate } from 'react-router-dom';
 import Button from "@mui/material/Button";
+import HomeIcon from '@mui/icons-material/Home';
+import { IoGameController } from "react-icons/io5";
 import "./WishlistPage.css"
 
 function WishlistPage() {
@@ -18,6 +21,7 @@ function WishlistPage() {
   const [isGameActive, setIsGameActive] = useState(false);
   const [isGiftNinjaView, setIsGiftNinjaView] = useState(false); // To toggle between the two wishlists
   const { showAlert } = useAlert();
+  const navigate = useNavigate();
 
   const userId = localStorage.getItem('userId');
   const gameId = localStorage.getItem('gameId');
@@ -91,7 +95,7 @@ function WishlistPage() {
         <div className="game-box">
           <div className="game-head">
             <div className="game-heading">
-              { !isGiftNinjaView ? (<strong>🎅  Mine  🎁</strong>) : (<strong>🎅  Ninja  🎁</strong>)}
+              {!isGiftNinjaView ? (<strong>🎅  Mine  🎁</strong>) : (<strong>🎅  Ninja  🎁</strong>)}
             </div>
           </div>
         </div>
@@ -119,19 +123,19 @@ function WishlistPage() {
             </div>
           ))}
         </div>
-         { wishList.length ? (
+        {wishList.length ? (
           <div className="player-box" style={{ marginTop: '5px' }}>
-          <div className="player-item">
-            <div className='player-shape'>
-              <div className="game-heading">
-                <strong>Total: {wishList.length}</strong>
+            <div className="player-item">
+              <div className='player-shape'>
+                <div className="game-heading">
+                  <strong>Total: {wishList.length}</strong>
+                </div>
               </div>
             </div>
-          </div>
-        </div> ) : (<div></div>)
-        } 
+          </div>) : (<div></div>)
+        }
 
-        
+
       </div>
     );
   };
@@ -148,23 +152,26 @@ function WishlistPage() {
 
   return (
     <div style={backgroundStyle}>
+      <div className="go-to-game-icon" onClick={() => navigate('/game')}>
+      <IoGameController />
+      </div>
       <div className='action-container'>
         <Button
-            className ="custom-button"
-            variant="contained"
-            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px'}}
-            onClick={() => {setIsGiftNinjaView(false);}}
+          className="custom-button"
+          variant="contained"
+          style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px' }}
+          onClick={() => { setIsGiftNinjaView(false); }}
         >
-            My Wishlist
+          My Wishlist
         </Button>
         <Button
-            className ="custom-button"
-            variant="contained"
-            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px'}}
-            onClick={() => {setIsGiftNinjaView(true);}}
-            disabled={!isGameActive}
+          className="custom-button"
+          variant="contained"
+          style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px' }}
+          onClick={() => { setIsGiftNinjaView(true); }}
+          disabled={!isGameActive}
         >
-             Ninja Wishlist
+          Ninja Wishlist
         </Button>
       </div>
 
@@ -175,12 +182,12 @@ function WishlistPage() {
         <div className='list-container'>
           <Wishlist wishList={myWishlist} />
           <Button
-            className ="custom-button"
+            className="custom-button"
             variant="outlined"
-            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px', marginTop: '15px'}}
+            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px', marginTop: '15px' }}
             onClick={handleOnClickAddNewWishlist}
           >
-            <QueueIcon style={{marginRight: '10px'}}/> Add New Wish
+            <QueueIcon style={{ marginRight: '10px' }} /> Add New Wish
           </Button>
         </div>
       )}

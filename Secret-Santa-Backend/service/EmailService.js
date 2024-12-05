@@ -36,10 +36,10 @@ const sendAssignedSecretSantaEmail = async (shuffledUsers) => {
   }
 }
 
-const sendSecretSantaSentMessageEmail = async (user, target) => {
+const sendSecretSantaSentMessageEmail = async (user, reverserChatBoxType) => {
     const { name, email } = user;
     const emailSubject = `🕵️ Your Secret Gift Awaits!`;
-    const emailBody = await loadTemplate("secretSantaMessageEmail.html", { name, target });
+    const emailBody = await loadTemplate("secretSantaMessageEmail.html", { name, reverserChatBoxType });
     await sendEmail(email, emailSubject, emailBody);
 }
 

@@ -7,7 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const wishlistRoutes = require('./routes/WishlistRoute');
 const dotenv = require('dotenv');
 const messageRoutes = require("./routes/messageRoutes");
-const { initializeSocketServer } = require("./service/SocketService");
+require('./service/SchedulerService.js');
 dotenv.config();
 
 const app = express();

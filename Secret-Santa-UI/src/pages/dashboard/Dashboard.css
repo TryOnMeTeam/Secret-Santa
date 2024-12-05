@@ -22,16 +22,43 @@
     background-color: #5F6D7C;
     color: white;
     border: none;
-    padding: 20px 30px;
+    padding: 15px 14px;
     font-size: 1.5rem;
     border-radius: 40px;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    text-align: center; 
+    text-align: center;
+    display: flex; /* Use flexbox */
+    align-items: center; /* Vertically align items */
+    justify-content: center; /* Horizontally align items */
+    gap: 8px; /* Add a small gap between the icon and the text */
+}
+
+.game-home-actions {
+    background-color: #5F6D7C;
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.5rem;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: flex; /* Use flexbox */
+    align-items: center; /* Vertically align items */
+    justify-content: center; /* Horizontally align items */
+    gap: 8px; /* Add a small gap between the icon and the text */
 }
 
 .game-actions:hover {
+    background-color: #162b42 !important;
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+.game-home-actions:hover {
     background-color: #162b42 !important;
     transform: translateY(-5px);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);

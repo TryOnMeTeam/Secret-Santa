@@ -1,23 +1,25 @@
 const schedule = require('node-schedule');
 const gameDao = require('../dao/GameDao');
 const gameService = require('../service/GameService');
+const rule = new schedule.RecurrenceRule();
+rule.hour = [0, new schedule.Range(0, 0, 0)];
 
 const autoStartOrEndGame = async () => {
-    const gameIdsToStart = gameDao.getGameIdsForStartByScheduler();
+    const gameIdsToStart = await gameDao.getGameIdsForStartByScheduler();
     for (const gameId of gameIdsToStart) {
         await gameService.startSecretSantaGame(gameId);
     }
 
-    const gameIdsToEnd = gameDao.getGameIdsForEndByScheduler();
+    const gameIdsToEnd = await gameDao.getGameIdsForEndByScheduler();
     for (const gameId of gameIdsToEnd) {
         await gameService.endGameAndDeleteData(gameId);
     }
 }
 
-const job = schedule.scheduleJob('0 0 * * *', () => {
-    const istDate = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
-    if (istDate.getHours() === 0) {
+function start() {
+    schedule.scheduleJob(rule, () => {
         autoStartOrEndGame();
-    }
-});
+    });
+}
 
+start();

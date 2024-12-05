@@ -6,6 +6,10 @@ import CodeDialog from '../shared/code/CodeDialog';
 import { useNavigate } from "react-router-dom";
 import { joinGameHandler, validateGameId } from '../../services/gameService.js';
 import secretSantaTheme from '../../assets/secretSantaTheme.jpg';
+import { IoIosCreate } from "react-icons/io";
+import { CiViewList } from "react-icons/ci";
+import { MdFollowTheSigns } from "react-icons/md";
+
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -104,9 +108,9 @@ function Dashboard() {
     <div style={backgroundStyle} className='dashboard'>
       <div><Navbar /></div>
       <div className="dashboard-container">
-        <button className="game-actions" onClick={onClickCreateGame}>Host Game</button>
-        <button className="game-actions" onClick={onClickJoinGame}>Join Game</button>
-        <button className="game-actions" onClick={onClickGameStatus}>Game Status</button>
+        <button className="game-home-actions" onClick={onClickCreateGame}><IoIosCreate />Host Game</button>
+        <button className="game-home-actions" onClick={onClickJoinGame}><MdFollowTheSigns />Enter Game</button>
+        <button className="game-home-actions" onClick={onClickGameStatus}><CiViewList />Game Status</button>
       </div>
       <HostGame open={openCreateGame} onClose={handleCloseCreateGame} resetForm={resetForm}></HostGame>
       <CodeDialog

@@ -47,6 +47,7 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
     const addProductToWishlist = async (userId, gameId, wishlistData) => {
         try {
             const response = await addProductToWishlistHandler(userId, gameId, wishlistData);
+            window.location.reload();
             showAlert('Product Added to Wishlist!', 'success');
             return response.data;
         } catch (error) {

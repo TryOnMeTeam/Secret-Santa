@@ -35,6 +35,7 @@ function GameStatus() {
   const startSecretSantaGame = async () => {
     try {
       await startGame(gameId);
+      window.location.reload();
     } catch (error) {
       showAlert(error, 'error');
     }
