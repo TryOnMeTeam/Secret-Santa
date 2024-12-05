@@ -2,12 +2,12 @@ const express = require('express');
 const http = require('http');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const gameRoutes = require('./routes/gameRoute.js');
+const gameRoutes = require('./routes/GameRoute.js');
 const authRoutes = require('./routes/authRoutes');
 const wishlistRoutes = require('./routes/WishlistRoute');
 const dotenv = require('dotenv');
 const messageRoutes = require("./routes/messageRoutes");
-const { initializeSocketServer } = require("./service/socketService");
+const { initializeSocketServer } = require("./service/SocketService");
 dotenv.config();
 
 const app = express();

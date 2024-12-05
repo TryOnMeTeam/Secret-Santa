@@ -2,7 +2,7 @@ const db = require('../config/db.js');
 const userDao = require('../dao/UserDao.js');
 const gameDao = require('../dao/GameDao.js');
 const messages = require('../constant/SecretSantaMessages.js');
-const emailService = require('../service/emailService.js');
+const emailService = require('../service/EmailService.js');
 const httpResponse = require('../HttpResponse.js');
 const commonService = require('../service/CommonService');
 
@@ -245,7 +245,7 @@ const validateIfGameExist = async (gameId) => {
     const result = await gameDao.validateIfGameExist(Number(gameId));
     return commonService.createResponse(httpResponse.SUCCESS, result);
   } catch (error) {
-    commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
+    return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }
 };
 

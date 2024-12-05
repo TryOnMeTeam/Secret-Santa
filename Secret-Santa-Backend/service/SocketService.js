@@ -1,7 +1,7 @@
 const WebSocket = require("ws");
 const url = require("url");
-const messageService = require("./messageService");
-const messageDao = require("../dao/MessageDao");
+const messageService = require("./MessageService");
+const messageDao = require("../dao/messageDao");
 const connections = new Map();
 
 /**

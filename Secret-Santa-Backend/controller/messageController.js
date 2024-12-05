@@ -1,4 +1,4 @@
-const messageService = require('../service/messageService');
+const messageService = require('../service/MessageService');
 const response = require('../utils/response.js');
 const message = require('../constant/SecretSantaMessages');
 
