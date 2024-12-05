@@ -19,6 +19,10 @@
 }
 
 .game-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     background-color: #5F6D7C;
     color: white;
     border: none;

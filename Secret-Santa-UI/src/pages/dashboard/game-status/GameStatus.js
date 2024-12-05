@@ -5,7 +5,8 @@ import { getGameUsers } from "../../../services/gameService.js";
 import { ListTableColumn } from '../../../models/ListTableColumn.js';
 import secretSantaTheme from '../../../assets/secretSantaTheme.jpg';
 import Navbar  from '../../../components/navbar/Navbar.js';
-import SportsScoreIcon from '@mui/icons-material/SportsScore';
+import { FaStopCircle } from "react-icons/fa";
+import { FaPlay } from "react-icons/fa";
 import "./GameStatus.css"
 
 function GameStatus() {
@@ -85,49 +86,51 @@ function GameStatus() {
     return (
       <div className='status' >
         <div className='status-body'>
-
-        
-        <div className="game-box">
-              <div className="game-head">
-              <div className="game-heading">
-                  <strong>🎅 {rows[0]?.gameName} 🎁</strong>
-                </div>
-              </div>
-        </div>
-        <div className="player-box">
-              <div className="player-item">
-                <div className='player-shape'>
+            <div className="game-box">
+                  <div className="game-head">
                   <div className="game-heading">
-                      <strong>Players</strong>
+                      <strong>🎅 {rows[0]?.gameName} 🎁</strong>
+                    </div>
                   </div>
-      
-                </div>
-              </div>
-        </div>
-        <div className='fixed'>
-
-          {players.map((player, index) => (
-            <div className="list-item-box">
-                <div className="list-item" key={index}>
-                  <div className="player-number">{index+1}</div>
-                  <div className="player-name">
-                    <strong>{player.userName}</strong>
-                  </div>
-                </div>
             </div>
-          ))}
-        </div>
-        <div className="player-box" style={{marginTop: '5px'}}>
-              <div className="player-item">
-                <div className='player-shape'>
-                  <div className="game-heading">
-                      <strong>Total: {rows?.length}</strong>
+            <div className="player-box">
+                  <div className="player-item">
+                    <div className='player-shape'>
+                      <div className="game-heading">
+                          <strong>Players</strong>
+                      </div>
+          
+                    </div>
                   </div>
+            </div>
+            <div className='fixed'>
 
+              {players.map((player, index) => (
+                <div className="list-item-box">
+                    <div className="list-item" key={index}>
+                      <div className="player-number">{index+1}</div>
+                      <div className="player-name">
+                        <strong>{player.userName}</strong>
+                      </div>
+                    </div>
                 </div>
-              </div>
-        </div>
-        </div>
+              ))}
+            </div>
+            <div className="player-box" style={{marginTop: '5px'}}>
+                  <div className="player-item">
+                    <div className='player-shape'>
+                      <div className="game-heading">
+                          <strong>Total: {rows?.length}</strong>
+                      </div>
+
+                    </div>
+                  </div>
+          </div>
+          <div className='game-action-container'>
+            <button className="game-actions" style={{width: '252px'}} onClick={endSecretSantaGame}> <FaStopCircle /> End Game</button>
+            <button className="game-actions" style={{width: '252px'}} onClick={startSecretSantaGame}> <FaPlay/> Start Game</button>
+          </div>
+          </div>
       </div>
     );
   };
