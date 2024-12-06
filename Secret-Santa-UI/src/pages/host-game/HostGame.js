@@ -103,119 +103,112 @@ function HostGame({ open, onClose, resetForm }) {
     }
 
     return (
-        <>
-            <Dialog open={open} onClose={(event, reason) => {
-                    if( reason === 'backdropClick' ) {
-                        return;
-                    }
-                    onClose();
-                }}
-                maxWidth="sm">
-                <DialogTitle className="dialog-title">
-                    <Typography variant="h6" align="center" className="dialog-title-text">
-                        Host Game
-                    </Typography>
-                </DialogTitle>
-                <DialogContent className="dialog-content">
-                    <form onSubmit={handleCreate} className="host-game-form">
-                        <TextField
-                            label="Game Name"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            value={gameData.gameName}
-                            onChange={(e) => handleInputChange('gameName', e.target.value)}
-                            error={submitted && !gameData.gameName}
-                            helperText={submitted && !gameData.gameName ? "Game name is required" : ""}
-                            className="input-field"
-                        />
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <div>
-                                <DesktopDatePicker
-                                    label="Start Date"
-                                    inputFormat="MM/dd/yyyy"
-                                    value={gameData.startDate}
-                                    onChange={(date) => {
-                                        handleInputChange('startDate', date);
-                                        handleInputChange('endDate', null);
-                                    }}
-                                    minDate={tomorrow}
-                                    className="date-picker-wrapper"
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            fullWidth
-                                            margin="normal"
-                                            error={submitted && !gameData.startDate}
-                                            helperText={
-                                                submitted && !gameData.startDate
-                                                    ? "Start Date is required"
-                                                    : ""
-                                            }
-                                            className="date-picker-input"
-                                        />
-                                    )}
-                                />
-                            </div>
-                            <div>
-                                <DesktopDatePicker
-                                    label="End Date"
-                                    inputFormat="MM/dd/yyyy"
-                                    value={gameData.endDate}
-                                    onChange={(date) => handleInputChange('endDate', date)}
-                                    className="date-picker-wrapper"
-                                    minDate={gameData.startDate || tomorrow}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            fullWidth
-                                            margin="normal"
-                                            error={submitted && !gameData.endDate}
-                                            helperText={
-                                                submitted && !gameData.endDate
-                                                    ? "End Date is required"
-                                                    : ""
-                                            }
-                                            className="date-picker-input"
-                                        />
-                                    )}
-                                />
-                            </div>
-                        </LocalizationProvider>
-                        <TextField
-                            label="Maximum Players"
-                            type="number"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            value={gameData.maxPlayers}
-                            onChange={(e) => handleInputChange('maxPlayers', e.target.value)}
-                            error={submitted && !gameData.maxPlayers}
-                            helperText={
-                                submitted && !gameData.maxPlayers
-                                    ? "Maximum Players are required"
-                                    : ""
-                            }
-                            className="input-field"
-                        />
-                        <DialogActions className="dialog-actions">
-                            <Button onClick={onClose} className="cancel-button">
-                                CANCEL
-                            </Button>
-                            <Button type="submit" className="create-button">
-                                HOST
-                            </Button>
-                        </DialogActions>
-                    </form>
-                </DialogContent>
-            </Dialog>
+        <Dialog open={open} onClose={(event, reason) => {
+                if( reason === 'backdropClick' ) {
+                    return;
+                }
+                onClose();
+            }}
+            maxWidth="sm">
+            <DialogTitle className="dialog-title-host-game">
+                <Typography variant="h6" align="center" className="dialog-title-text-host-game">
+                    Host Game
+                </Typography>
+            </DialogTitle>
+            <DialogContent className="dialog-content">
+                <form onSubmit={handleCreate} className="host-game-form">
+                    <TextField
+                        label="Game Name"
+                        fullWidth
+                        margin="normal"
+                        variant="outlined"
+                        value={gameData.gameName}
+                        onChange={(e) => handleInputChange('gameName', e.target.value)}
+                        error={submitted && !gameData.gameName}
+                        helperText={submitted && !gameData.gameName ? "Game name is required" : ""}
+                        className="input-field"
+                    />
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DesktopDatePicker
+                                label="Start Date"
+                                inputFormat="MM/dd/yyyy"
+                                value={gameData.startDate}
+                                onChange={(date) => {
+                                    handleInputChange('startDate', date);
+                                    handleInputChange('endDate', null);
+                                }}
+                                minDate={tomorrow}
+                                className="date-picker-wrapper"
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        fullWidth
+                                        margin="normal"
+                                        error={submitted && !gameData.startDate}
+                                        helperText={
+                                            submitted && !gameData.startDate
+                                                ? "Start Date is required"
+                                                : ""
+                                        }
+                                        className="date-picker-input"
+                                    />
+                                )}
+                            />
+                            <DesktopDatePicker
+                                label="End Date"
+                                inputFormat="MM/dd/yyyy"
+                                value={gameData.endDate}
+                                onChange={(date) => handleInputChange('endDate', date)}
+                                className="date-picker-wrapper"
+                                minDate={gameData.startDate || tomorrow}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        fullWidth
+                                        margin="normal"
+                                        error={submitted && !gameData.endDate}
+                                        helperText={
+                                            submitted && !gameData.endDate
+                                                ? "End Date is required"
+                                                : ""
+                                        }
+                                        className="date-picker-input"
+                                    />
+                                )}
+                            />
+                    </LocalizationProvider>
+                    <TextField
+                        label="Maximum Players"
+                        type="number"
+                        fullWidth
+                        margin="normal"
+                        variant="outlined"
+                        value={gameData.maxPlayers}
+                        onChange={(e) => handleInputChange('maxPlayers', e.target.value)}
+                        error={submitted && !gameData.maxPlayers}
+                        helperText={
+                            submitted && !gameData.maxPlayers
+                                ? "Maximum Players are required"
+                                : ""
+                        }
+                        className="input-field"
+                    />
+                    <DialogActions className="dialog-actions">
+                        <Button onClick={onClose} className="cancel-button">
+                            CANCEL
+                        </Button>
+                        <Button type="submit" className="create-button">
+                            HOST
+                        </Button>
+                    </DialogActions>
+                </form>
+            </DialogContent>
             <ErrorComponent
                 message={errorPopUp.message}
                 show={errorPopUp.show}
                 onClose={closeErrorPopUp}
             ></ErrorComponent>
-        </>
-        
+        </Dialog>
     );
 }
 

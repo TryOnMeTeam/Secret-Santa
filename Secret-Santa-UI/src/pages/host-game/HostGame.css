@@ -1,12 +1,12 @@
-.dialog-title {
-    background-color: #f5f5f5;
+.dialog-title-host-game {
+    background-color: #5F6D7C;
     padding: 16px;
     border-bottom: 1px solid #ddd;
 }
 
-.dialog-title-text {
+.dialog-title-text-host-game {
     font-weight: normal;
-    color: #b62e2e;
+    color: #fff;
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -26,26 +26,27 @@
 }
 
 .host-game-form .MuiDialogActions-root .cancel-button, .create-button {
-    color: #b62e2e;
+    color: #5F6D7C;
     padding: 8px 16px;
     text-transhost-game-form: uppercase;
 }
 
 .host-game-form .MuiDialogActions-root .cancel-button {
     background-color: #f5f5f5;
+    color: #162B42;
 }
 
 .host-game-form .MuiDialogActions-root .create-button {
-    background-color: #b62e2e;
+    background-color: #5F6D7C;
     color: #fff;
 }
 
 .host-game-form .MuiDialogActions-root .cancel-button:hover {
-    background-color: #f5b8b8;
+    background-color: #c8d2db;
 }
 
 .host-game-form .MuiDialogActions-root .create-button:hover {
-    background-color: #ea1b1b;
+    background-color: #162B42;
 }
 
 .host-game-form {
@@ -65,7 +66,11 @@
 .host-game-form .MuiIconButton-root {
     position: absolute;
     right: 16px;
-    background-color: #b62e2e;
+    background-color: #5F6D7C;
+}
+
+.date-picker-wrapper {
+    width: 100%;
 }
 
 @media (max-width: 768px) {

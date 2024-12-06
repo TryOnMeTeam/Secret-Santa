@@ -1,18 +1,28 @@
 /* Main container */
 .container {
-    background-image: url('../../../assets/bg.jpg');
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
+    background-image: url('../../../assets/bg.png');
+    background-size: cover; /* Ensures the image covers the container */
+    background-position: center; /* Keeps the image centered */
+    height: 100vh; /* Ensures the container takes full viewport height */
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+
+    /* Make sure the background image adapts on smaller screens */
+    background-attachment: fixed; /* Optional: makes the background fixed when scrolling */
+}
+
+/* Add media query for smaller screen sizes */
+@media (max-width: 768px) {
+    .container {
+        background-position: left; /* Position the image top-center for better fit */
+    }
 }
 
 /* Form wrapper */
 form {
-    background-color: rgba(155, 145, 145, 0.2);
+    background-color: rgba(155, 145, 145, 0.3);
     padding: 3rem;
     border-radius: 10px;
     color: #888181;
@@ -72,7 +82,7 @@ div {
     padding: 16px 20px;
     border-radius: 26px;
     border: 1px solid #D4D3E8;
-    color: #5F6D7C;
+    color: #4C489D;
     cursor: pointer;
     transition: 0.2s;
     text-transform: uppercase;
@@ -85,7 +95,7 @@ div {
 }
 
 .signup{
-    background-color: #5F6D7C;
+    background-color: #4C489D;
     color: white;
 }
 

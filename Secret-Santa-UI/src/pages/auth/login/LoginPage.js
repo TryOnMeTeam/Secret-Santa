@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { loginHandler } from '../../../services/authService.js';
 import { useAlert } from './../../../services/context/AlertContext.js';
 import { useAuth } from './../../../services/context/AuthContext';
+import bg from  '../../../assets/bg.png';
 import "./LoginPage.css";
 
 const Login = () => {
@@ -45,8 +46,17 @@ const Login = () => {
     navigate('/register');
   };
 
+  const backgroundStyle = {
+    backgroundImage: `url(${bg})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    height: '100vh',
+    width: '100%'
+  };
+
   return (
-    <div className="container">
+    <div className="container" >
       <form onSubmit={formik.handleSubmit}>
         <div className="input-container">
           <input
