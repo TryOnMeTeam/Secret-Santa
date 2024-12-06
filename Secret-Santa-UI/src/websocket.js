@@ -3,7 +3,6 @@ export const connectWebSocket = (userId, onMessage) => {
 
     ws.onopen = () => {
         ws.send(JSON.stringify({ type: 'register', userId }));
-        console.log('WebSocket connection established');
     };
 
     ws.onmessage = (event) => {

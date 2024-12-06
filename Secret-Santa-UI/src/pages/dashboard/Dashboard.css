@@ -15,7 +15,6 @@
     width: 100%;
     flex-direction: row;
     height: calc(100vh - 60px);
-    /* margin-top: 30px; */
 }
 
 .game-actions {
@@ -33,10 +32,10 @@
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     text-align: center;
-    display: flex; /* Use flexbox */
-    align-items: center; /* Vertically align items */
-    justify-content: center; /* Horizontally align items */
-    gap: 8px; /* Add a small gap between the icon and the text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .game-home-actions {
@@ -50,10 +49,10 @@
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     text-align: center;
-    display: flex; /* Use flexbox */
-    align-items: center; /* Vertically align items */
-    justify-content: center; /* Horizontally align items */
-    gap: 8px; /* Add a small gap between the icon and the text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .game-actions:hover {

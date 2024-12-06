@@ -4,7 +4,7 @@ import { useAlert } from '../../services/context/AlertContext';
 const AlertComponent = () => {
   const { alert } = useAlert();
 
-  if (!alert) return null;
+  if (!alert || (typeof alert.message !== 'string' && typeof alert.data !== 'string')) return null;
 
   return (
     <div
@@ -21,7 +21,7 @@ const AlertComponent = () => {
         zIndex: '1000',
       }}
     >
-      {alert.message}
+      {alert.message ?? alert.data}
     </div>
   );
 };

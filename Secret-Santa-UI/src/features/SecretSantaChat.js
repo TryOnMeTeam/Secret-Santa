@@ -6,8 +6,11 @@ import { CHAT_BOX_TYPE, NOTIFICATION_TYPE } from "../constants/secretSantaConsta
 import { FaPaperPlane } from "react-icons/fa";
 import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
+import { useNavigate } from 'react-router-dom';
 import {markEmailAsNotSentApi, fetchChatMessagesApi, fetchPendingMessagesApi}  from '../services/messageService';
+import { IoGameController } from "react-icons/io5";
 import secretSantaTheme from '../assets/secretSantaTheme.jpg';
+import ErrorComponent from "../components/Error/ErrorComponent.js";
 
 const SecretSantaChat = () => {
 
@@ -16,6 +19,7 @@ const SecretSantaChat = () => {
 
     const [messagesSanta, setMessagesSanta] = useState([]); // Default to an empty array
     const [messagesNinja, setMessagesNinja] = useState([]); // Default to an empty array
+    const [errorPopUp, setErrorPopUp] = useState({message: '', show: false});
     
     const [secretSantaInputMessage, setSecretSantaInputMessage] = useState("");
     const [giftNinjaInputMessage, setGiftNinjaInputMessage] = useState("");
@@ -27,6 +31,7 @@ const SecretSantaChat = () => {
     const [secretSantaMessagesHidden, setSecretSantaMessagesHidden] = useState(true);
     const [giftNinjaMessagesHidden, setGiftNinjaMessagesHidden] = useState(true);
     const chatModeRef = useRef(chatMode);
+    const navigate = useNavigate();
 
     const toggleSecretSantaBadgeVisibility = (value) => {
         setSecretSantaMessagesHidden(value);
@@ -40,7 +45,7 @@ const SecretSantaChat = () => {
         try {
             await markEmailAsNotSentApi(userId, gameId, chatBoxType);
         } catch (error) {
-            console.error("Error marking email as not sent:", error);
+            setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
         }
     }
 
@@ -52,7 +57,7 @@ const SecretSantaChat = () => {
             setMessagesSanta(secretSantaMessages || []);
             setMessagesNinja(giftNinjaMessages || []);
         } catch (error) {
-            console.error("Error fetching chat messages:", error);
+            setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
         }
     };
 
@@ -64,7 +69,7 @@ const SecretSantaChat = () => {
             toggleSecretSantaBadgeVisibility(!secretSantaPendingMessages);
             toggleGiftNinjaBadgeVisibility(!giftNinjaPendingMessages);
         } catch (error) {
-            console.error("Error fetching pending messages:", error);
+            setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
         }
     };
 
@@ -151,6 +156,10 @@ const SecretSantaChat = () => {
         setChatMode(null);
     };
 
+    const closeErrorPopUp = () => {
+        setErrorPopUp({ message: '', show: false });
+    }
+
     const backgroundStyle = {
         backgroundImage: `url(${secretSantaTheme})`,
         backgroundSize: 'cover',
@@ -162,6 +171,9 @@ const SecretSantaChat = () => {
 
     return (
         <div style={backgroundStyle} className="chat-container">
+            <div className="go-to-game-icon" onClick={() => navigate('/game')}>
+                <IoGameController />
+            </div>
             {/* <Navbar/> */}
             <div className="chat-mode-buttons">
                 <div className="chat-button-container"style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -270,6 +282,11 @@ const SecretSantaChat = () => {
                     </footer>
                 </div>
             )}
+                  <ErrorComponent
+        message={errorPopUp.message}
+        show={errorPopUp.show}
+        onClose={closeErrorPopUp}
+      ></ErrorComponent>
         </div>
     );
 };

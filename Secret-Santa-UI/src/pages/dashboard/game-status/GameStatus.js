@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { startGame, endGame, isGameActiveHandler } from '../../../services/gameService.js';
 import { useAlert } from '../../../services/context/AlertContext.js';
-import { getGameUsers } from "../../../services/gameService.js";
+import { getGameUsers, exitGame } from "../../../services/gameService.js";
 import { ListTableColumn } from '../../../models/ListTableColumn.js';
+import { useNavigate } from "react-router-dom";
 import secretSantaTheme from '../../../assets/secretSantaTheme.jpg';
-import Navbar  from '../../../components/navbar/Navbar.js';
+import Navbar from '../../../components/navbar/Navbar.js';
 import { FaStopCircle } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa";
+import { ImExit } from "react-icons/im";
+import ErrorComponent from "../../../components/Error/ErrorComponent.js";
 import "./GameStatus.css"
 
 function GameStatus() {
   const [rows, setRows] = useState([]);
   const [isGameActive, setIsGameActive] = useState(false);
   const { showAlert } = useAlert();
+  const navigate = useNavigate();
+  const [errorPopUp, setErrorPopUp] = useState({ message: '', show: false });
 
   const userId = localStorage.getItem('userId');
   const gameId = localStorage.getItem('gameId');
@@ -23,7 +28,7 @@ function GameStatus() {
       setIsGameActive(response.isActive === 1 ? true : false);
       return response;
     } catch (error) {
-      showAlert(error, 'error');
+      setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
     }
   };
 
@@ -38,15 +43,17 @@ function GameStatus() {
       await startGame(gameId);
       window.location.reload();
     } catch (error) {
-      showAlert(error, 'error');
+      setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
     }
   };
 
   const endSecretSantaGame = async () => {
     try {
       await endGame(gameId);
+      localStorage.removeItem('gameId')
+      navigate('/secret-santa');
     } catch (error) {
-      showAlert(error, 'error');
+      setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
     }
   };
 
@@ -66,7 +73,7 @@ function GameStatus() {
   const getGameInfo = async (gameId) => {
     try {
       const response = await getGameUsers(gameId);
-      if( response !== '' ) {
+      if (response !== '') {
         const filteredResponse = response.map(({ gameName, userName, email }) => ({
           gameName,
           userName,
@@ -82,61 +89,76 @@ function GameStatus() {
     }
   };
 
+  const onClickExitGame = async () => {
+    try {
+      await exitGame(userId, gameId);
+      navigate('/secret-santa');
+      localStorage.removeItem('gameId')
+    } catch (error) {
+      setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
+    }
+  };
+
+  const closeErrorPopUp = () => {
+    setErrorPopUp({ message: '', show: false });
+  }
+
+
   const PlayerList = ({ players }) => {
     return (
       <div className='status' >
         <div className='status-body'>
-            <div className="game-box">
-                  <div className="game-head">
-                  <div className="game-heading">
-                      <strong>🎅 {rows[0]?.gameName} 🎁</strong>
-                    </div>
-                  </div>
+          <div className="game-box">
+            <div className="game-head">
+              <div className="game-heading">
+                <strong>🎅 {rows[0]?.gameName} 🎁</strong>
+              </div>
             </div>
-            <div className="player-box">
-                  <div className="player-item">
-                    <div className='player-shape'>
-                      <div className="game-heading">
-                          <strong>Players</strong>
-                      </div>
-          
-                    </div>
-                  </div>
-            </div>
-            <div className='fixed'>
-
-              {players.map((player, index) => (
-                <div className="list-item-box">
-                    <div className="list-item" key={index}>
-                      <div className="player-number">{index+1}</div>
-                      <div className="player-name">
-                        <strong>{player.userName}</strong>
-                      </div>
-                    </div>
+          </div>
+          <div className="player-box">
+            <div className="player-item">
+              <div className='player-shape'>
+                <div className="game-heading">
+                  <strong>Players</strong>
                 </div>
-              ))}
-            </div>
-            <div className="player-box" style={{marginTop: '5px'}}>
-                  <div className="player-item">
-                    <div className='player-shape'>
-                      <div className="game-heading">
-                          <strong>Total: {rows?.length}</strong>
-                      </div>
 
-                    </div>
+              </div>
+            </div>
+          </div>
+          <div className='fixed'>
+
+            {players.map((player, index) => (
+              <div className="list-item-box">
+                <div className="list-item" key={index}>
+                  <div className="player-number">{index + 1}</div>
+                  <div className="player-name">
+                    <strong>{player.userName}</strong>
                   </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="player-box" style={{ marginTop: '5px' }}>
+            <div className="player-item">
+              <div className='player-shape'>
+                <div className="game-heading">
+                  <strong>Total: {rows?.length}</strong>
+                </div>
+
+              </div>
+            </div>
           </div>
           <div className='game-action-container'>
-            <button className="game-actions" style={{width: '252px'}} onClick={endSecretSantaGame}> <FaStopCircle /> End Game</button>
-            <button className="game-actions" style={{width: '252px'}} onClick={startSecretSantaGame}> <FaPlay/> Start Game</button>
+            <button className="game-actions" style={{ width: '252px' }} onClick={endSecretSantaGame}> <FaStopCircle /> End Game</button>
+            <button className="game-actions" style={{ width: '252px' }} onClick={startSecretSantaGame}> <FaPlay /> Start Game</button>
           </div>
-          </div>
+        </div>
       </div>
     );
   };
 
   useEffect(() => {
-    if(userId) {
+    if (userId) {
       getGameInfo(gameId);
       isActive();
     }
@@ -154,17 +176,17 @@ function GameStatus() {
   return (
     <div style={backgroundStyle} >
       <div>
-      <Navbar/>
-      <PlayerList players={rows} />
-
+        <Navbar />
+        <PlayerList players={rows} />
+        <button className="exit-game-button" onClick={onClickExitGame}>
+          <ImExit /> Exit Game
+        </button>
       </div>
-
-      {/* <div class="list-item-box">
-        <div class="list-item">
-          <div class="player-number">1</div>
-          <div class="player-name">Lorem <strong>IPSUM</strong></div>
-        </div>
-      </div> */}
+      <ErrorComponent
+        message={errorPopUp.message}
+        show={errorPopUp.show}
+        onClose={closeErrorPopUp}
+      ></ErrorComponent>
     </div>
   )
 }

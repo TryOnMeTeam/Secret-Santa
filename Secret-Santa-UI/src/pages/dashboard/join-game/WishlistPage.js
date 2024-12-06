@@ -9,8 +9,8 @@ import secretSantaTheme from '../../../assets/secretSantaTheme.jpg';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useNavigate } from 'react-router-dom';
 import Button from "@mui/material/Button";
-import HomeIcon from '@mui/icons-material/Home';
 import { IoGameController } from "react-icons/io5";
+import ErrorComponent from "../../../components/Error/ErrorComponent.js";
 import "./WishlistPage.css"
 
 function WishlistPage() {
@@ -22,6 +22,7 @@ function WishlistPage() {
   const [isGiftNinjaView, setIsGiftNinjaView] = useState(false); // To toggle between the two wishlists
   const { showAlert } = useAlert();
   const navigate = useNavigate();
+  const [errorPopUp, setErrorPopUp] = useState({ message: '', show: false });
 
   const userId = localStorage.getItem('userId');
   const gameId = localStorage.getItem('gameId');
@@ -51,7 +52,7 @@ function WishlistPage() {
       const response = await isGameActiveHandler(gameId);
       setIsGameActive(response?.isActive === 1 ? true : false);
     } catch (error) {
-      showAlert(error, 'error');
+      setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
     }
   };
 
@@ -60,7 +61,7 @@ function WishlistPage() {
       const response = await wishlistHandler(userId, gameId);
       setMyWishlist(response[0]?.length ? response[0] : []);
     } catch (error) {
-      showAlert(error, 'error');
+      setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
     }
   };
 
@@ -69,9 +70,14 @@ function WishlistPage() {
       const response = await getGiftNinjaWishes(userId, gameId);
       setGiftNinjaWishlist(response[0]?.length ? response[0] : []);
     } catch (error) {
-      showAlert(error, 'error');
+      setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
     }
   };
+
+  const closeErrorPopUp = () => {
+    setErrorPopUp({ message: '', show: false });
+  }
+
 
   useEffect(() => {
     if (userId) {
@@ -153,7 +159,7 @@ function WishlistPage() {
   return (
     <div style={backgroundStyle}>
       <div className="go-to-game-icon" onClick={() => navigate('/game')}>
-      <IoGameController />
+        <IoGameController />
       </div>
       <div className='action-container'>
         <Button
@@ -198,6 +204,11 @@ function WishlistPage() {
         resetForm={resetAddWishlistForm}
         refreshWishlist={() => getWishlist(userId, gameId)} // Refresh Wishlist
       />
+      <ErrorComponent
+        message={errorPopUp.message}
+        show={errorPopUp.show}
+        onClose={closeErrorPopUp}
+      ></ErrorComponent>
     </div>
   );
 }

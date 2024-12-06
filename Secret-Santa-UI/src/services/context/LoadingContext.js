@@ -35,7 +35,6 @@ export const LoadingProvider = ({ children }) => {
 // Custom Hook to Use Loading Context
 export const useLoading = () => {
   const context = useContext(LoadingContext);
-  console.log('LoadingContext:', context);
   if (!context) {
     throw new Error('useLoading must be used within a LoadingProvider');
   }

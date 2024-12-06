@@ -37,7 +37,7 @@ const Login = () => {
 
         navigate('/secret-santa');
       } catch (error) {
-        showAlert(error, 'error');
+        showAlert(error.data ?? error.message ?? 'Login failed', 'error');
       }
     }
   });

@@ -1,23 +1,25 @@
-import { 
+import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-    TextField, 
-    Typography 
+    TextField,
+    Typography
 } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import Wishlist from '../../../models/Wishlist';
 import "./AddWishlist.css";
 import { useAlert } from '../../../services/context/AlertContext.js';
 import { addProductToWishlistHandler } from '../../../services/wishlistService.js';
+import ErrorComponent from "../../../components/Error/ErrorComponent.js";
 
 function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
 
     const [wishlistData, setWishlistData] = useState(new Wishlist());
     const [submitted, setSubmitted] = useState(true);
     const { showAlert } = useAlert();
+    const [errorPopUp, setErrorPopUp] = useState({message: '', show: false});
 
     const handleAddWishlist = async (event) => {
         event.preventDefault();
@@ -25,17 +27,17 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
         const userId = localStorage.getItem('userId');
         const gameId = localStorage.getItem('gameId');
 
-        if(!userId) {
+        if (!userId) {
             showAlert('User is not logged In. Please log in to Host a Game.', 'error');
             return;
         }
 
-        if(!gameId) {
+        if (!gameId) {
             showAlert('Game is not created.', 'error');
             return;
         }
-        
-        if(wishlistData.productName && wishlistData.productLink) {
+
+        if (wishlistData.productName && wishlistData.productLink) {
             await addProductToWishlist(userId, gameId, wishlistData);
             onClose();
             refreshWishlist();
@@ -51,8 +53,12 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
             showAlert('Product Added to Wishlist!', 'success');
             return response.data;
         } catch (error) {
-            showAlert(error, 'error');
+            setErrorPopUp({message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true});
         }
+    }
+
+    const closeErrorPopUp = () => {
+        setErrorPopUp({ message: '', show: false });
     }
 
     const handleInputChange = (field, value) => {
@@ -116,7 +122,13 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
                     </DialogActions>
                 </form>
             </DialogContent>
+            <ErrorComponent
+                message={errorPopUp.message}
+                show={errorPopUp.show}
+                onClose={closeErrorPopUp}
+            ></ErrorComponent>
         </Dialog>
+
     )
 }
 

@@ -9,9 +9,9 @@ import {
     Typography,
 } from "@mui/material";
 import "./CodeDialog.css";
-import { GAME_CODE_KEY } from '../../../constants/secretSantaConstants';
 import { useAlert } from '../../../services/context/AlertContext.js';
 import { useNavigate } from 'react-router-dom';
+import ErrorComponent from "../../../components/Error/ErrorComponent.js";
 
 function CodeDialog({ open, onClose, buttonText, dialogTitle, onSubmit, resetForm }) {
 
@@ -19,6 +19,7 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle, onSubmit, resetFor
     const [gameCode, setGameCode] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const { showAlert } = useAlert();
+    const [errorPopUp, setErrorPopUp] = useState({ message: '', show: false });
 
     const GAME_CODE_REGEX = '^[a-zA-Z0-9]+$';
 
@@ -26,10 +27,10 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle, onSubmit, resetFor
         event.preventDefault();
         setSubmitted(true);
 
-        if(gameCode && gameCode.length === 8 && gameCode.match(GAME_CODE_REGEX)) {
+        if (gameCode && gameCode.length === 8 && gameCode.match(GAME_CODE_REGEX)) {
             try {
                 const response = await onSubmit(gameCode);
-                if(response) {
+                if (response) {
                     navigate('/game');
                     showAlert('Joined Game Successfully!', 'success');
                 }
@@ -37,12 +38,16 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle, onSubmit, resetFor
                     alert('Enter valid Game Code');
                 }
             } catch (error) {
-                showAlert(error, 'error');
+                setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
             }
         } else {
             alert('Enter valid Game Code');
         }
     };
+
+    const closeErrorPopUp = () => {
+        setErrorPopUp({ message: '', show: false });
+    }
 
     useEffect(() => {
         setGameCode('');
@@ -57,9 +62,9 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle, onSubmit, resetFor
             onClose();
         }}
             maxWidth='sm'
-            fullWidth 
+            fullWidth
             sx={{
-                overflowX: 'hidden', 
+                overflowX: 'hidden',
             }}
         >
             <DialogTitle className="dialog-title-code">
@@ -87,6 +92,11 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle, onSubmit, resetFor
                     </DialogActions>
                 </form>
             </DialogContent>
+            <ErrorComponent
+                message={errorPopUp.message}
+                show={errorPopUp.show}
+                onClose={closeErrorPopUp}
+            ></ErrorComponent>
         </Dialog>
     )
 }
