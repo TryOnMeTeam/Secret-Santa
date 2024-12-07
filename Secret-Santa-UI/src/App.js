@@ -1,22 +1,22 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './services/context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/auth/login/LoginPage';
 import RegisterPage from './pages/auth/register/RegisterPage';
 import HomePage from './pages/HomePage';
 import AlertComponent from './components/Alert/AlertComponent';
-import { AlertProvider } from './services/context/AlertContext';
-import SecretSantaChat from './features/SecretSantaChat';
+import { AlertProvider } from './context/AlertContext';
+import SecretSantaChat from './pages/SecretSantaChat';
 import Dashboard from "./pages/dashboard/Dashboard";
-import WishlistPage from './pages/dashboard/join-game/WishlistPage';
+import WishlistPage from './pages/wishlist/WishlistPage';
 import GamePlay from '../src/pages/join-game/GamePlay';
-import { LoadingProvider } from "./services/context/LoadingContext";
+import { LoadingProvider } from "./context/LoadingContext";
 import "./App.css";
-import GameStatus from './pages/dashboard/game-status/GameStatus';
+import GameStatus from './pages/game-status/GameStatus';
 import { setupInterceptors } from './services/axionsInstance';
 import Spinner from './pages/spinner/spinner';
-import { useLoading } from './services/context/LoadingContext';
+import { useLoading } from './context/LoadingContext';
 
 const App = () => {
   const { startLoading, stopLoading } = useLoading();

@@ -9,9 +9,9 @@ import {
     Typography,
 } from "@mui/material";
 import "./CodeDialog.css";
-import { useAlert } from '../../../services/context/AlertContext.js';
+import { useAlert } from '../../context/AlertContext.js';
 import { useNavigate } from 'react-router-dom';
-import ErrorComponent from "../../../components/Error/ErrorComponent.js";
+import ErrorComponent from "../Error/ErrorComponent.js";
 
 function CodeDialog({ open, onClose, buttonText, dialogTitle, onSubmit, resetForm }) {
 
@@ -30,18 +30,19 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle, onSubmit, resetFor
         if (gameCode && gameCode.length === 8 && gameCode.match(GAME_CODE_REGEX)) {
             try {
                 const response = await onSubmit(gameCode);
-                if (response) {
-                    navigate('/game');
+                if (response.gameId) {
+                    localStorage.setItem('gameId', response.gameId);
                     showAlert('Joined Game Successfully!', 'success');
+                    navigate(response.path);
                 }
                 else {
-                    alert('Enter valid Game Code');
+                    alert('Enter valid Game Code here');
                 }
             } catch (error) {
                 setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
             }
         } else {
-            alert('Enter valid Game Code');
+            alert('Enter valid Game Code there');
         }
     };
 

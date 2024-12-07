@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar'
 import "./Dashboard.css"
-import HostGame from '../host-game/HostGame';
-import CodeDialog from '../shared/code/CodeDialog';
+import HostGame from '../../components/HostGame/HostGame';
+import CodeDialog from '../../components/CodeDialog/CodeDialog';
 import { useNavigate } from "react-router-dom";
 import { joinGameHandler, validateGameId } from '../../services/gameService.js';
 import secretSantaTheme from '../../assets/secretSantaTheme.jpg';
@@ -75,7 +75,10 @@ function Dashboard() {
 
   const handleJoinGameSubmit = async (gameCode) => {
     try {
-      return await joinGameHandler(userId, gameCode);
+      const response = await joinGameHandler(userId, gameCode);
+      if (response) {
+        return {gameId: response, path: '/game'};
+      }
     } catch (error) {
       throw error;
     }
@@ -83,7 +86,10 @@ function Dashboard() {
 
   const handleGameStatusSubmit = async (gameCode) => {
     try {
-      return await joinGameHandler(userId, gameCode);
+      const response =  await joinGameHandler(userId, gameCode);
+      if (response) {
+        return {gameId: response, path: '/game-status'};
+      }
     } catch (error) {
       throw error;
     }

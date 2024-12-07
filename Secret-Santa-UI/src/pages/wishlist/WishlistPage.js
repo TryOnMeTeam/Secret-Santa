@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 import QueueIcon from '@mui/icons-material/Queue';
-import { wishlistHandler, getGiftNinjaWishes } from "../../../services/wishlistService.js";
-import AddWishlist from '../add-wishlist/AddWishlist.js';
-import { isGameActiveHandler } from '../../../services/gameService.js';
-import { useAlert } from '../../../services/context/AlertContext.js';
-import secretSantaTheme from '../../../assets/secretSantaTheme.jpg';
+import { getMineWishlist, getGiftNinjaWishList } from "../../services/wishlistService.js";
+import AddWishlist from '../../components/AddWishlist/AddWishlist.js';
+import { isGameActiveHandler } from '../../services/gameService.js';
+import { useAlert } from '../../context/AlertContext.js';
+import secretSantaTheme from '../../assets/secretSantaTheme.jpg';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { useNavigate } from 'react-router-dom';
 import Button from "@mui/material/Button";
 import { IoGameController } from "react-icons/io5";
-import ErrorComponent from "../../../components/Error/ErrorComponent.js";
+import ErrorComponent from "../../components/Error/ErrorComponent.js";
 import "./WishlistPage.css"
 
 function WishlistPage() {
@@ -58,7 +58,7 @@ function WishlistPage() {
 
   const getWishlist = async (userId, gameId) => {
     try {
-      const response = await wishlistHandler(userId, gameId);
+      const response = await getMineWishlist(userId, gameId);
       setMyWishlist(response[0]?.length ? response[0] : []);
     } catch (error) {
       setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
@@ -67,7 +67,7 @@ function WishlistPage() {
 
   const getGiftNinjaWishlist = async () => {
     try {
-      const response = await getGiftNinjaWishes(userId, gameId);
+      const response = await getGiftNinjaWishList(userId, gameId);
       setGiftNinjaWishlist(response[0]?.length ? response[0] : []);
     } catch (error) {
       setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });

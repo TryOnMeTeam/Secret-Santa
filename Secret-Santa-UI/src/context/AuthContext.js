@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { isAuthenticated, getUser, logout as logoutService } from '../authService';
+import { isAuthenticated, getUser, logout as logoutService } from '../services/authService';
 import { RotatingLines } from "react-loader-spinner";
 
 const AuthContext = createContext();

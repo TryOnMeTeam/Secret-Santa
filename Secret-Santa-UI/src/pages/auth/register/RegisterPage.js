@@ -3,8 +3,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { registerHandler } from '../../../services/authService.js';
-import { useAlert } from './../../../services/context/AlertContext.js';
-import { useAuth } from './../../../services/context/AuthContext';
+import { useAlert } from './../../../context/AlertContext.js';
+import { useAuth } from './../../../context/AuthContext';
 import "./RegisterPage.css";
 
 const Register = () => {

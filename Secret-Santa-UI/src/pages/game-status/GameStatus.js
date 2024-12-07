@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { startGame, endGame, isGameActiveHandler } from '../../../services/gameService.js';
-import { useAlert } from '../../../services/context/AlertContext.js';
-import { getGameUsers, exitGame } from "../../../services/gameService.js";
-import { ListTableColumn } from '../../../models/ListTableColumn.js';
+import { startGame, endGame, isGameActiveHandler } from '../../services/gameService.js';
+import { useAlert } from '../../context/AlertContext.js';
+import { getGameUsers, exitGame } from "../../services/gameService.js";
+import { ListTableColumn } from '../../models/ListTableColumn.js';
 import { useNavigate } from "react-router-dom";
-import secretSantaTheme from '../../../assets/secretSantaTheme.jpg';
-import Navbar from '../../../components/navbar/Navbar.js';
+import secretSantaTheme from '../../assets/secretSantaTheme.jpg';
+import Navbar from '../../components/navbar/Navbar.js';
 import { FaStopCircle } from "react-icons/fa";
 import { FaPlay } from "react-icons/fa";
 import { ImExit } from "react-icons/im";
-import ErrorComponent from "../../../components/Error/ErrorComponent.js";
+import ErrorComponent from "../../components/Error/ErrorComponent.js";
 import "./GameStatus.css"
 
 function GameStatus() {

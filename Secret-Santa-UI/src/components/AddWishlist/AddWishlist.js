@@ -8,11 +8,11 @@ import {
     Typography
 } from '@mui/material';
 import React, { useEffect, useState } from 'react'
-import Wishlist from '../../../models/Wishlist';
+import Wishlist from '../../models/Wishlist';
 import "./AddWishlist.css";
-import { useAlert } from '../../../services/context/AlertContext.js';
-import { addProductToWishlistHandler } from '../../../services/wishlistService.js';
-import ErrorComponent from "../../../components/Error/ErrorComponent.js";
+import { useAlert } from '../../context/AlertContext.js';
+import { addWishToMineWishList } from '../../services/wishlistService.js';
+import ErrorComponent from "../Error/ErrorComponent.js";
 
 function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
 
@@ -48,7 +48,7 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
 
     const addProductToWishlist = async (userId, gameId, wishlistData) => {
         try {
-            const response = await addProductToWishlistHandler(userId, gameId, wishlistData);
+            const response = await addWishToMineWishList(userId, gameId, wishlistData);
             window.location.reload();
             showAlert('Product Added to Wishlist!', 'success');
             return response.data;

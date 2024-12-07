@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAlert } from '../../services/context/AlertContext';
+import { useAlert } from '../../context/AlertContext';
 
 const AlertComponent = () => {
   const { alert } = useAlert();

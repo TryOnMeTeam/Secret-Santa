@@ -68,8 +68,8 @@ const getSecretSantaWishlist = async (req, res) => {
  * }
  */
 const addWishToUserWishlist = async (req, res) => {
-  const { userId, gameId, payload } = req.body;
-  const wish = payload;
+  const { userId, gameId } = req.body;
+  const wish = { productLink: req.body?.productLink, productName: req.body?.productName };
   const result = await wishlistService.addWishToUserWishlist(Number(userId), gameId, wish);
   response(res, result.status, message.SUCCESS, result.response);
 };

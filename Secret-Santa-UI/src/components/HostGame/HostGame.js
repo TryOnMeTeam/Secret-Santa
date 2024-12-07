@@ -13,9 +13,8 @@ import { LocalizationProvider, DesktopDatePicker } from "@mui/x-date-pickers";
 import "./HostGame.css";
 import Game from "../../models/Game";
 import { hostGameHandler } from "../../services/gameService.js";
-import { useAlert } from './../../services/context/AlertContext.js';
-import ErrorComponent from "../../components/Error/ErrorComponent.js";
-
+import { useAlert } from './../../context/AlertContext.js';
+import ErrorComponent from "../Error/ErrorComponent.js";
 
 function HostGame({ open, onClose, resetForm }) {
     const [gameData, setGameData] = useState(new Game());

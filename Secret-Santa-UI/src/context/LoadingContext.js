@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { setupInterceptors } from '../axionsInstance';
+import { setupInterceptors } from '../services/axionsInstance';
 
 // Create Context
 const LoadingContext = createContext();

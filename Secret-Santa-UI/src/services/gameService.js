@@ -1,91 +1,62 @@
-import axiosInstance from "./axionsInstance";
+import { handleRequest } from '../utils/requestHandler';
 
-export const hostGameHandler = async (userId, payload) => {
-    try{
-        const response = await axiosInstance.post('/api/game/createGame', {
-            userId,
-            payload
-        });
-
-        return response.data?.data;
-    } catch (error) {
-        throw error.response ? error.response.data?.data : 'Failed to Host Game';
-    }
+export const hostGameHandler = (userId, payload) => {
+    return handleRequest({
+        method: 'post',
+        url: '/api/game/createGame',
+        data: { userId, payload },
+    });
 };
 
-export const joinGameHandler = async (userId, gameCode) => {
-    try {
-        const response = await axiosInstance.post('/api/game/joinuser', {
-            userId,
-            gameCode
-        });
-        if(response.data?.data) {
-            localStorage.setItem('gameId', response.data?.data);
-        }
-
-        return response.data?.data;
-    } catch (error) {
-        throw error.response ? error.response.data?.data : 'Failed to Join the game';
-    }
+export const joinGameHandler = (userId, gameCode) => {
+    return handleRequest({
+        method: 'post',
+        url: '/api/game/joinuser',
+        data: { userId, gameCode }
+    });
 };
 
-export const isGameActiveHandler = async (gameId) => {
-    try {
-        const response = await axiosInstance.get(`/api/game/isActive/${gameId}`);
-        return response.data?.data;
-    } catch (error) {
-        throw error.response ? error.response.data?.data : 'Failed to fetch if game is Active';
-    }
+export const isGameActiveHandler = (gameId) => {
+    return handleRequest({
+        method: 'get',
+        url: `/api/game/isActive/${gameId}`,
+    });
 };
 
-export const getGameUsers = async (gameId) => {
-    try {
-        const response = await axiosInstance.get(`/api/game/gameinfo/${gameId}`);
-        return response.data?.data;
-    } catch (error) {
-        throw error.response ? error.response.data?.data : 'Failed to fetch Game Info';
-    }
+export const getGameUsers = (gameId) => {
+    return handleRequest({
+        method: 'get',
+        url: `/api/game/gameinfo/${gameId}`,
+    });
 };
 
-export const startGame = async (gameId) => {
-    try {
-        const response = await axiosInstance.post(`/api/game/startGame`, {
-            gameId
-        });
-        return response.data?.data;
-    } catch (error) {
-        throw error.response ? error.response.data?.data : 'Failed to start Game';
-    }
+export const startGame = (gameId) => {
+    return handleRequest({
+        method: 'post',
+        url: '/api/game/startGame',
+        data: { gameId },
+    });
 };
 
-export const exitGame = async (userId, gameId) => {
-    try {
-        const response = await axiosInstance.post(`/api/game/exit`, {
-            userId,
-            gameId
-        });
-        return response.data?.data;
-    } catch (error) {
-        throw error.response ? error.response.data?.data : 'Failed to exit Game';
-    }
+export const exitGame = (userId, gameId) => {
+    return handleRequest({
+        method: 'post',
+        url: '/api/game/exit',
+        data: { userId, gameId },
+    });
 };
 
-export const endGame = async (gameId) => {
-    try {
-        const response = await axiosInstance.delete(`/api/game/endGame/${gameId}`);
-        return response.data?.data;
-    } catch (error) {
-        throw error.response ? error.response.data?.data : 'Failed to end Game';
-    }
+export const endGame = (gameId) => {
+    return handleRequest({
+        method: 'delete',
+        url: `/api/game/endGame/${gameId}`,
+    });
 };
 
-export const validateGameId = async (gameId) => {
-    try {
-        const response = await axiosInstance.post(`/api/game/validateGame`, {
-            gameId
-        });
-        return response.data?.data;
-    } catch (error) {
-        throw error.response ? error.response.data?.data : 'Failed to validate Game';
-    }
+export const validateGameId = (gameId) => {
+    return handleRequest({
+        method: 'post',
+        url: '/api/game/validateGame',
+        data: { gameId },
+    });
 };

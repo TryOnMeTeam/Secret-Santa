@@ -3,9 +3,9 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { loginHandler } from '../../../services/authService.js';
-import { useAlert } from './../../../services/context/AlertContext.js';
-import { useAuth } from './../../../services/context/AuthContext';
-import bg from  '../../../assets/bg.png';
+import { useAlert } from './../../../context/AlertContext.js';
+import { useAuth } from './../../../context/AuthContext';
+import logoutTheme from  '../../../assets/logoutTheme.png';
 import "./LoginPage.css";
 
 const Login = () => {
@@ -47,7 +47,7 @@ const Login = () => {
   };
 
   const backgroundStyle = {
-    backgroundImage: `url(${bg})`,
+    backgroundImage: `url(${logoutTheme})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',

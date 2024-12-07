@@ -7,7 +7,7 @@ import { FaPaperPlane } from "react-icons/fa";
 import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
 import { useNavigate } from 'react-router-dom';
-import {markEmailAsNotSentApi, fetchChatMessagesApi, fetchPendingMessagesApi}  from '../services/messageService';
+import {markEmailAsNotSent, fetchMessages, fetchPendingMessages}  from '../services/messageService';
 import { IoGameController } from "react-icons/io5";
 import secretSantaTheme from '../assets/secretSantaTheme.jpg';
 import ErrorComponent from "../components/Error/ErrorComponent.js";
@@ -41,9 +41,9 @@ const SecretSantaChat = () => {
         setGiftNinjaMessagesHidden(value);
     };
 
-    const markEmailAsNotSent = async(userId, gameId, chatBoxType) => {
+    const markMessagesAsRead = async(userId, gameId, chatBoxType) => {
         try {
-            await markEmailAsNotSentApi(userId, gameId, chatBoxType);
+            await markEmailAsNotSent(userId, gameId, chatBoxType);
         } catch (error) {
             setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
         }
@@ -51,7 +51,7 @@ const SecretSantaChat = () => {
 
     const fetchChatMessages = async () => {
         try {
-            const response = await fetchChatMessagesApi(userId, gameId);
+            const response = await fetchMessages(userId, gameId);
             const { secretSantaMessages, giftNinjaMessages } = response;
 
             setMessagesSanta(secretSantaMessages || []);
@@ -61,9 +61,9 @@ const SecretSantaChat = () => {
         }
     };
 
-    const fetchPendingMessages = async () => {
+    const fetchUnReadMessages = async () => {
         try {
-            const response = await fetchPendingMessagesApi(userId, gameId);
+            const response = await fetchPendingMessages(userId, gameId);
             const { secretSantaPendingMessages, giftNinjaPendingMessages } = response;
 
             toggleSecretSantaBadgeVisibility(!secretSantaPendingMessages);
@@ -80,7 +80,7 @@ const SecretSantaChat = () => {
 
     useEffect(() => {
         fetchChatMessages();
-        fetchPendingMessages();
+        fetchUnReadMessages();
         if (userId) {
             const websocket = connectWebSocket(userId, (message) => {
                 if (message.type === NOTIFICATION_TYPE.MESSAGE) {
@@ -193,7 +193,7 @@ const SecretSantaChat = () => {
                             onClick={() => {
                                 toggleSecretSantaBadgeVisibility(true);
                                 setChatMode(CHAT_BOX_TYPE.SECRET_SANTA);
-                                markEmailAsNotSent(userId, gameId, CHAT_BOX_TYPE.SECRET_SANTA);
+                                markMessagesAsRead(userId, gameId, CHAT_BOX_TYPE.SECRET_SANTA);
                             }}
                         >
                             Talk to My Secret Santa
@@ -216,7 +216,7 @@ const SecretSantaChat = () => {
                             onClick={() => {
                                 toggleGiftNinjaBadgeVisibility(true);
                                 setChatMode(CHAT_BOX_TYPE.GIFT_NINJA);
-                                markEmailAsNotSent(userId, gameId, CHAT_BOX_TYPE.GIFT_NINJA);
+                                markMessagesAsRead(userId, gameId, CHAT_BOX_TYPE.GIFT_NINJA);
                             }}
                         >
                             Talk to My Gift Ninja

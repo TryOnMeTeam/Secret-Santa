@@ -1,6 +1,6 @@
 /* HomePage Container */
 .home-container {
-    background-image: url('../assets/bg.png');
+    background-image: url('../assets/logoutTheme.png');
     background-size: cover;
     background-position: center;
     height: 100vh;
@@ -15,7 +15,7 @@
 }
 
 .home-container {
-    background-image: url('../assets/bg.png');
+    background-image: url('../assets/logoutTheme.png');
     background-size: cover; /* Ensures the image covers the container */
     background-position: center; /* Keeps the image centered */
     height: 100vh; /* Ensures the container takes full viewport height */

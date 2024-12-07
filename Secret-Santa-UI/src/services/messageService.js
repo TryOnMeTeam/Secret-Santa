@@ -1,38 +1,33 @@
-import axiosInstance from "./axionsInstance";
+import { handleRequest } from '../utils/requestHandler';
 
-export const markEmailAsNotSentApi = async (userId, gameId, chatBoxType) => {
-    try {
-        const response = await axiosInstance.post('/api/chat/markEmailAsNotSent', {
-            userId: userId,
-            gameId: gameId,
-            chatBoxType: chatBoxType
-        })
-        return response.data?.data;
-    } catch (error) {
-        throw error.response ? error.response.data?.data : 'Failed to mark email as not sent';
-    }
+export const fetchMessages = (userId, gameId) => {
+    return handleRequest({
+        method: 'post',
+        url: '/api/chat/getMessages',
+        data: { userId, gameId },
+    });
 };
 
-export const fetchChatMessagesApi = async (userId, gameId) => {
-    try {
-        const response = await axiosInstance.post('/api/chat/getMessages', {
-            userId: userId,
-            gameId: gameId
-        })
-        return response.data?.data;
-    } catch (error) {
-        throw error.response ? error.response.data?.data : 'Failed to get chat messages';
-    }
-}
+export const fetchPendingMessages = (userId, gameId) => {
+    return handleRequest({
+        method: 'post',
+        url: '/api/chat/getPendingMessages',
+        data: { userId, gameId },
+    });
+};
 
-export const fetchPendingMessagesApi = async (userId, gameId) => {
-    try {
-        const response = await axiosInstance.post('/api/chat/getPendingMessages', {
-            userId: userId,
-            gameId: gameId
-        })
-        return response.data?.data;
-    } catch (error) {
-        throw error.response ? error.response.data?.data : 'Failed to get pending messages';
-    }
-}
+export const deleteMessage = (messageId) => {
+    return handleRequest({
+        method: 'delete',
+        url: '/api/messages/delete',
+        params: { messageId },
+    });
+};
+
+export const markEmailAsNotSent = (userId, gameId, chatBoxType) => {
+    return handleRequest({
+        method: 'post',
+        url: '/api/chat/markEmailAsNotSent',
+        data: { userId, gameId, chatBoxType },
+    });
+};
