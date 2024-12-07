@@ -4,13 +4,16 @@
 /Secret-Santa-Backend/dist/
 Secret-Santa-Backend/build/
 Secret-Santa-Backend/coverage/
+.Secret-Santa-Backend/package-lock.json
 
 # UI (Frontend) project (e.g., React, Angular)
 /Secret-Santa-UI/node_modules/
+/Secret-Santa-UI/node_modules/.cache
 .Secret-Santa-UI/.env
 /Secret-Santa-UI/build/
 Secret-Santa-UI/dist/
 Secret-Santa-UI/coverage/
+.Secret-Santa-UI/package-lock.json
 
 # General
 *.log
