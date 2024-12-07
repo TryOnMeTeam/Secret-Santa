@@ -208,7 +208,9 @@ const joinUserToSecretSantaGame = async (userId, gameCode) => {
 
   try {
     const result = await gameDao.joinUserToSecretSantaGame(Number(userId), gameCode);
-    return commonService.createResponse(httpResponse.SUCCESS, result);
+    return result
+      ? commonService.createResponse(httpResponse.SUCCESS, result)
+      : commonService.createResponse(httpResponse.BAD_REQUEST, messages.INVALID_GAME_CODE);
   } catch (error) {
     return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }

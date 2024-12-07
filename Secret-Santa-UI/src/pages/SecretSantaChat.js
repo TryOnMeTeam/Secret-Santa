@@ -75,10 +75,14 @@ const SecretSantaChat = () => {
         const newMessage = { from: reverseChatBoxType, content: message.content };
 
         if (reverseChatBoxType === Constant.CHAT_BOX_TYPE.SECRET_SANTA) {
-            toggleBadgeVisibility(setSecretSantaMessagesHidden, false);
+            if (chatModeRef?.current !== Constant.CHAT_BOX_TYPE.SECRET_SANTA) {
+                toggleBadgeVisibility(setSecretSantaMessagesHidden, false);
+            }
             setMessagesSanta((prev) => [...prev, newMessage]);
-        } else {
-            toggleBadgeVisibility(setGiftNinjaMessagesHidden, false);
+        } else if (reverseChatBoxType === Constant.CHAT_BOX_TYPE.GIFT_NINJA) {
+            if (chatModeRef?.current !== Constant.CHAT_BOX_TYPE.GIFT_NINJA) {
+                toggleBadgeVisibility(setGiftNinjaMessagesHidden, false);
+            }
             setMessagesNinja((prev) => [...prev, newMessage]);
         }
     };
@@ -96,7 +100,7 @@ const SecretSantaChat = () => {
         if (chatMode === Constant.CHAT_BOX_TYPE.SECRET_SANTA) {
             setMessagesSanta((prev) => [...prev, newMessage]);
             setSecretSantaInputMessage('');
-        } else {
+        } else if (chatMode === Constant.CHAT_BOX_TYPE.GIFT_NINJA) {
             setMessagesNinja((prev) => [...prev, newMessage]);
             setGiftNinjaInputMessage('');
         }
@@ -114,10 +118,18 @@ const SecretSantaChat = () => {
         fetchChatMessages();
         fetchUnReadMessages();
 
+        let websocket;
         if (userId) {
-            const websocket = connectWebSocket(userId, handleWebSocketMessage);
+            websocket = connectWebSocket(userId, handleWebSocketMessage);
             setWs(websocket);
         }
+
+        return () => {
+            if (websocket) {
+                console.log('Closing WebSocket connection...');
+                websocket.close();
+            }
+        };
     }, [userId]);
 
     useEffect(() => {

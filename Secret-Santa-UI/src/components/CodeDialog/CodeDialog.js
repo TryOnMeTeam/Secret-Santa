@@ -69,7 +69,7 @@ function CodeDialog({ open, onClose, buttonText, dialogTitle, onSubmit, resetFor
             }}
         >
             <DialogTitle className="dialog-title-code">
-                <Typography variant='h6' align='center' className='dialog-title-text-code'>
+                <Typography variant='body1' align='center' className='dialog-title-text-code'>
                     {dialogTitle}
                 </Typography>
             </DialogTitle>

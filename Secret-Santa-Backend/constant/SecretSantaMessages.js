@@ -19,5 +19,6 @@ module.exports = {
     SENT_MESSAGE_STORED_SUCCESSFULLY: 'Sent message stored successfully',
     EMAIL_MARKED_NOT_SENT: 'Email marked as not sent',
     EXIT_GAME_SUCCESSFULLY: 'Exit game successfully',
+    INVALID_GAME_CODE: 'Invalid code code',
     SUCCESS: 'Success',
 };

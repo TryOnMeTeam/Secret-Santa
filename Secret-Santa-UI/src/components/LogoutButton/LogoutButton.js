@@ -10,12 +10,13 @@ const LogoutButton = () => {
         const confirmLogout = window.confirm("Are you sure you want to log out?");
         if (confirmLogout) {
             logout();
+            window.location.reload();
             navigate("/login");
         }
     };
 
     return (
-        <button 
+        <button
             onClick={handleLogout}
             style={{
                 borderRadius: '10px',

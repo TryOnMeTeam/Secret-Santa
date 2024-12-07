@@ -113,7 +113,7 @@ const joinUserToSecretSantaGame = async (userId, gameCode) => {
     INSERT INTO userGame (userId, gameId)
     SELECT ?, g.id
     FROM games g
-    WHERE g.code = ?
+    WHERE g.code = ? and g.isActive = 0
     ON DUPLICATE KEY UPDATE
       gameId = VALUES(gameId)
     RETURNING gameId;

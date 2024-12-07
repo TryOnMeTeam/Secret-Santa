@@ -42,7 +42,7 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
             onClose();
             refreshWishlist();
         } else {
-            showAlert('Please fill in all required fields');
+            showAlert('Please fill in all required fields', 'error');
         }
     };
 
@@ -88,7 +88,7 @@ function AddWishlist({ open, onClose, resetForm, refreshWishlist }) {
         }}
             maxWidth='sm'>
             <DialogTitle className='dialog-title'>
-                <Typography variant='h6' align='center' className='dialog-title-text'>
+                <Typography variant='body1' align='center' className='dialog-title-text'>
                     ADD WISHLIST
                 </Typography>
             </DialogTitle>

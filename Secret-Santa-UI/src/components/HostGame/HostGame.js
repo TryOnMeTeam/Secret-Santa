@@ -57,15 +57,15 @@ function HostGame({ open, onClose, resetForm }) {
 
         if (gameData.gameName && gameData.startDate && gameData.endDate && gameData.maxPlayers) {
             if(!gameData.isValidStartDate()) {
-                showAlert('Start date must be tomorrow or later');
+                showAlert('Start date must be tomorrow or later', 'error');
                 return;
             }
             if(!gameData.isValidEndDate()) {
-                showAlert('End Date must be after the start date');
+                showAlert('End Date must be after the start date', 'error');
                 return;
             }
             if(!gameData.maxPlayers >= 2) {
-                showAlert('Maximum members cannot be less than 2');
+                showAlert('Maximum members cannot be less than 2', 'error');
                 return;
             }
 
@@ -83,7 +83,7 @@ function HostGame({ open, onClose, resetForm }) {
             onClose();
 
         } else {
-            showAlert("Please fill in all required fields");
+            showAlert("Please fill in all required fields", 'error');
         }
     };
 
@@ -110,7 +110,7 @@ function HostGame({ open, onClose, resetForm }) {
             }}
             maxWidth="sm">
             <DialogTitle className="dialog-title-host-game">
-                <Typography variant="h6" align="center" className="dialog-title-text-host-game">
+                <Typography variant="body1" align="center" className="dialog-title-text-host-game">
                     Host Game
                 </Typography>
             </DialogTitle>
