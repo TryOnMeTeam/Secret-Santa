@@ -5,10 +5,12 @@ import HostGame from '../../components/HostGame/HostGame';
 import CodeDialog from '../../components/CodeDialog/CodeDialog';
 import { useNavigate } from "react-router-dom";
 import { joinGameHandler, validateGameId } from '../../services/gameService.js';
+import * as Constant from '../../constants/secretSantaConstants.js';
 import secretSantaTheme from '../../assets/secretSantaTheme.jpg';
 import { IoIosCreate } from "react-icons/io";
 import { CiViewList } from "react-icons/ci";
 import { MdFollowTheSigns } from "react-icons/md";
+import ErrorComponent from '../../components/Error/ErrorComponent.js';
 
 
 function Dashboard() {
@@ -20,6 +22,7 @@ function Dashboard() {
   const [buttonText, setButtonText] = useState('');
   const [dialogTitle, setDialogTitle] = useState('');
   const [onSubmitHandler, setOnSubmitHandler] = useState(() => { });
+  const [errorPopUp, setErrorPopUp] = useState({message: '', show: false});
   const userId = localStorage.getItem('userId');
   const gameId = localStorage.getItem('gameId');
 
@@ -52,7 +55,7 @@ function Dashboard() {
   const onClickJoinGame = () => {
     setResetForm(true);
     if (localStorage.getItem('gameId')) {
-      navigate('/game');
+      navigate(Constant.ROUTE_PATH.GAME);
     } else {
       setOnSubmitHandler(() => handleJoinGameSubmit);
       setButtonText('JOIN');
@@ -64,7 +67,7 @@ function Dashboard() {
   const onClickGameStatus = () => {
     setResetForm(true);
     if (localStorage.getItem('gameId')) {
-      navigate('/gameStatus');
+      navigate(Constant.ROUTE_PATH.GAME_STATUS);
     } else {
       setOnSubmitHandler(() => handleGameStatusSubmit);
       setDialogTitle('Game Status');
@@ -77,7 +80,7 @@ function Dashboard() {
     try {
       const response = await joinGameHandler(userId, gameCode);
       if (response) {
-        return {gameId: response, path: '/game'};
+        return {gameId: response, path: Constant.ROUTE_PATH.GAME};
       }
     } catch (error) {
       throw error;
@@ -88,7 +91,9 @@ function Dashboard() {
     try {
       const response =  await joinGameHandler(userId, gameCode);
       if (response) {
-        return {gameId: response, path: '/game-status'};
+        return {gameId: response, path: Constant.ROUTE_PATH.GAME_STATUS};
+      } else {
+        setErrorPopUp({ message: Constant.POPUP_ERROR_MESSAGE, show: true });
       }
     } catch (error) {
       throw error;
@@ -98,8 +103,12 @@ function Dashboard() {
   const handleCloseJoinGame = () => {
     setResetForm(false);
     setOpenJoinGame(false);
-    navigate('/secret-santa');
+    navigate(Constant.ROUTE_PATH.DASHBOARD);
   };
+
+  const closeErrorPopUp = () => {
+    setErrorPopUp({ message: Constant.EMPTY, show: false });
+  }
 
   const backgroundStyle = {
     backgroundImage: `url(${secretSantaTheme})`,
@@ -127,6 +136,12 @@ function Dashboard() {
         onSubmit={onSubmitHandler}
         resetForm={resetForm}
       ></CodeDialog>
+
+      <ErrorComponent
+        message={errorPopUp.message}
+        show={errorPopUp.show}
+        onClose={closeErrorPopUp}
+      ></ErrorComponent>
     </div>
   )
 }

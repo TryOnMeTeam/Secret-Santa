@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { FaExternalLinkAlt } from 'react-icons/fa';
 import QueueIcon from '@mui/icons-material/Queue';
-import { getMineWishlist, getGiftNinjaWishList } from "../../services/wishlistService.js";
-import AddWishlist from '../../components/AddWishlist/AddWishlist.js';
-import { isGameActiveHandler } from '../../services/gameService.js';
-import { useAlert } from '../../context/AlertContext.js';
-import secretSantaTheme from '../../assets/secretSantaTheme.jpg';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import LockIcon from '@mui/icons-material/Lock';
+import Button from '@mui/material/Button';
+import { IoGameController } from 'react-icons/io5';
+import { getMineWishlist, getGiftNinjaWishList } from '../../services/wishlistService.js';
+import { isGameActiveHandler } from '../../services/gameService.js';
+import AddWishlist from '../../components/AddWishlist/AddWishlist.js';
+import ErrorComponent from '../../components/Error/ErrorComponent.js';
+import secretSantaTheme from '../../assets/secretSantaTheme.jpg';
 import { useNavigate } from 'react-router-dom';
-import Button from "@mui/material/Button";
-import { IoGameController } from "react-icons/io5";
-import ErrorComponent from "../../components/Error/ErrorComponent.js";
-import "./WishlistPage.css"
+import { USER_KEY, GAME_ID_KEY } from '../../constants/appConstant.js';
+import * as Constant from '../../constants/secretSantaConstants.js';
+import './WishlistPage.css';
 
 function WishlistPage() {
   const [myWishlist, setMyWishlist] = useState([]);
@@ -19,13 +20,12 @@ function WishlistPage() {
   const [openAddWishlist, setOpenAddWishlist] = useState(false);
   const [resetAddWishlistForm, setResetAddWishlistForm] = useState(false);
   const [isGameActive, setIsGameActive] = useState(false);
-  const [isGiftNinjaView, setIsGiftNinjaView] = useState(false); // To toggle between the two wishlists
-  const { showAlert } = useAlert();
+  const [isGiftNinjaView, setIsGiftNinjaView] = useState(false);
   const navigate = useNavigate();
-  const [errorPopUp, setErrorPopUp] = useState({ message: '', show: false });
+  const [errorPopUp, setErrorPopUp] = useState({ message: Constant.EMPTY, show: false });
 
-  const userId = localStorage.getItem('userId');
-  const gameId = localStorage.getItem('gameId');
+  const userId = localStorage.getItem(USER_KEY);
+  const gameId = localStorage.getItem(GAME_ID_KEY);
 
   const handleOnClickAddNewWishlist = () => {
     setOpenAddWishlist(true);
@@ -37,22 +37,12 @@ function WishlistPage() {
     setOpenAddWishlist(false);
   };
 
-  const handleToggleView = async () => {
-    if (isGiftNinjaView) {
-      setIsGiftNinjaView(false);
-      await getWishlist(userId, gameId);
-    } else {
-      setIsGiftNinjaView(true);
-      await getGiftNinjaWishlist();
-    }
-  };
-
   const isActive = async () => {
     try {
       const response = await isGameActiveHandler(gameId);
       setIsGameActive(response?.isActive === 1 ? true : false);
     } catch (error) {
-      setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
+      setErrorPopUp({ message: error ? error : Constant.POPUP_ERROR_MESSAGE, show: true });
     }
   };
 
@@ -61,7 +51,7 @@ function WishlistPage() {
       const response = await getMineWishlist(userId, gameId);
       setMyWishlist(response[0]?.length ? response[0] : []);
     } catch (error) {
-      setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
+      setErrorPopUp({ message: error ? error : Constant.POPUP_ERROR_MESSAGE, show: true });
     }
   };
 
@@ -70,12 +60,12 @@ function WishlistPage() {
       const response = await getGiftNinjaWishList(userId, gameId);
       setGiftNinjaWishlist(response[0]?.length ? response[0] : []);
     } catch (error) {
-      setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
+      setErrorPopUp({ message: error ? error : Constant.POPUP_ERROR_MESSAGE, show: true });
     }
   };
 
   const closeErrorPopUp = () => {
-    setErrorPopUp({ message: '', show: false });
+    setErrorPopUp({ message: Constant.EMPTY, show: false });
   }
 
 
@@ -87,28 +77,20 @@ function WishlistPage() {
     }
   }, [userId]);
 
-  const renderLinkColumn = (link) => {
-    return link ? (
-      <a href={link} target="_blank" rel="noopener noreferrer">
-        <FaExternalLinkAlt />
-      </a>
-    ) : null;
-  };
-
   const Wishlist = ({ wishList }) => {
     return (
       <div className='list-body'>
-        <div className="game-box">
-          <div className="game-head">
-            <div className="game-heading">
+        <div className='game-box'>
+          <div className='game-head'>
+            <div className='game-heading'>
               {!isGiftNinjaView ? (<strong>🎅  Mine  🎁</strong>) : (<strong>🎅  Ninja  🎁</strong>)}
             </div>
           </div>
         </div>
-        <div className="player-box">
-          <div className="player-item">
+        <div className='player-box'>
+          <div className='player-item'>
             <div className='player-shape'>
-              <div className="game-heading">
+              <div className='game-heading'>
                 <strong>WishList</strong>
               </div>
             </div>
@@ -116,12 +98,12 @@ function WishlistPage() {
         </div>
         <div className='fixed'>
           {wishList.map((item, index) => (
-            <div className="list-item-box" key={index}>
-              <div className="list-item">
-                <div className="player-number">{index + 1}</div>
-                <div className="player-name">
+            <div className='list-item-box' key={index}>
+              <div className='list-item'>
+                <div className='player-number'>{index + 1}</div>
+                <div className='player-name'>
                   <strong>{item.wishName}</strong>
-                  <a href={item.link} target="_blank" rel="noopener noreferrer">
+                  <a href={item.link} target='_blank' rel='noopener noreferrer'>
                     <OpenInNewIcon />
                   </a>
                 </div>
@@ -130,10 +112,10 @@ function WishlistPage() {
           ))}
         </div>
         {wishList.length ? (
-          <div className="player-box" style={{ marginTop: '5px' }}>
-            <div className="player-item">
+          <div className='player-box' style={{ marginTop: '5px' }}>
+            <div className='player-item'>
               <div className='player-shape'>
-                <div className="game-heading">
+                <div className='game-heading'>
                   <strong>Total: {wishList.length}</strong>
                 </div>
               </div>
@@ -158,38 +140,38 @@ function WishlistPage() {
 
   return (
     <div style={backgroundStyle}>
-      <div className="go-to-game-icon" onClick={() => navigate('/game')}>
+      <div className='go-to-game-icon' onClick={() => navigate(Constant.ROUTE_PATH.GAME)}>
         <IoGameController />
       </div>
       <div className='action-container'>
         <Button
-          className="custom-button"
-          variant="contained"
+          className='custom-button'
+          variant='contained'
           style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px' }}
           onClick={() => { setIsGiftNinjaView(false); }}
         >
           My Wishlist
         </Button>
         <Button
-          className="custom-button"
-          variant="contained"
-          style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px' }}
+          className='custom-button'
+          variant='contained'
+          style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px', filter: !isGameActive ? 'blur(1px)' : 'none', }}
           onClick={() => { setIsGiftNinjaView(true); }}
           disabled={!isGameActive}
         >
+          {!isGameActive ? <LockIcon /> : ''}
           Ninja Wishlist
         </Button>
       </div>
 
-      {/* Conditionally render the wishlist based on the current view */}
       {isGiftNinjaView ? (
         <Wishlist wishList={giftNinjaWishlist} />
       ) : (
         <div className='list-container'>
           <Wishlist wishList={myWishlist} />
           <Button
-            className="custom-button"
-            variant="outlined"
+            className='custom-button'
+            variant='outlined'
             style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px', marginTop: '15px' }}
             onClick={handleOnClickAddNewWishlist}
           >
@@ -202,7 +184,7 @@ function WishlistPage() {
         open={openAddWishlist}
         onClose={handleCloseAddWishlist}
         resetForm={resetAddWishlistForm}
-        refreshWishlist={() => getWishlist(userId, gameId)} // Refresh Wishlist
+        refreshWishlist={() => getWishlist(userId, gameId)}
       />
       <ErrorComponent
         message={errorPopUp.message}

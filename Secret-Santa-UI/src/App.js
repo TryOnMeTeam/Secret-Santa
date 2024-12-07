@@ -1,22 +1,24 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { AlertProvider } from './context/AlertContext';
+import { LoadingProvider } from "./context/LoadingContext";
+import { useLoading } from './context/LoadingContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import AlertComponent from './components/Alert/AlertComponent';
+import Spinner from './pages/spinner/spinner';
 import LoginPage from './pages/auth/login/LoginPage';
 import RegisterPage from './pages/auth/register/RegisterPage';
 import HomePage from './pages/HomePage';
-import AlertComponent from './components/Alert/AlertComponent';
-import { AlertProvider } from './context/AlertContext';
 import SecretSantaChat from './pages/SecretSantaChat';
 import Dashboard from "./pages/dashboard/Dashboard";
 import WishlistPage from './pages/wishlist/WishlistPage';
 import GamePlay from '../src/pages/join-game/GamePlay';
-import { LoadingProvider } from "./context/LoadingContext";
-import "./App.css";
 import GameStatus from './pages/game-status/GameStatus';
 import { setupInterceptors } from './services/axionsInstance';
-import Spinner from './pages/spinner/spinner';
-import { useLoading } from './context/LoadingContext';
+import { ROUTE_PATH } from './constants/secretSantaConstants';
+import "./App.css";
+
 
 const App = () => {
   const { startLoading, stopLoading } = useLoading();
@@ -33,34 +35,29 @@ const App = () => {
             <Spinner />
             <AlertComponent />
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+              <Route path={ROUTE_PATH.DEFAULT} element={<HomePage />} />
+              <Route path={ROUTE_PATH.LOGIN} element={<LoginPage />} />
+              <Route path={ROUTE_PATH.REGISTER} element={<RegisterPage />} />
               <Route
-                path="/secret-santa"
+                path={ROUTE_PATH.DASHBOARD}
                 element={<ProtectedRoute element={<Dashboard />} />}
               />
               <Route
-                path="/game"
+                path={ROUTE_PATH.GAME}
                 element={<ProtectedRoute element={<GamePlay />} />}
               />
               <Route
-                path="/wishlist"
+                path={ROUTE_PATH.WISHLIST}
                 element={<ProtectedRoute element={<WishlistPage />} />}
               />
               <Route
-                path="/chat"
+                path={ROUTE_PATH.CHAT}
                 element={<ProtectedRoute element={<SecretSantaChat />} />}
               />
               <Route
-                path="/gameStatus"
+                path={ROUTE_PATH.GAME_STATUS}
                 element={<ProtectedRoute element={<GameStatus />} />}
               />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/game" element={<GamePlay />} />
-              <Route path="/wishlist" element={<WishlistPage />} />
-              <Route path="/chat" element={<SecretSantaChat />} />
-              <Route path="/gameStatus" element={<GameStatus />} />
             </Routes>
           </AuthProvider>
         </Router>

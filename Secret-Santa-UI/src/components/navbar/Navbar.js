@@ -1,14 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoHome } from 'react-icons/io5';
-import "./Navbar.css";
+import { ROUTE_PATH } from '../../constants/secretSantaConstants';
 import LogoutButton from '../LogoutButton/LogoutButton';
+import "./Navbar.css";
 
 function Navbar() {
     const navigate = useNavigate();
 
     const handleHomeClick = () => {
-        navigate("/dashboard");
+        navigate(ROUTE_PATH.DASHBOARD);
     };
 
     return (
