@@ -128,10 +128,10 @@ const getPendingMessagesForUserInGame = async (userId, gameId) => {
  * @returns {void}
  */
 const sendEmailNotificationToUser = async (receiverId, messageData) => {
-    const emailAlreadySent = await hasEmailAlreadyBeenSent(receiverId, messageData);
+    const reverserChatBoxType = messageData.chatBoxType === 'secretSanta' ? 'giftNinja' : 'secretSanta'
+    const emailAlreadySent = await hasEmailAlreadyBeenSent(receiverId, messageData, reverserChatBoxType);
     if (!emailAlreadySent) {
         const targetUser = await messageDao.getUserById(receiverId);
-        const reverserChatBoxType = messageData.chatBoxType === 'secretSanta' ? 'Gift Ninja' : 'Secret Santa';
         await emailService.sendSecretSantaSentMessageEmail(targetUser, reverserChatBoxType);
         messageDao.upsertUserEmailStatusForGame(receiverId, messageData.gameId, reverserChatBoxType);
     }
@@ -144,8 +144,8 @@ const sendEmailNotificationToUser = async (receiverId, messageData) => {
  * @param {object} messageData - The message object associated with the email.
  * @returns {boolean} - Returns true if an email has been sent, false otherwise.
  */
-const hasEmailAlreadyBeenSent = async (receiverId, messageData) => {
-    const result = await messageDao.isEmailAlreadySent(receiverId, messageData.gameId, messageData.chatBoxType);
+const hasEmailAlreadyBeenSent = async (receiverId, messageData, chatBoxType) => {
+    const result = await messageDao.isEmailAlreadySent(receiverId, messageData.gameId, chatBoxType);
     return result.isEmailAlreadySent === 1 ? true : false;
 };
 

@@ -1,17 +1,22 @@
 import axios from "axios";
 import { getToken } from "./authService";
+import APP_CONFIG from '../config/appConfig';
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5001",
+  baseURL: APP_CONFIG.BACKEND_URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Request queue to keep track of active requests
 let requestQueue = [];
 
-// Function to handle the spinner based on the queue
+/**
+ * Update the spinner status based on the request queue length.
+ *
+ * @param {Function} startLoading - Function to start the loading spinner.
+ * @param {Function} stopLoading - Function to stop the loading spinner.
+ */
 const updateSpinnerStatus = (startLoading, stopLoading) => {
   if (requestQueue.length > 0) {
     startLoading(true);
@@ -20,6 +25,15 @@ const updateSpinnerStatus = (startLoading, stopLoading) => {
   }
 };
 
+/**
+ * Setup Axios interceptors for request and response.
+ *
+ * This function adds authorization headers to requests and manages the loading spinner
+ * based on the request queue.
+ *
+ * @param {Function} startLoading - Function to start the loading spinner.
+ * @param {Function} stopLoading - Function to stop the loading spinner.
+ */
 const setupInterceptors = (startLoading, stopLoading) => {
   axiosInstance.interceptors.request.use(
     (config) => {
@@ -28,14 +42,12 @@ const setupInterceptors = (startLoading, stopLoading) => {
         config.headers["Authorization"] = `Bearer ${token}`;
       }
 
-      // Add the request to the queue
       requestQueue.push(config);
       updateSpinnerStatus(startLoading, stopLoading);
 
       return config;
     },
     (error) => {
-      // Remove failed request from the queue
       requestQueue.shift();
       updateSpinnerStatus(startLoading, stopLoading);
 
@@ -45,7 +57,6 @@ const setupInterceptors = (startLoading, stopLoading) => {
 
   axiosInstance.interceptors.response.use(
     (response) => {
-      // Remove the resolved request from the queue
       requestQueue = requestQueue.filter(
         (req) => req !== response.config
       );
@@ -54,7 +65,6 @@ const setupInterceptors = (startLoading, stopLoading) => {
       return response;
     },
     (error) => {
-      // Remove the failed request from the queue
       requestQueue = requestQueue.filter(
         (req) => req !== error.config
       );

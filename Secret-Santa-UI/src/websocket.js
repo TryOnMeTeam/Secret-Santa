@@ -1,5 +1,7 @@
+import APP_CONFIG from './config/appConfig';
+
 export const connectWebSocket = (userId, onMessage) => {
-    const ws = new WebSocket(`ws://localhost:5001?userId=${userId}`);
+    const ws = new WebSocket(`${APP_CONFIG.WS_BASE_URL}?userId=${userId}`);
 
     ws.onopen = () => {
         ws.send(JSON.stringify({ type: 'register', userId }));

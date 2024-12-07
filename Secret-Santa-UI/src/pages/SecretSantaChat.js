@@ -1,292 +1,185 @@
-import React, { useState, useEffect, useRef } from "react";
-import { connectWebSocket } from "../websocket";
-import Message from "../features/message";
-import "../pages/SecretSantaChat.css";
-import { CHAT_BOX_TYPE, NOTIFICATION_TYPE } from "../constants/secretSantaConstants";
-import { FaPaperPlane } from "react-icons/fa";
-import Badge from "@mui/material/Badge";
-import Button from "@mui/material/Button";
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {markEmailAsNotSent, fetchMessages, fetchPendingMessages}  from '../services/messageService';
-import { IoGameController } from "react-icons/io5";
+import { FaPaperPlane } from 'react-icons/fa';
+import { IoGameController } from 'react-icons/io5';
+import Badge from '@mui/material/Badge';
+import Button from '@mui/material/Button';
+import { connectWebSocket } from '../websocket';
+import * as Constant from '../constants/secretSantaConstants';
+import * as messageService from '../services/messageService';
+import Message from '../features/message';
+import ErrorComponent from '../components/Error/ErrorComponent';
 import secretSantaTheme from '../assets/secretSantaTheme.jpg';
-import ErrorComponent from "../components/Error/ErrorComponent.js";
+import '../pages/SecretSantaChat.css';
 
 const SecretSantaChat = () => {
-
     const userId = localStorage.getItem('userId');
     const gameId = localStorage.getItem('gameId');
 
-    const [messagesSanta, setMessagesSanta] = useState([]); // Default to an empty array
-    const [messagesNinja, setMessagesNinja] = useState([]); // Default to an empty array
-    const [errorPopUp, setErrorPopUp] = useState({message: '', show: false});
-    
-    const [secretSantaInputMessage, setSecretSantaInputMessage] = useState("");
-    const [giftNinjaInputMessage, setGiftNinjaInputMessage] = useState("");
+    const [messagesSanta, setMessagesSanta] = useState([]);
+    const [messagesNinja, setMessagesNinja] = useState([]);
+    const [errorPopUp, setErrorPopUp] = useState({ message: '', show: false });
+    const [secretSantaInputMessage, setSecretSantaInputMessage] = useState('');
+    const [giftNinjaInputMessage, setGiftNinjaInputMessage] = useState('');
     const [ws, setWs] = useState(null);
     const [chatMode, setChatMode] = useState(null);
+    const [secretSantaMessagesHidden, setSecretSantaMessagesHidden] = useState(true);
+    const [giftNinjaMessagesHidden, setGiftNinjaMessagesHidden] = useState(true);
 
     const santaMessagesEndRef = useRef(null);
     const ninjaMessagesEndRef = useRef(null);
-    const [secretSantaMessagesHidden, setSecretSantaMessagesHidden] = useState(true);
-    const [giftNinjaMessagesHidden, setGiftNinjaMessagesHidden] = useState(true);
     const chatModeRef = useRef(chatMode);
     const navigate = useNavigate();
 
-    const toggleSecretSantaBadgeVisibility = (value) => {
-        setSecretSantaMessagesHidden(value);
+    const toggleBadgeVisibility = (setHidden, value) => setHidden(value);
+
+    const handleMessagesFetchError = (error) => {
+        const errorMessage = error || Constant.POPUP_ERROR_MESSAGE;
+        setErrorPopUp({ message: errorMessage, show: true });
     };
 
-    const toggleGiftNinjaBadgeVisibility = (value) => {
-        setGiftNinjaMessagesHidden(value);
-    };
-
-    const markMessagesAsRead = async(userId, gameId, chatBoxType) => {
+    const markMessagesAsRead = async (chatBoxType) => {
         try {
-            await markEmailAsNotSent(userId, gameId, chatBoxType);
+            await messageService.markEmailAsNotSent(userId, gameId, chatBoxType);
         } catch (error) {
-            setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
+            handleMessagesFetchError(error);
         }
-    }
+    };
 
     const fetchChatMessages = async () => {
         try {
-            const response = await fetchMessages(userId, gameId);
-            const { secretSantaMessages, giftNinjaMessages } = response;
-
-            setMessagesSanta(secretSantaMessages || []);
-            setMessagesNinja(giftNinjaMessages || []);
+            const { secretSantaMessages = [], giftNinjaMessages = [] } = await messageService.fetchMessages(userId, gameId);
+            setMessagesSanta(secretSantaMessages);
+            setMessagesNinja(giftNinjaMessages);
         } catch (error) {
-            setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
+            handleMessagesFetchError(error);
         }
     };
 
     const fetchUnReadMessages = async () => {
         try {
-            const response = await fetchPendingMessages(userId, gameId);
-            const { secretSantaPendingMessages, giftNinjaPendingMessages } = response;
-
-            toggleSecretSantaBadgeVisibility(!secretSantaPendingMessages);
-            toggleGiftNinjaBadgeVisibility(!giftNinjaPendingMessages);
+            const { secretSantaPendingMessages, giftNinjaPendingMessages } = await messageService.fetchPendingMessages(userId, gameId);
+            toggleBadgeVisibility(setSecretSantaMessagesHidden, !secretSantaPendingMessages);
+            toggleBadgeVisibility(setGiftNinjaMessagesHidden, !giftNinjaPendingMessages);
         } catch (error) {
-            setErrorPopUp({ message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true });
+            handleMessagesFetchError(error);
         }
+    };
+
+    const handleWebSocketMessage = (message) => {
+        if (message.type !== Constant.NOTIFICATION_TYPE.MESSAGE) return;
+
+        const reverseChatBoxType =
+            message.chatBoxType === Constant.CHAT_BOX_TYPE.SECRET_SANTA ? Constant.CHAT_BOX_TYPE.GIFT_NINJA : Constant.CHAT_BOX_TYPE.SECRET_SANTA;
+
+        const newMessage = { from: reverseChatBoxType, content: message.content };
+
+        if (reverseChatBoxType === Constant.CHAT_BOX_TYPE.SECRET_SANTA) {
+            toggleBadgeVisibility(setSecretSantaMessagesHidden, false);
+            setMessagesSanta((prev) => [...prev, newMessage]);
+        } else {
+            toggleBadgeVisibility(setGiftNinjaMessagesHidden, false);
+            setMessagesNinja((prev) => [...prev, newMessage]);
+        }
+    };
+
+    const sendMessage = () => {
+        if (!ws || !(secretSantaInputMessage || giftNinjaInputMessage)) return;
+
+        const messageContent =
+            chatMode === Constant.CHAT_BOX_TYPE.SECRET_SANTA ? secretSantaInputMessage : giftNinjaInputMessage;
+
+        ws.send(JSON.stringify({ type: Constant.NOTIFICATION_TYPE.MESSAGE, userId, chatBoxType: chatMode, content: messageContent, gameId }));
+
+        const newMessage = { from: 'Me', content: messageContent };
+
+        if (chatMode === Constant.CHAT_BOX_TYPE.SECRET_SANTA) {
+            setMessagesSanta((prev) => [...prev, newMessage]);
+            setSecretSantaInputMessage('');
+        } else {
+            setMessagesNinja((prev) => [...prev, newMessage]);
+            setGiftNinjaInputMessage('');
+        }
+    };
+
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') sendMessage();
     };
 
     useEffect(() => {
         chatModeRef.current = chatMode;
     }, [chatMode]);
 
-
     useEffect(() => {
         fetchChatMessages();
         fetchUnReadMessages();
+
         if (userId) {
-            const websocket = connectWebSocket(userId, (message) => {
-                if (message.type === NOTIFICATION_TYPE.MESSAGE) {
-                    const reverserChatBoxType = message.chatBoxType === CHAT_BOX_TYPE.SECRET_SANTA ? CHAT_BOX_TYPE.GIFT_NINJA : CHAT_BOX_TYPE.SECRET_SANTA
-                    if (reverserChatBoxType === CHAT_BOX_TYPE.SECRET_SANTA) {
-                        if (!chatModeRef.current || chatModeRef.current === CHAT_BOX_TYPE.GIFT_NINJA) {
-                            toggleSecretSantaBadgeVisibility(false);
-                        }
-                        const newMessage = { from: "secretSanta", content: message.content };
-                        setMessagesSanta((prev) => [...prev, newMessage]);
-                    } else if (reverserChatBoxType === CHAT_BOX_TYPE.GIFT_NINJA) {
-                        if (!chatModeRef.current || chatModeRef.current === CHAT_BOX_TYPE.SECRET_SANTA) {
-                            toggleGiftNinjaBadgeVisibility(false);
-                        }
-                        const newMessage = { from: "giftNinja", content: message.content };
-                        setMessagesNinja((prev) => [...prev, newMessage]);
-                    }
-                }
-            });
+            const websocket = connectWebSocket(userId, handleWebSocketMessage);
             setWs(websocket);
         }
     }, [userId]);
 
     useEffect(() => {
-        if (chatMode) {
-            console.log("Chat mode changed:", chatMode);
-        }
-    }, [chatMode]);
-    
-
-    useEffect(() => {
-        if (chatMode === CHAT_BOX_TYPE.SECRET_SANTA && santaMessagesEndRef.current) {
-            santaMessagesEndRef.current.scrollTop = santaMessagesEndRef.current.scrollHeight;
-        } else if (chatMode === CHAT_BOX_TYPE.GIFT_NINJA && ninjaMessagesEndRef.current) {
-            ninjaMessagesEndRef.current.scrollTop = ninjaMessagesEndRef.current.scrollHeight;
-        }
+        const scrollRef = chatMode === Constant.CHAT_BOX_TYPE.SECRET_SANTA ? santaMessagesEndRef : ninjaMessagesEndRef;
+        if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }, [messagesSanta, messagesNinja, chatMode]);
 
-    const sendMessage = () => {
-        if (ws && (secretSantaInputMessage || giftNinjaInputMessage)) {
-            const messageContent =
-                chatMode === CHAT_BOX_TYPE.SECRET_SANTA ? secretSantaInputMessage : giftNinjaInputMessage;
-
-            ws.send(
-                JSON.stringify({
-                    type: NOTIFICATION_TYPE.MESSAGE,
-                    userId,
-                    chatBoxType: chatMode,
-                    content: messageContent,
-                    gameId: gameId
-                })
-            );
-
-            const newMessage = { from: "Me", content: messageContent };
-
-            if (chatMode === CHAT_BOX_TYPE.SECRET_SANTA) {
-                setMessagesSanta((prev) => [...prev, newMessage]);
-                setSecretSantaInputMessage("");
-            } else if (chatMode === CHAT_BOX_TYPE.GIFT_NINJA) {
-                setMessagesNinja((prev) => [...prev, newMessage]);
-                setGiftNinjaInputMessage("");
-            }
-        }
-    };
-
-    const handleKeyPress = (event) => {
-        if (event.key === "Enter") {
-            sendMessage();
-        }
-    };
-
-    const closeChat = () => {
-        setChatMode(null);
-    };
-
-    const closeErrorPopUp = () => {
-        setErrorPopUp({ message: '', show: false });
-    }
-
-    const backgroundStyle = {
-        backgroundImage: `url(${secretSantaTheme})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        height: '100vh',
-        width: '100%',
-      };
+    const renderChatWindow = (messages, inputValue, setInputValue, ref, header) => (
+        <div className='chat-window'>
+            <header className='chat-header'>{header}</header>
+            <button className='close-chat-button' onClick={() => setChatMode(null)}>✖</button>
+            <div className='chat-messages' ref={ref}>
+                {messages.map((msg, idx) => (
+                    <Message key={idx} message={msg} />
+                ))}
+            </div>
+            <footer className='chat-footer'>
+                <input
+                    type='text'
+                    placeholder='Type your message...'
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                    className='message-input'
+                />
+                <button onClick={sendMessage} className='send-button'>
+                    <FaPaperPlane />
+                </button>
+            </footer>
+        </div>
+    );
 
     return (
-        <div style={backgroundStyle} className="chat-container">
-            <div className="go-to-game-icon" onClick={() => navigate('/game')}>
+        <div style={{ backgroundImage: `url(${secretSantaTheme})`, backgroundSize: 'cover', height: '100vh' }} className='chat-container'>
+            <div className='go-to-game-icon' onClick={() => navigate('/game')}>
                 <IoGameController />
             </div>
-            {/* <Navbar/> */}
-            <div className="chat-mode-buttons">
-                <div className="chat-button-container"style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div className='chat-mode-buttons'>
+                {[Constant.CHAT_BOX_TYPE.SECRET_SANTA, Constant.CHAT_BOX_TYPE.GIFT_NINJA].map((type, idx) => (
                     <Badge
-                        badgeContent="🎁"
-                        sx={{
-                            '& .MuiBadge-badge': {
-                                backgroundColor: 'white', // White badge background
-                                color: 'black', // Optional: Black text inside the badge
-                            },
-                        }}
-                        invisible={secretSantaMessagesHidden}
-                    >
-                        <Button className ="custom-button"
-                            variant="contained"
-                            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px'}}
-                            onClick={() => {
-                                toggleSecretSantaBadgeVisibility(true);
-                                setChatMode(CHAT_BOX_TYPE.SECRET_SANTA);
-                                markMessagesAsRead(userId, gameId, CHAT_BOX_TYPE.SECRET_SANTA);
-                            }}
-                        >
-                            Talk to My Secret Santa
-                        </Button>
-                    </Badge>
-                    <Badge
-                        badgeContent="🎁" // Replace 7 with a symbol
-                        sx={{
-                            '& .MuiBadge-badge': {
-                                backgroundColor: 'white', // White badge background
-                                color: 'black', // Optional: Black text inside the badge
-                            },
-                        }}
-                        invisible={giftNinjaMessagesHidden}
+                        key={idx}
+                        badgeContent='🎁'
+                        invisible={type === Constant.CHAT_BOX_TYPE.SECRET_SANTA ? secretSantaMessagesHidden : giftNinjaMessagesHidden}
                     >
                         <Button
-                            className ="custom-button"
-                            variant="contained"
-                            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px'}}
+                            className='custom-button'
+                            variant='contained'
+                            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px' }}
                             onClick={() => {
-                                toggleGiftNinjaBadgeVisibility(true);
-                                setChatMode(CHAT_BOX_TYPE.GIFT_NINJA);
-                                markMessagesAsRead(userId, gameId, CHAT_BOX_TYPE.GIFT_NINJA);
+                                toggleBadgeVisibility(type === Constant.CHAT_BOX_TYPE.SECRET_SANTA ? setSecretSantaMessagesHidden : setGiftNinjaMessagesHidden, true);
+                                setChatMode(type);
+                                markMessagesAsRead(type);
                             }}
                         >
-                            Talk to My Gift Ninja
+                            {type === Constant.CHAT_BOX_TYPE.SECRET_SANTA ? Constant.TALK_TO_USER.SECRET_SANTA : Constant.TALK_TO_USER.GIFT_NINJA}
                         </Button>
                     </Badge>
-                </div>
+                ))}
             </div>
-
-            
-
-            {chatMode === CHAT_BOX_TYPE.SECRET_SANTA && (
-                <div className="chat-window">
-                    <header className="chat-header">Secret Santa</header>
-                    <button className="close-chat-button" onClick={closeChat}>
-                        ✖
-                    </button>
-                    <div className="chat-messages" ref={santaMessagesEndRef}>
-                        {messagesSanta?.map((msg, idx) => (
-                            <Message key={idx} message={msg} />
-                        ))}
-                    </div>
-
-                    <footer className="chat-footer">
-                        <input
-                            type="text"
-                            placeholder="Type your message..."
-                            value={secretSantaInputMessage}
-                            onChange={(e) => setSecretSantaInputMessage(e.target.value)}
-                            onKeyDown={handleKeyPress} // Handle Enter key
-                            className="message-input"
-                        />
-                        <button onClick={sendMessage} className="send-button">
-                            <FaPaperPlane /> {/* Send icon */}
-                        </button>
-                    </footer>
-                </div>
-            )}
-
-            {chatMode === CHAT_BOX_TYPE.GIFT_NINJA && (
-                <div className="chat-window">
-                    <header className="chat-header">Gift Ninja</header>
-                    <button className="close-chat-button" onClick={closeChat}>
-                        ✖
-                    </button>
-                    <div className="chat-messages" ref={ninjaMessagesEndRef}>
-                        {messagesNinja?.map((msg, idx) => (
-                            <Message key={idx} message={msg} />
-                        ))}
-                    </div>
-
-                    <footer className="chat-footer">
-                        <input
-                            type="text"
-                            placeholder="Type your message..."
-                            value={giftNinjaInputMessage}
-                            onChange={(e) => setGiftNinjaInputMessage(e.target.value)}
-                            onKeyDown={handleKeyPress}
-                            className="message-input"
-                        />
-                        <button onClick={sendMessage} className="send-button">
-                            <FaPaperPlane />
-                        </button>
-                    </footer>
-                </div>
-            )}
-                  <ErrorComponent
-        message={errorPopUp.message}
-        show={errorPopUp.show}
-        onClose={closeErrorPopUp}
-      ></ErrorComponent>
+            {chatMode === Constant.CHAT_BOX_TYPE.SECRET_SANTA && renderChatWindow(messagesSanta, secretSantaInputMessage, setSecretSantaInputMessage, santaMessagesEndRef, 'Secret Santa')}
+            {chatMode === Constant.CHAT_BOX_TYPE.GIFT_NINJA && renderChatWindow(messagesNinja, giftNinjaInputMessage, setGiftNinjaInputMessage, ninjaMessagesEndRef, 'Gift Ninja')}
+            <ErrorComponent message={errorPopUp.message} show={errorPopUp.show} onClose={() => setErrorPopUp({ message: '', show: false })} />
         </div>
     );
 };
