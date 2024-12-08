@@ -28,7 +28,7 @@
   background: linear-gradient(to right, #ffffff, #cccccc);
   height: 50px;
   margin: 10px 0;
-  color: #ffffff;
+  color: var(--primary-text-color);
   background: var(--primary-color);
   font-weight: bold;
   display: flex;
@@ -88,7 +88,7 @@
 .game-heading {
   font-size: 1.5rem;
   font-weight: 400;
-  color: #ffffff;
+  color: var(--primary-text-color);
 }
 
 .heading {
@@ -130,7 +130,7 @@
 .player-number {
   background: var(--secondary-color);
   /* border-top-right-radius: 19px; */
-  color: #fff;
+  color: var(--primary-text-color);
   border-top-color: #000000;
   border-style: groove;
   width: 74px;
@@ -178,7 +178,7 @@
   justify-content: center;
   gap: 10px;
   background-color: var(--primary-button-color);
-  color: white;
+  color: var(--primary-text-color);
   border: none;
   padding: 15px 14px;
   font-size: 1.5rem;

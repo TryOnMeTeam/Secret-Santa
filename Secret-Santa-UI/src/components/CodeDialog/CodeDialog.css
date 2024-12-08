@@ -5,8 +5,8 @@
 }
 
 .dialog-title-text-code {
-    font-weight: normal;
-    color: #fff;
+    font-weight: 600 !important;
+    color:  var(--primary-text-color);
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -34,8 +34,9 @@
 }
 
 .code-form .MuiDialogActions-root .join-button {
+    font-weight: 600;
     background-color: var(--primary-button-color);
-    color: #fff;
+    color:  var(--primary-text-color);
 }
 
 .code-form .MuiDialogActions-root .cancel-button:hover {

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPaperPlane } from 'react-icons/fa';
 import { IoGameController } from 'react-icons/io5';
+import CloseIcon from '@mui/icons-material/Close';
 import Badge from '@mui/material/Badge';
 import Button from '@mui/material/Button';
 import { connectWebSocket } from '../websocket';
@@ -140,7 +141,7 @@ const SecretSantaChat = () => {
     const renderChatWindow = (messages, inputValue, setInputValue, ref, header) => (
         <div className='chat-window'>
             <header className='chat-header'>{header}</header>
-            <button className='close-chat-button' onClick={() => setChatMode(null)}>✖</button>
+            <button className='close-chat-button' onClick={() => setChatMode(null)}><CloseIcon/></button>
             <div className='chat-messages' ref={ref}>
                 {messages.map((msg, idx) => (
                     <Message key={idx} message={msg} />
@@ -175,14 +176,14 @@ const SecretSantaChat = () => {
                         invisible={type === Constant.CHAT_BOX_TYPE.SECRET_SANTA ? secretSantaMessagesHidden : giftNinjaMessagesHidden}
                         sx={{
                             '& .MuiBadge-badge': {
-                                fontSize: '1.4rem',
+                                fontSize: '1.3rem',
                             },
                         }}
                     >
                         <Button
                             className='custom-button'
                             variant='contained'
-                            style={{ backgroundColor: 'var(--primary-color)', color: 'white', width: '250px', border: '1px solid' }}
+                            style={{ backgroundColor: 'var(--primary-color)', color: 'var(--primary-text-color)', width: '250px', border: '1px solid', fontWeight: '600' }}
                             onClick={() => {
                                 toggleBadgeVisibility(type === Constant.CHAT_BOX_TYPE.SECRET_SANTA ? setSecretSantaMessagesHidden : setGiftNinjaMessagesHidden, true);
                                 setChatMode(type);

@@ -21,7 +21,7 @@
     justify-content: center;
     gap: 10px;
     background-color: var(--primary-button-color);
-    color: white;
+    color: var(--primary-text-color);
     border: none;
     padding: 15px 14px;
     font-size: 1.5rem;
@@ -38,7 +38,7 @@
 
 .game-home-actions {
     background-color: var(--primary-button-color);
-    color: white;
+    color: var(--primary-text-color);
     border: none;
     padding: 15px 40px;
     font-size: 1.5rem;

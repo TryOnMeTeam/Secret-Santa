@@ -60,7 +60,7 @@ const getGiftNinjaWishlist = async (userId, gameId) => {
     const giftNinjaId = `
       SELECT ug.giftNinjaId FROM userGame ug
       WHERE userId = ?
-      AND gameId = gameId`;
+      AND gameId = ?`;
 
     const [result] = await db.query(giftNinjaId, [userId, gameId]);
     const results = await getUserSecretSantaWishlist(result[0].giftNinjaId, gameId);
