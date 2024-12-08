@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from '../constants/secretSantaConstants';
 import { isAuthenticated, getUser, logout as logoutService } from '../services/authService';
-import { RotatingLines } from "react-loader-spinner";
+import  Spinner  from '../pages/spinner/spinner';
 
 const AuthContext = createContext();
 
@@ -34,12 +34,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     if (loading) {
-        return <RotatingLines
-            strokeColor="grey"
-            strokeWidth="5"
-            animationDuration="0.75"
-            width="96"
-            visible={true}
+        return <Spinner
         />;
     }
 
