@@ -173,6 +173,11 @@ const SecretSantaChat = () => {
                         key={idx}
                         badgeContent='🎁'
                         invisible={type === Constant.CHAT_BOX_TYPE.SECRET_SANTA ? secretSantaMessagesHidden : giftNinjaMessagesHidden}
+                        sx={{
+                            '& .MuiBadge-badge': {
+                                fontSize: '1.4rem',
+                            },
+                        }}
                     >
                         <Button
                             className='custom-button'
