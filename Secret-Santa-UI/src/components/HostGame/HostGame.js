@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
     Button,
     Dialog,
@@ -7,36 +7,38 @@ import {
     DialogTitle,
     TextField,
     Typography,
-} from "@mui/material";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { LocalizationProvider, DesktopDatePicker } from "@mui/x-date-pickers";
-import "./HostGame.css";
-import Game from "../../models/Game";
-import { hostGameHandler } from "../../services/gameService.js";
+} from '@mui/material';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers';
+import './HostGame.css';
+import Game from '../../models/Game';
+import { hostGameHandler } from '../../services/gameService.js';
+import * as Constant from '../../constants/secretSantaConstants';
+import { USER_KEY } from '../../constants/appConstant';
 import { useAlert } from './../../context/AlertContext.js';
-import ErrorComponent from "../Error/ErrorComponent.js";
+import ErrorComponent from '../Error/ErrorComponent.js';
 
 function HostGame({ open, onClose, resetForm }) {
     const [gameData, setGameData] = useState(new Game());
     const [submitted, setSubmitted] = useState(false);
     const { showAlert } = useAlert();
-    const [errorPopUp, setErrorPopUp] = useState({message: '', show: false});
+    const [errorPopUp, setErrorPopUp] = useState({ message: '', show: false });
 
     const handleInputChange = (field, value) => {
         setGameData((prev) => {
-            const updatedGameDate = new Game(
+            const updatedGameData = new Game(
                 prev.gameName,
                 prev.startDate,
                 prev.endDate,
                 prev.maxPlayers
             );
-            updatedGameDate[field] = value;
-            return updatedGameDate;
-        })
+            updatedGameData[field] = value;
+            return updatedGameData;
+        });
     };
 
     useEffect(() => {
-        if(resetForm) {
+        if (resetForm) {
             setGameData(new Game());
             setSubmitted(false);
         }
@@ -48,24 +50,24 @@ function HostGame({ open, onClose, resetForm }) {
     const handleCreate = async (event) => {
         event.preventDefault();
         setSubmitted(true);
-        const userId = localStorage.getItem('userId');
+        const userId = localStorage.getItem(USER_KEY);
 
-        if(!userId) {
-            showAlert('User is not logged In. Please log in to Host a Game.', 'error');
+        if (!userId) {
+            showAlert(Constant.ALERT_MESSAGES.NOT_LOGGED_IN, Constant.ERROR);
             return;
         }
 
         if (gameData.gameName && gameData.startDate && gameData.endDate && gameData.maxPlayers) {
-            if(!gameData.isValidStartDate()) {
-                showAlert('Start date must be tomorrow or later', 'error');
+            if (!gameData.isValidStartDate()) {
+                showAlert(Constant.ALERT_MESSAGES.INVALID_START_DATE, Constant.ERROR);
                 return;
             }
-            if(!gameData.isValidEndDate()) {
-                showAlert('End Date must be after the start date', 'error');
+            if (!gameData.isValidEndDate()) {
+                showAlert(Constant.ALERT_MESSAGES.INVALID_END_DATE, Constant.ERROR);
                 return;
             }
-            if(!gameData.maxPlayers >= 2) {
-                showAlert('Maximum members cannot be less than 2', 'error');
+            if (!(gameData.maxPlayers >= 2)) {
+                showAlert(Constant.ALERT_MESSAGES.INVALID_MAX_PLAYERS, Constant.ERROR);
                 return;
             }
 
@@ -78,125 +80,130 @@ function HostGame({ open, onClose, resetForm }) {
             const payload = {
                 userId,
                 formattedGameData
-            }
+            };
             await hostGame(payload);
             onClose();
-
         } else {
-            showAlert("Please fill in all required fields", 'error');
+            showAlert(Constant.ALERT_MESSAGES.REQUIRED_FIELDS, Constant.ERROR);
         }
     };
 
     const hostGame = async (payload) => {
         try {
             const response = await hostGameHandler(payload.userId, payload.formattedGameData);
-            showAlert('Game Hosted!', 'success');
+            showAlert(Constant.ALERT_MESSAGES.GAME_HOSTED, Constant.SUCCESS);
             return response;
         } catch (error) {
-            setErrorPopUp({message: error ? error : 'Something unexpected happened. Please contact your administrator', show: true});
+            setErrorPopUp({
+                message: error || Constant.POPUP_ERROR_MESSAGE,
+                show: true
+            });
         }
-    }
+    };
 
     const closeErrorPopUp = () => {
-        setErrorPopUp({message: '', show: false});
-    }
+        setErrorPopUp({ message: '', show: false });
+    };
 
     return (
-        <Dialog open={open} onClose={(event, reason) => {
-                if( reason === 'backdropClick' ) {
+        <Dialog
+            open={open}
+            onClose={(event, reason) => {
+                if (reason === Constant.DIALOG_REASONS.BACKDROP_CLICK) {
                     return;
                 }
                 onClose();
             }}
-            maxWidth="sm">
-            <DialogTitle className="dialog-title-host-game">
-                <Typography variant="body1" align="center" className="dialog-title-text-host-game">
+            maxWidth='sm'
+        >
+            <DialogTitle className='dialog-title-host-game'>
+                <Typography variant='body1' align='center' className='dialog-title-text-host-game'>
                     Host Game
                 </Typography>
             </DialogTitle>
-            <DialogContent className="dialog-content">
-                <form onSubmit={handleCreate} className="host-game-form">
+            <DialogContent className='dialog-content'>
+                <form onSubmit={handleCreate} className='host-game-form'>
                     <TextField
-                        label="Game Name"
+                        label='Game Name'
                         fullWidth
-                        margin="normal"
-                        variant="outlined"
+                        margin='normal'
+                        variant='outlined'
                         value={gameData.gameName}
                         onChange={(e) => handleInputChange('gameName', e.target.value)}
                         error={submitted && !gameData.gameName}
-                        helperText={submitted && !gameData.gameName ? "Game name is required" : ""}
-                        className="input-field"
+                        helperText={submitted && !gameData.gameName ? 'Game name is required' : ''}
+                        className='input-field'
                     />
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DesktopDatePicker
-                                label="Start Date"
-                                inputFormat="MM/dd/yyyy"
-                                value={gameData.startDate}
-                                onChange={(date) => {
-                                    handleInputChange('startDate', date);
-                                    handleInputChange('endDate', null);
-                                }}
-                                minDate={tomorrow}
-                                className="date-picker-wrapper"
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        fullWidth
-                                        margin="normal"
-                                        error={submitted && !gameData.startDate}
-                                        helperText={
-                                            submitted && !gameData.startDate
-                                                ? "Start Date is required"
-                                                : ""
-                                        }
-                                        className="date-picker-input"
-                                    />
-                                )}
-                            />
-                            <DesktopDatePicker
-                                label="End Date"
-                                inputFormat="MM/dd/yyyy"
-                                value={gameData.endDate}
-                                onChange={(date) => handleInputChange('endDate', date)}
-                                className="date-picker-wrapper"
-                                minDate={gameData.startDate || tomorrow}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        fullWidth
-                                        margin="normal"
-                                        error={submitted && !gameData.endDate}
-                                        helperText={
-                                            submitted && !gameData.endDate
-                                                ? "End Date is required"
-                                                : ""
-                                        }
-                                        className="date-picker-input"
-                                    />
-                                )}
-                            />
+                        <DesktopDatePicker
+                            label='Start Date'
+                            inputFormat='MM/dd/yyyy'
+                            value={gameData.startDate}
+                            onChange={(date) => {
+                                handleInputChange('startDate', date);
+                                handleInputChange('endDate', null);
+                            }}
+                            minDate={tomorrow}
+                            className='date-picker-wrapper'
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    fullWidth
+                                    margin='normal'
+                                    error={submitted && !gameData.startDate}
+                                    helperText={
+                                        submitted && !gameData.startDate
+                                            ? 'Start Date is required'
+                                            : ''
+                                    }
+                                    className='date-picker-input'
+                                />
+                            )}
+                        />
+                        <DesktopDatePicker
+                            label='End Date'
+                            inputFormat='MM/dd/yyyy'
+                            value={gameData.endDate}
+                            onChange={(date) => handleInputChange('endDate', date)}
+                            className='date-picker-wrapper'
+                            minDate={gameData.startDate || tomorrow}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    fullWidth
+                                    margin='normal'
+                                    error={submitted && !gameData.endDate}
+                                    helperText={
+                                        submitted && !gameData.endDate
+                                            ? 'End Date is required'
+                                            : ''
+                                    }
+                                    className='date-picker-input'
+                                />
+                            )}
+                        />
                     </LocalizationProvider>
                     <TextField
-                        label="Maximum Players"
-                        type="number"
+                        label='Maximum Players'
+                        type='number'
                         fullWidth
-                        margin="normal"
-                        variant="outlined"
+                        margin='normal'
+                        variant='outlined'
                         value={gameData.maxPlayers}
                         onChange={(e) => handleInputChange('maxPlayers', e.target.value)}
                         error={submitted && !gameData.maxPlayers}
                         helperText={
                             submitted && !gameData.maxPlayers
-                                ? "Maximum Players are required"
-                                : ""
+                                ? 'Maximum Players are required'
+                                : ''
                         }
-                        className="input-field"
+                        className='input-field'
                     />
-                    <DialogActions className="dialog-actions">
-                        <Button onClick={onClose} className="cancel-button">
+                    <DialogActions className='dialog-actions'>
+                        <Button onClick={onClose} className='cancel-button'>
                             CANCEL
                         </Button>
-                        <Button type="submit" className="create-button">
+                        <Button type='submit' className='create-button'>
                             HOST
                         </Button>
                     </DialogActions>

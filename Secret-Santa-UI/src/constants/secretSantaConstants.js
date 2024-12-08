@@ -34,6 +34,7 @@ export const TALK_TO_USER = {
 export const REQUEST_ERROR_MESSAGE = 'An error occurred while processing the request';
 export const POPUP_ERROR_MESSAGE = 'Something unexpected happened. Please contact your administrator';
 export const LOGOUT_CONFIRM_MESSAGE = 'Are you sure you want to log out?';
+export const LOADING_CONTEXT_ERROR = 'Use Loading must be used within a LoadingProvider';
 
 // path constants
 export const ROUTE_PATH = {
@@ -46,3 +47,20 @@ export const ROUTE_PATH = {
   REGISTER: '/register',
   DEFAULT: '/'
 }
+
+export const ALERT_MESSAGES = {
+  NOT_LOGGED_IN: 'User is not logged in. Please log in to host a game.',
+  REQUIRED_FIELDS: 'Please fill in all required fields',
+  INVALID_START_DATE: 'Start date must be tomorrow or later',
+  INVALID_END_DATE: 'End date must be after the start date',
+  INVALID_MAX_PLAYERS: 'Maximum members cannot be less than 2',
+  GAME_HOSTED: 'Game hosted!',
+  SUCCESSFULLY_JOINED: 'Joined Game Successfully!',
+  INVALID_CODE: 'Enter a valid Game Code',
+  GAME_NOT_CREATED: 'Game is not created.',
+  SUCCESSFULLY_ADDED: 'Wish added to wishlist!',
+};
+
+export const DIALOG_REASONS = {
+  BACKDROP_CLICK: 'backdropClick',
+};

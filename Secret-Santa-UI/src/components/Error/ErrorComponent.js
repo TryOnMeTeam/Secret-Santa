@@ -1,10 +1,10 @@
 import { keyframes } from '@emotion/react';
 import { Typography } from '@mui/material';
 import { Box, styled } from '@mui/system';
-import React, { useEffect } from 'react'
+import React from 'react'
 
-const fadeIn = keyframes 
-`
+const fadeIn = keyframes
+    `
     0% {
         opacity: 0;
         transform: translateY(-30px);
@@ -75,15 +75,15 @@ const CloseButton = styled('button')({
 
 function ErrorComponent({ message, show, onClose }) {
 
-  return (
-    show && (
-        <DialogContainer show={show}>
-            <ErrorIcon>!</ErrorIcon>
-            <Typography variant="body1">{message}</Typography>
-            <CloseButton onClick={onClose}>OK</CloseButton>
-        </DialogContainer>
-    )
-  );
+    return (
+        show && (
+            <DialogContainer show={show}>
+                <ErrorIcon>!</ErrorIcon>
+                <Typography variant="body1">{message}</Typography>
+                <CloseButton onClick={onClose}>OK</CloseButton>
+            </DialogContainer>
+        )
+    );
 }
 
 export default ErrorComponent;

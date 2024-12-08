@@ -4,7 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { AlertProvider } from './context/AlertContext';
 import { LoadingProvider } from "./context/LoadingContext";
 import { useLoading } from './context/LoadingContext';
-import ProtectedRoute from './components/ProtectedRoute';
+import { ProtectedRoute, ProtectedGamedRoute } from './components/ProtectedRoute';
 import AlertComponent from './components/Alert/AlertComponent';
 import Spinner from './pages/spinner/spinner';
 import LoginPage from './pages/auth/login/LoginPage';
@@ -44,19 +44,19 @@ const App = () => {
               />
               <Route
                 path={ROUTE_PATH.GAME}
-                element={<ProtectedRoute element={<GamePlay />} />}
+                element={<ProtectedGamedRoute element={<GamePlay />} />}
               />
               <Route
                 path={ROUTE_PATH.WISHLIST}
-                element={<ProtectedRoute element={<WishlistPage />} />}
+                element={<ProtectedGamedRoute element={<WishlistPage />} />}
               />
               <Route
                 path={ROUTE_PATH.CHAT}
-                element={<ProtectedRoute element={<SecretSantaChat />} />}
+                element={<ProtectedGamedRoute element={<SecretSantaChat />} />}
               />
               <Route
                 path={ROUTE_PATH.GAME_STATUS}
-                element={<ProtectedRoute element={<GameStatus />} />}
+                element={<ProtectedGamedRoute element={<GameStatus />} />}
               />
             </Routes>
           </AuthProvider>

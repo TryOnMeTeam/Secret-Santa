@@ -187,7 +187,7 @@ const getGameActiveStatus = async (gameId) => {
     const result = await gameDao.getGameActiveStatus(gameId);
     return commonService.createResponse(httpResponse.SUCCESS, result);
   } catch (error) {
-    commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
+    return commonService.createResponse(httpResponse.INTERNAL_SERVER_ERROR, error.message);
   }
 };
 

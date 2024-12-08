@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE_PATH } from '../constants/secretSantaConstants';
 import { isAuthenticated, getUser, logout as logoutService } from '../services/authService';
 import { RotatingLines } from "react-loader-spinner";
 
@@ -23,13 +24,13 @@ export const AuthProvider = ({ children }) => {
 
     const login = (userData) => {
         setUser(userData);
-        navigate('/secret-santa');
+        navigate(ROUTE_PATH.DASHBOARD);
     };
 
     const logout = () => {
         logoutService();
         setUser(null);
-        navigate('/login');
+        navigate(ROUTE_PATH.LOGIN);
     };
 
     if (loading) {
