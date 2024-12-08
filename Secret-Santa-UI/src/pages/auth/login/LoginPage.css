@@ -71,12 +71,6 @@ input:focus {
     outline: none;
 }
 
-/* Error message */
-div {
-    color: red;
-    font-size: 0.8rem;
-}
-
 /* Submit button */
 .submit-btn {
     background: #fff;
@@ -109,6 +103,7 @@ div {
 @media (max-width: 767px) {
     .container {
         padding: 2rem;
+        background-position: 23%;
     }
 
     form {

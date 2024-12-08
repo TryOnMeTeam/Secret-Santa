@@ -1,8 +1,6 @@
 .dashboard {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    width: 100%;
     margin: 0;
 }
 
@@ -79,6 +77,10 @@
 }
 
 @media (max-width: 1024px) {
+    .dashboard {
+        background-position: 79% !important;
+    }
+
     .dashboard-container {
         flex-direction: column;
     }

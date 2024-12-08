@@ -16,9 +16,7 @@ const HomePage = () => {
                     Welcome to the Secret Santa Game!
                 </div>
                 <p className="content-sub-heading">Plan a fun and exciting gift exchange with your friends.</p>
-                <a href="#" className="start-button" onClick={handlePlayClick}>
-                    Play Now
-                </a>
+                <button className="game-home-actions" onClick={handlePlayClick}>Play Now</button>
             </div>
         </div>
     );

@@ -163,8 +163,8 @@ const SecretSantaChat = () => {
     );
 
     return (
-        <div style={{ backgroundImage: `url(${secretSantaTheme})`, backgroundSize: 'cover', height: '100vh' }} className='chat-container'>
-            <div className='go-to-game-icon' onClick={() => navigate('/game')}>
+        <div style={Constant.BACKGROUND_STYLE} className='chat-container'>
+            <div className='go-to-game-icon' onClick={() => navigate(Constant.ROUTE_PATH.GAME)}>
                 <IoGameController />
             </div>
             <div className='chat-mode-buttons'>
@@ -182,7 +182,7 @@ const SecretSantaChat = () => {
                         <Button
                             className='custom-button'
                             variant='contained'
-                            style={{ backgroundColor: 'var(--primary-color)', color: 'white', width: '250px' }}
+                            style={{ backgroundColor: 'var(--primary-color)', color: 'white', width: '250px', border: '1px solid' }}
                             onClick={() => {
                                 toggleBadgeVisibility(type === Constant.CHAT_BOX_TYPE.SECRET_SANTA ? setSecretSantaMessagesHidden : setGiftNinjaMessagesHidden, true);
                                 setChatMode(type);

@@ -1,3 +1,7 @@
+.wishlist-container {
+    overflow: hidden;
+}
+
 .list-body {
     display: flex;
     flex-direction: column;
@@ -51,7 +55,7 @@
     padding-right: 18px;
     padding-bottom: 3px;
     margin-bottom: 10px;
-    background-color: black;
+    background-color: var(--secondary-color);
     width: 45%;
     height: 34px;
     clip-path: polygon(0% 0%, 101% 0%, 90% 115%, 10% 110%);
@@ -116,6 +120,10 @@
 }
 
 @media (max-width: 768px) {
+    .wishlist-container {
+        background-position: 79% !important;
+    }
+
     .player-number {
         margin-left: 0px !important;
     }
@@ -183,6 +191,7 @@
     flex-direction: row;
     gap: 0.5rem;
     padding-bottom: 0.7rem;
+    padding-top: 1rem;
     justify-content: center;
 }
 
@@ -202,11 +211,10 @@
     font-size: xx-large;
     padding: 10px;
     border-radius: 5px;
-    transition: background-color 0.3s;
 }
 
 .go-to-game-icon:hover {
-    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.25);
 }
 
 .go-to-game-icon span {

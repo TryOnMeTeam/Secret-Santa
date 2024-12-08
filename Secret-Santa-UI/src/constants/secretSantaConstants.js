@@ -1,4 +1,6 @@
 import secretSantaTheme from '../assets/secretSantaTheme.jpg';
+import sdf from '../assets/sdf.jpg';
+import bgg from '../assets/bgg.jpg';
 
 export const CHAT_BOX_TYPE = {
     SECRET_SANTA: 'secretSanta',
@@ -10,7 +12,7 @@ export const NOTIFICATION_TYPE = {
 };
 
 export const BACKGROUND_STYLE = {
-  backgroundImage: `url(${secretSantaTheme})`,
+  backgroundImage: `url(${bgg})`,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
