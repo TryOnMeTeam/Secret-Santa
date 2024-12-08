@@ -23,7 +23,7 @@
     height: 50px;
     margin: 10px 0;
     color: #ffffff;
-    background: #5F6D7C;
+    background: var(--primary-color);
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -110,11 +110,9 @@
     height: 60px;
     width: 100%;
     border-radius: 20px;
-    /* Rounded corners for all edges */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     padding-left: 10px;
     clip-path: polygon(0% 0%, 101% 0%, 90% 115%, 10% 108%);
-    /* Trapezium shape */
 }
 
 @media (max-width: 768px) {
@@ -189,7 +187,7 @@
 }
 
 .custom-button:hover {
-    background-color: #162b42 !important;
+    background-color: var(--primary-button-color-hover) !important;
     /* Hover color */
 }
 

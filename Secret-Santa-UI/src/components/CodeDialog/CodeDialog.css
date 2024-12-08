@@ -1,5 +1,5 @@
 .dialog-title-code {
-    background-color: #5F6D7C;
+    background-color: var(--primary-color);
     padding: 16px;
     border-bottom: 1px solid #ddd;
 }
@@ -30,20 +30,20 @@
 
 .code-form .MuiDialogActions-root .cancel-button {
     background-color: #f5f5f5;
-    color: #162B42
+    color: var(--primary-button-color-hover)
 }
 
 .code-form .MuiDialogActions-root .join-button {
-    background-color: #5F6D7C;
+    background-color: var(--primary-button-color);
     color: #fff;
 }
 
 .code-form .MuiDialogActions-root .cancel-button:hover {
-    background-color: #c8d2db;
+    background-color: var(--secondary-button-color-hover);
 }
 
 .code-form .MuiDialogActions-root .join-button:hover {
-    background-color: #162B42;
+    background-color: var(--primary-button-color-hover);
 }
 
 .code-form {
@@ -62,7 +62,7 @@
 .code-form .MuiIconButton-root {
     position: absolute;
     right: 16px;
-    background-color: #5F6D7C;
+    background-color: var(--primary-button-color);
 }
 
 @media (max-width: 768px) {

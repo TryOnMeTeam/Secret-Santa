@@ -1,5 +1,5 @@
 .dialog-title {
-    background-color: #5F6D7C;
+    background-color: var(--primary-button-color);
     padding: 16px;
     border-bottom: 1px solid #ddd;
 }
@@ -29,21 +29,21 @@
 }
 
 .add-wishlist-form .dialog-actions .cancel-button {
-    background-color: #f5f5f5;
-    color: #162B42;
+    background-color: var(--secondary-button-color);
+    color: var(--primary-button-color-hover);
 }
 
 .add-wishlist-form .dialog-actions .add-wishlist-button {
-    background-color: #5F6D7C;
+    background-color: var(--primary-button-color);
     color: #fff;
 }
 
 .add-wishlist-form .dialog-actions .cancel-button:hover {
-    background-color: #c8d2db;
+    background-color: var(--secondary-button-color-hover);
 }
 
 .add-wishlist-form .dialog-actions .add-wishlist-button:hover {
-    background-color: #162B42;
+    background-color: var(--primary-button-color-hover);
 }
 
 .add-wishlist-form {

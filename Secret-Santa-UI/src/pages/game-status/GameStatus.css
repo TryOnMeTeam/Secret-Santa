@@ -17,7 +17,7 @@
   padding-left: 10px;
   padding-right: 18px;
   padding-bottom: 3px;
-  background-color: #162b42;
+  background-color: var(--secondary-color);
   width: 95%;
   border-radius: 40px;
   clip-path: polygon(0% 0%, 101% -21%, 90% 115%, 10% 110%);
@@ -29,7 +29,7 @@
   height: 50px;
   margin: 10px 0;
   color: #ffffff;
-  background: #5F6D7C;
+  background: var(--primary-color);
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -57,7 +57,7 @@
   padding-right: 18px;
   padding-bottom: 3px;
   margin-bottom: 10px;
-  background-color: #162b42;
+  background-color: var(--secondary-color);
   width: 45%;
   height: 34px;
   clip-path: polygon(0% 0%, 101% 0%, 90% 115%, 10% 110%);
@@ -66,7 +66,7 @@
 .player-shape {
   display: flex;
   justify-content: center;
-  background-color: #162b42;
+  background-color: var(--secondary-color);
   width: 65%;
   height: 100%;
   clip-path: polygon(0% 0%, 100% 0%, 78% 123%, 19% 110%);
@@ -101,7 +101,7 @@
   padding-left: 10px;
   padding-right: 18px;
   padding-bottom: 3px;
-  background-color: #162b42;
+  background-color: var(--secondary-color);
   width: 70%;
   border-radius: 40px;
   clip-path: polygon(0% 0%, 101% 0%, 90% 115%, 10% 110%);
@@ -128,7 +128,7 @@
 }
 
 .player-number {
-  background: #162b42;
+  background: var(--secondary-color);
   /* border-top-right-radius: 19px; */
   color: #fff;
   border-top-color: #000000;
@@ -177,7 +177,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background-color: #5F6D7C;
+  background-color: var(--primary-button-color);
   color: white;
   border: none;
   padding: 15px 14px;
@@ -194,7 +194,7 @@
 }
 
 .exit-game-button:hover {
-  background-color: #162b42 !important;
+  background-color: var(--primary-button-color-hover) !important;
   transform: translateY(-5px);
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
 }

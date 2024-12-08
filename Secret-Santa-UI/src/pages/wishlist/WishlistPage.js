@@ -147,7 +147,7 @@ function WishlistPage() {
         <Button
           className='custom-button'
           variant='contained'
-          style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px' }}
+          style={{ backgroundColor: 'var(--primary-button-color)', color: 'white', width: '250px' }}
           onClick={() => { setIsGiftNinjaView(false); }}
         >
           My Wishlist
@@ -155,7 +155,7 @@ function WishlistPage() {
         <Button
           className='custom-button'
           variant='contained'
-          style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px', filter: !isGameActive ? 'blur(1px)' : 'none', }}
+          style={{ backgroundColor: 'var(--primary-button-color)', color: 'white', width: '250px', filter: !isGameActive ? 'blur(1px)' : 'none', }}
           onClick={() => { setIsGiftNinjaView(true); }}
           disabled={!isGameActive}
         >
@@ -172,7 +172,7 @@ function WishlistPage() {
           <Button
             className='custom-button'
             variant='outlined'
-            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px', marginTop: '15px' }}
+            style={{ backgroundColor: 'var(--primary-button-color)', color: 'white', width: '250px', marginTop: '15px' }}
             onClick={handleOnClickAddNewWishlist}
           >
             <QueueIcon style={{ marginRight: '10px' }} /> Add New Wish

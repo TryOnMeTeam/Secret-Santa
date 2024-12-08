@@ -22,7 +22,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background-color: #5F6D7C;
+    background-color: var(--primary-button-color);
     color: white;
     border: none;
     padding: 15px 14px;
@@ -39,7 +39,7 @@
 }
 
 .game-home-actions {
-    background-color: #5F6D7C;
+    background-color: var(--primary-button-color);
     color: white;
     border: none;
     padding: 15px 40px;
@@ -56,15 +56,21 @@
 }
 
 .game-actions:hover {
-    background-color: #162b42 !important;
+    background-color: var(--primary-button-color-hover) !important;
     transform: translateY(-5px);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
 }
 
 .game-home-actions:hover {
-    background-color: #162b42 !important;
+    background-color: var(--primary-button-color-hover) !important;
     transform: translateY(-5px);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+.game-actions:disabled:hover {
+    background-color: var(--primary-button-color) !important;
+    transform: none;
+    box-shadow: none;
 }
 
 .game-actions:active {

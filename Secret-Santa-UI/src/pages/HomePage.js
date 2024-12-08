@@ -1,15 +1,12 @@
 import React from "react";
-import "./HomePage.css";
 import { useNavigate } from "react-router-dom";
+import { ROUTE_PATH } from "../constants/secretSantaConstants";
+import "./HomePage.css";
 
 const HomePage = () => {
     const navigate = useNavigate();
     const handlePlayClick = () => {
-        navigate('/login');
-    };
-
-    const login = () => {
-        navigate("/dashboard");
+        navigate(ROUTE_PATH.LOGIN);
     };
 
     return (

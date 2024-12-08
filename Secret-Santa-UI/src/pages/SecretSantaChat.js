@@ -177,7 +177,7 @@ const SecretSantaChat = () => {
                         <Button
                             className='custom-button'
                             variant='contained'
-                            style={{ backgroundColor: '#5F6D7C', color: 'white', width: '250px' }}
+                            style={{ backgroundColor: 'var(--primary-color)', color: 'white', width: '250px' }}
                             onClick={() => {
                                 toggleBadgeVisibility(type === Constant.CHAT_BOX_TYPE.SECRET_SANTA ? setSecretSantaMessagesHidden : setGiftNinjaMessagesHidden, true);
                                 setChatMode(type);

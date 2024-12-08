@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import Navbar from '../../components/navbar/Navbar'
-import "./Dashboard.css"
-import HostGame from '../../components/HostGame/HostGame';
-import CodeDialog from '../../components/CodeDialog/CodeDialog';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { joinGameHandler, validateGameId } from '../../services/gameService.js';
-import * as Constant from '../../constants/secretSantaConstants.js';
-import secretSantaTheme from '../../assets/secretSantaTheme.jpg';
 import { IoIosCreate } from "react-icons/io";
 import { CiViewList } from "react-icons/ci";
 import { MdFollowTheSigns } from "react-icons/md";
+import Navbar from '../../components/navbar/Navbar';
+import HostGame from '../../components/HostGame/HostGame';
+import CodeDialog from '../../components/CodeDialog/CodeDialog';
 import ErrorComponent from '../../components/Error/ErrorComponent.js';
-
+import { joinGameHandler, validateGameId } from '../../services/gameService.js';
+import * as Constant from '../../constants/secretSantaConstants.js';
+import { GAME_ID_KEY, USER_KEY } from '../../constants/appConstant.js';
+import "./Dashboard.css";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -19,12 +18,12 @@ function Dashboard() {
   const [openCreateGame, setOpenCreateGame] = useState(false);
   const [resetForm, setResetForm] = useState(false);
   const [openJoinGame, setOpenJoinGame] = useState(false);
-  const [buttonText, setButtonText] = useState('');
-  const [dialogTitle, setDialogTitle] = useState('');
+  const [buttonText, setButtonText] = useState(Constant.EMPTY);
+  const [dialogTitle, setDialogTitle] = useState(Constant.EMPTY);
   const [onSubmitHandler, setOnSubmitHandler] = useState(() => { });
-  const [errorPopUp, setErrorPopUp] = useState({message: '', show: false});
-  const userId = localStorage.getItem('userId');
-  const gameId = localStorage.getItem('gameId');
+  const [errorPopUp, setErrorPopUp] = useState({ message: Constant.EMPTY, show: false });
+  const userId = localStorage.getItem(USER_KEY);
+  const gameId = localStorage.getItem(GAME_ID_KEY);
 
   useEffect(() => {
     checkAndValidateGameId();
@@ -35,10 +34,10 @@ function Dashboard() {
       try {
         const response = await validateGameId(gameId);
         if (!response) {
-          localStorage.removeItem('gameId');
+          localStorage.removeItem(GAME_ID_KEY);
         }
       } catch (error) {
-        throw(error);
+        throw (error);
       }
     }
   };
@@ -54,24 +53,24 @@ function Dashboard() {
 
   const onClickJoinGame = () => {
     setResetForm(true);
-    if (localStorage.getItem('gameId')) {
+    if (localStorage.getItem(GAME_ID_KEY)) {
       navigate(Constant.ROUTE_PATH.GAME);
     } else {
       setOnSubmitHandler(() => handleJoinGameSubmit);
-      setButtonText('JOIN');
-      setDialogTitle('Join Game');
+      setButtonText(Constant.JOIN);
+      setDialogTitle(Constant.JOIN_GAME);
       setOpenJoinGame(true);
     }
   };
 
   const onClickGameStatus = () => {
     setResetForm(true);
-    if (localStorage.getItem('gameId')) {
+    if (localStorage.getItem(GAME_ID_KEY)) {
       navigate(Constant.ROUTE_PATH.GAME_STATUS);
     } else {
       setOnSubmitHandler(() => handleGameStatusSubmit);
-      setDialogTitle('Game Status');
-      setButtonText('GET');
+      setDialogTitle(Constant.GAME_STATUS);
+      setButtonText(Constant.GET);
       setOpenJoinGame(true);
     }
   };
@@ -80,7 +79,7 @@ function Dashboard() {
     try {
       const response = await joinGameHandler(userId, gameCode);
       if (response) {
-        return {gameId: response, path: Constant.ROUTE_PATH.GAME};
+        return { gameId: response, path: Constant.ROUTE_PATH.GAME };
       }
     } catch (error) {
       throw error;
@@ -89,9 +88,9 @@ function Dashboard() {
 
   const handleGameStatusSubmit = async (gameCode) => {
     try {
-      const response =  await joinGameHandler(userId, gameCode);
+      const response = await joinGameHandler(userId, gameCode);
       if (response) {
-        return {gameId: response, path: Constant.ROUTE_PATH.GAME_STATUS};
+        return { gameId: response, path: Constant.ROUTE_PATH.GAME_STATUS };
       } else {
         setErrorPopUp({ message: Constant.POPUP_ERROR_MESSAGE, show: true });
       }
@@ -108,19 +107,10 @@ function Dashboard() {
 
   const closeErrorPopUp = () => {
     setErrorPopUp({ message: Constant.EMPTY, show: false });
-  }
-
-  const backgroundStyle = {
-    backgroundImage: `url(${secretSantaTheme})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    height: '100vh',
-    width: '100%'
   };
 
   return (
-    <div style={backgroundStyle} className='dashboard'>
+    <div style={Constant.BACKGROUND_STYLE} className='dashboard'>
       <div><Navbar /></div>
       <div className="dashboard-container">
         <button className="game-home-actions" onClick={onClickCreateGame}><IoIosCreate />Host Game</button>
@@ -143,7 +133,7 @@ function Dashboard() {
         onClose={closeErrorPopUp}
       ></ErrorComponent>
     </div>
-  )
+  );
 }
 
-export default Dashboard
+export default Dashboard;

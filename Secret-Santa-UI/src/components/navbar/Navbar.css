@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 16px;
-    background-color: #5F6D7C;
+    background-color: var(--primary-color);
     opacity: 0.9;
     color: white;
     position: fixed;
@@ -29,8 +29,21 @@
     color: #fcfeff;
 }
 
-.navbar-right {
+.navbar-left {
     cursor: pointer;
+}
+
+@keyframes enlargeShrink {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+}
+
+.navbar-left:hover {
+    transform: scale(1.25);
 }
 
 .profile-icon {
